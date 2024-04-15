@@ -1,0 +1,7 @@
+button-primary {
+    background-color: darkslategray;
+    color: azure;
+    width: 200px;
+    height: 100px;
+    border-radius: 5px;
+}
