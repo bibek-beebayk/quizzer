@@ -1,0 +1,185 @@
+{% load static %}
+<div class="nav-container">
+    <!-- <div class="logo" style="width: 50px;"> -->
+    <a href="/"><img src="{% static 'images/logo.png' %}" alt="logo" style="width: 70px; border-radius: 5px;"></a>
+    <!-- </div> -->
+    <!-- <div class="search">
+        <input type="text" class="search-box" placeholder="Enter product to search.">
+        <a href="" class="search-button">Search</a>
+    </div> -->
+    <ul class="menu">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products/">Products</a></li>
+        <li><a href="/about/">About Us</a></li>
+        <li><a href="/contact/">Contact</a></li>
+    </ul>
+
+    <ul class="mobile-menu" id="mobile-menu">
+        <div style="display: flex; justify-content: right; padding-right: 20px;">
+            <button id="close-menu" class="close-menu"><i class="fas fa-times"
+                    style="font-size: 32px; color: aliceblue;"></i></button>
+        </div>
+        <li><a href="/">Home</a></li>
+        <li><a href="/products/">Products</a></li>
+        <li><a href="/about/">About Us</a></li>
+        <li><a href="/contact/">Contact</a></li>
+    </ul>
+
+    <button class="open-menu" id="open-menu"><i class="fas fa-bars" style="font-size: 32px; color: white;"></i></button>
+    <!-- <button class="open-menu" id="close-menu">Close</button> -->
+</div>
+
+<style>
+    .mobile-menu {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 40%;
+        height: auto;
+        background-color: #2e3192;
+        /* Semi-transparent background */
+        z-index: 9999;
+        margin-top: 0;
+
+        list-style: none;
+
+        li {
+            margin: 10px 10px;
+            font-size: large;
+
+            a {
+                color: rgb(226, 225, 225);
+                text-decoration: none;
+            }
+        }
+
+
+    }
+
+    .open-menu {
+        display: none;
+        outline: none;
+        width: 30px;
+        height: 30px;
+        appearance: none;
+        background: none;
+        border: none;
+    }
+
+    .close-menu {
+        /* display: none; */
+        /* background-color: #2e3192; */
+        outline: none;
+        width: 30px;
+        height: 30px;
+        appearance: none;
+        background: none;
+        border: none;
+    }
+
+    .menu {
+        display: flex;
+        list-style: none;
+        gap: 15px;
+        cursor: pointer;
+        color: white;
+
+        li {
+            a {
+                color: white;
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+            a:hover {
+                color: rgb(251, 191, 191);
+            }
+        }
+
+
+    }
+
+    .nav-container {
+        height: auto;
+        background-color: #2e3192;
+        display: flex;
+        color: white;
+        align-items: center;
+        justify-content: space-around;
+        padding: 2px 20px;
+    }
+
+    .search {
+        height: 35px;
+        /* padding: 0 4px; */
+        display: flex;
+        align-items: center;
+        justify-items: center;
+    }
+
+    .search-box {
+        height: 100%;
+        width: 400px;
+        border: 0;
+        border-radius: 5px 0 0 5px;
+        outline: none;
+        padding-left: 4px;
+        /* text-align: center; */
+    }
+
+    .search-button {
+        height: 37px;
+        border-radius: 0 5px 5px 0;
+        outline: none;
+        /* padding: 0 4px; */
+        /* height: 38px; */
+        width: 100px;
+        background-color: #00a69a;
+        text-align: center;
+        /* justify-items: center; */
+        justify-content: center;
+        /* align-content: center; */
+        /* align-items: center; */
+        line-height: 200%;
+        text-decoration: none;
+        color: white;
+    }
+
+    @media screen and (max-width: 768px) {
+        .menu {
+            display: none;
+        }
+
+        .open-menu {
+            display: inline;
+        }
+
+        /* .mobile-menu{
+            display: block;
+        } */
+
+        .nav-container {
+            justify-content: space-between;
+        }
+    }
+</style>
+
+<script>
+    // Get the menu button and the menu itself
+    var openButton = document.getElementById('open-menu');
+    var closeButton = document.getElementById('close-menu');
+    var navMenu = document.getElementById('mobile-menu');
+
+    // Function to open the menu
+    openButton.addEventListener('click', function () {
+        navMenu.style.display = 'block';
+        // openButton.style.display = 'none';
+    });
+
+    // Function to close the menu
+    closeButton.addEventListener('click', function () {
+        navMenu.style.display = 'none';
+        // openButton.style.display = 'block';
+    });
+</script>

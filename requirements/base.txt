@@ -1,0 +1,6 @@
+Django
+psycopg2-binary
+django-cors-headers
+django-ckeditor
+django-filter
+Pillow

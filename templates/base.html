@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unique Tailors</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<body>
+    {% include "navbar.html" %}
+    {% block content %}
+    {% endblock %}
+</body>
+
+<footer>
+    <img src="{% static 'images/logo.png' %}" alt="" style="width: 200px;min-width: 300px;">
+    <div class="links">
+        <h2 style="color: rgb(228, 228, 228);">Useful Links</h2>
+        <a href="/products/">Products List</a>
+        <a href="/about/">About Us</a>
+        <a href="/contact/">Contact Us</a>
+    </div>
+
+    <div class="contact">
+        <h2>Contact</h2>
+        <p>Unique Tailors</p>
+        <p>Location: <a href="https://maps.app.goo.gl/KcUVMwiSgZWhEUyM8" style="color: rgb(251, 191, 191); text-decoration: none;"
+                target="_blank">Dillibazar, Kathmandu</a></p>
+        <p>Phone: <a href="tel:9812345678" style="text-decoration: none; color: rgb(251, 191, 191);" target="_blank">9812345678</a></p>
+        <p>Email: <a href="mailto:uniquetailors@gmail.com" style="text-decoration: none; color: rgb(251, 191, 191);" target="_blank">uniquetailors@gmail.com</a> </p>
+    </div>
+</footer>
+
+<style>
+    .contact {
+        color: rgb(228, 228, 228);
+        min-width: 300px;
+    }
+
+    .links {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-width: 300px;
+
+        a {
+            color: rgb(228, 228, 228);
+            text-decoration: none;
+        }
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: #f3f3f3;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    }
+
+    footer {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        /* padding: 50px; */
+        padding: 20px 0;
+        background-color: rgb(31, 30, 30);
+        color: white;
+    }
+</style>
+
+</html>

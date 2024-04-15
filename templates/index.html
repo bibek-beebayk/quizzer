@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="hero-section">
+    <form method="post">
+        {% csrf_token %}
+        <h2>Tell us what you need.</h2>
+        {% if messages %}
+        {% for message in messages %}
+        <div style="color: green;">{{message}}</div>
+        {% endfor %}
+        {% endif %}
+        <input type="text" name="type" value="requirement" , style="display: none;">
+        <input class="hero-input" name="product_name" type="text" placeholder="Enter the name of the product you need*", required>
+        <input class="hero-input" type="email" name="email" id="" placeholder="Enter your email">
+        <input class="hero-input" type="text" name="phone" id="" placeholder="Enter your contact number*" required>
+        <!-- {{form}} -->
+        <input type="submit" value="Submit"
+            style="padding: 10px; border-radius: 10px; background-color: #2E3192; color: white; width: 150px; font-size: large;">
+    </form>
+</div>
+
+<div class="product-section">
+    <h2>Product Categories</h2>
+    <div class="category-list">
+        {% for category in categories %}
+        <a href="/products/?category={{category.id}}" style="text-decoration: none; color: black;">
+            <div class="category-list-item">
+                <img src="{{category.image.url}}" alt="{{category.name}}">
+                <h4>{{category.name}}</h3>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+</div>
+
+<style>
+    .category-list-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid rgb(199, 199, 199);
+
+        img {
+            width: 300px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        h4 {
+            font-size: medium;
+            font-weight: 200;
+        }
+    }
+
+    .category-list-item:hover{
+        box-shadow: 2px 3px 13px 0px rgba(122, 122, 122, 1);;
+    }
+
+
+    .category-list {
+        display: flex;
+        gap: 40px;
+        flex-wrap: wrap;
+        justify-content: start;
+        border-radius: 5px;
+        width: 80%;
+        /* img {
+            border-radius: 5px;
+        } */
+
+    }
+
+    .product-section {
+        /* background-color: azure; */
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+        align-items: center;
+        margin-top: 10px;
+
+    }
+
+    .hero-section {
+        height: 350px;
+        /* opacity: 30%; */
+        display: flex;
+        align-items: center;
+        justify-items: center;
+        justify-content: center;
+        background-image: url("https://images.pexels.com/photos/1983840/pexels-photo-1983840.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+        background-size: cover;
+    }
+
+    form {
+        height: 90%;
+        width: 50%;
+        background-color: #dddddd;
+        border-radius: 5px;
+        opacity: 90%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: rgb(29, 29, 29);
+        gap: 5%;
+    }
+
+    .hero-input {
+        width: 60%;
+        height: 13%;
+        border-radius: 5px;
+        outline: none;
+        border: 0;
+        padding: 2px 8px;
+        font-size: medium;
+    }
+
+    .hero-submit {
+        width: 50%;
+        height: 15%;
+        outline: none;
+        border: 0;
+        border-radius: 5px;
+        background-color: #00a69a;
+        margin-top: 10px;
+        font-size: large;
+        color: aliceblue;
+        font-weight: 700;
+        box-shadow: 3px 3px #22302f;
+    }
+
+    @media screen and (max-width: 768px){
+        form{
+            width: 90%;
+        }
+
+        .hero-input{
+            width: 90%;
+        }
+    }
+    
+</style>
+{% endblock %}

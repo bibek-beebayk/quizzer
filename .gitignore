@@ -1,0 +1,14 @@
+*.pyc
+__pycache__
+.idea
+*.log
+*.sqlite3
+env/
+media/
+static/
+*temp.*
+*.sql
+*.dot
+tunnel.txt
+*.pem*
+core/settings/env.py
