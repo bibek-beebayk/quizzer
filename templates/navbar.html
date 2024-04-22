@@ -1,7 +1,7 @@
 {% load static %}
 <div class="nav-container">
     <a href="/" style="text-decoration: none;"><span
-            style="color: white; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-weight: 600; letter-spacing: 1px; font-size: x-large; ">qUIZZER</span></a>
+            style="color: black; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-weight: 600; letter-spacing: 1px; font-size: x-large; ">qUIZZER</span></a>
 
     <ul class="menu">
         <li><a href="#">collections</a></li>
@@ -80,11 +80,11 @@
         list-style: none;
         gap: 30px;
         cursor: pointer;
-        color: white;
+        /* color: white; */
 
         li {
             a {
-                color: white;
+                color: black;
                 text-decoration: none;
                 font-weight: 500;
                 font-size: large;
@@ -100,18 +100,16 @@
 
     .nav-container {
         height: auto;
-        /* background-color: #2e3192; */
         display: flex;
         color: white;
         align-items: center;
         justify-content: space-around;
         padding: 2px 20px;
-        /* opacity: 0; */
+        background-color: lightgray;
     }
 
     .search {
         height: 35px;
-        /* padding: 0 4px; */
         display: flex;
         align-items: center;
         justify-items: center;
@@ -124,22 +122,16 @@
         border-radius: 5px 0 0 5px;
         outline: none;
         padding-left: 4px;
-        /* text-align: center; */
     }
 
     .search-button {
         height: 37px;
         border-radius: 0 5px 5px 0;
         outline: none;
-        /* padding: 0 4px; */
-        /* height: 38px; */
         width: 100px;
         background-color: #00a69a;
         text-align: center;
-        /* justify-items: center; */
         justify-content: center;
-        /* align-content: center; */
-        /* align-items: center; */
         line-height: 200%;
         text-decoration: none;
         color: white;
@@ -154,10 +146,6 @@
             display: inline;
         }
 
-        /* .mobile-menu{
-            display: block;
-        } */
-
         .nav-container {
             justify-content: space-between;
         }
@@ -165,20 +153,15 @@
 </style>
 
 <script>
-    // Get the menu button and the menu itself
     var openButton = document.getElementById('open-menu');
     var closeButton = document.getElementById('close-menu');
     var navMenu = document.getElementById('mobile-menu');
 
-    // Function to open the menu
     openButton.addEventListener('click', function () {
         navMenu.style.display = 'block';
-        // openButton.style.display = 'none';
     });
 
-    // Function to close the menu
     closeButton.addEventListener('click', function () {
         navMenu.style.display = 'none';
-        // openButton.style.display = 'block';
     });
 </script>

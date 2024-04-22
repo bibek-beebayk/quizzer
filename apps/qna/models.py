@@ -24,6 +24,7 @@ class Question(models.Model):
     question_audio = models.FileField(upload_to='questions/audios/', blank=True, null=True)
     categories = models.ManyToManyField(Category, related_name="questions")
     tags = models.ManyToManyField(Tag, related_name="questions", blank=True)
+    hint = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.question_text

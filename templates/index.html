@@ -6,41 +6,47 @@
     <div class="random-question">
         <h2>Random Question</h2>
         <h4>{{random_question}}</h4>
-        <button id="showButton">Show Choices</button>
-        <div class="options" id="options">
+        <button id="showHintButton" class="button" style="background-color: rgb(221, 150, 57);">Show Hint</button>
+        <div id="hintDiv" class="hint">
+            <p>{{random_question.hint}}</p>
+        </div>
+
+        <!-- <button id="showButton" class="button">Show Choices</button> -->
+        <!-- <div class="options" id="options">
             {% for answer in random_question.answers.all %}
             <p>=> &nbsp; {{answer.answer_text}}</p>
             {% endfor %}
-        </div>
-        <button id="showCorrectAnswer">Show Correct Answer</button>
+        </div> -->
+        <button id="showCorrectAnswer" class="button" style="background-color: rgb(39, 128, 15);">Show Correct Answer</button>
         <div class="correct-answer" id="correctAnswer">
-            <p style="color: bisque;">{{random_question_correct_answer.answer_text}}</p>
+            <p>{{random_question_correct_answer.answer_text}}</p>
         </div>
     </div>
 </div>
 
 <script>
-    const showButton = document.getElementById("showButton");
+    // const showButton = document.getElementById("showButton");
     const showCorrectAnswerButton = document.getElementById("showCorrectAnswer");
-    const optionsDiv = document.getElementById('options');
+    // const optionsDiv = document.getElementById('options');
     const correctAnswerDiv = document.getElementById('correctAnswer');
+    const showHintButton = document.getElementById('showHintButton');
+    const hintDiv = document.getElementById('hintDiv')
 
-    showButton.addEventListener('click', function () {
-        // Toggle the visibility of the options div
-        // if (optionsDiv.style.display === 'none') {
-        //     optionsDiv.style.display = 'block';
-        // } else {
-        //     optionsDiv.style.display = 'none';
-        // }
-        optionsDiv.style.display = 'block';
+    // showButton.addEventListener('click', function () {
+    //     optionsDiv.style.display = 'block';
 
-        showButton.style.display = 'none';
-    });
+    //     showButton.style.display = 'none';
+    // });
 
-    showCorrectAnswerButton.addEventListener('click', function() {
+    showCorrectAnswerButton.addEventListener('click', function () {
         correctAnswerDiv.style.display = 'block';
         showCorrectAnswerButton.style.display = 'none';
     });
+
+    showHintButton.addEventListener('click', function(){
+        hintDiv.style.display = 'block';
+        showHintButton.style.display = 'none';
+    })
 
 </script>
 
@@ -50,10 +56,25 @@
         display: none;
     }
 
+    .button {
+        padding: 8px;
+        outline: None;
+        /* background: none; */
+        border: none;
+        outline: none;
+        box-shadow: none;
+        background-color: azure;
+        border-radius: 5px;
+    }
+
+    .button:hover {
+        box-shadow: 0px 0px 5px 0px rgba(122, 122, 122, 1);
+    }
+
     .main-container {
         display: flex;
         justify-content: center;
-        color: white;
+        color: rgb(36, 36, 36);
     }
 
     .random-question {
@@ -63,10 +84,24 @@
         align-self: center;
         align-items: center;
         justify-content: center;
+        gap: 5px;
+        border: 1px solid rgb(170, 170, 170);
+        margin-bottom: 5px;
+        margin-top: 20px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 5px 0px rgba(122, 122, 122, 1);
+        padding-bottom: 5px;
     }
 
-    .correct-answer{
+    .correct-answer {
         display: none;
+        color: rgb(39, 128, 15);
+    }
+
+    .hint{
+        display: none;
+        font-style: italic;
+        color: rgb(221, 150, 57);
     }
 </style>
 {% endblock %}
