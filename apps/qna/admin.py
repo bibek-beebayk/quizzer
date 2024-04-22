@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Collection, Question, Answer
+from .models import Category, Collection, Question, Answer, Tag
 
 
 @admin.register(Category)
@@ -19,6 +19,13 @@ class CollectionAdmin(admin.ModelAdmin):
 class AnswerInline(admin.TabularInline):
     model = Answer
     extra = 0
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    list_display_links = ('id', 'name')
+    search_fields = ('name',)
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):

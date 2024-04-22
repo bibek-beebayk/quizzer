@@ -23,15 +23,21 @@ class Question(models.Model):
     question_image = models.ImageField(upload_to='questions/images/', blank=True, null=True)
     question_audio = models.FileField(upload_to='questions/audios/', blank=True, null=True)
     categories = models.ManyToManyField(Category, related_name="questions")
+    tags = models.ManyToManyField(Tag, related_name="questions", blank=True)
 
     def __str__(self):
         return self.question_text
+    
+    @classmethod
+    def random_question(cls):
+        return cls.objects.order_by('?').first()
     
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="answers")
     answer_text = models.TextField()
     is_correct = models.BooleanField(default=False)
+    answer_image = models.ImageField(blank=True, null=True, upload_to="answers/images/")
 
     def __str__(self):
         return self.answer_text
