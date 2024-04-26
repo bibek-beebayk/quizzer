@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Collection, Question, Answer, Tag
+from .models import Category, Collection, Question, Answer, Quiz, Tag
 
 
 @admin.register(Category)
@@ -34,3 +34,11 @@ class QuestionAdmin(admin.ModelAdmin):
     search_fields = ('question_text',)
     list_filter = ('collections', 'categories')
     inlines = [AnswerInline]
+
+
+@admin.register(Quiz)
+class QuizAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    list_display_links = ('id', 'name')
+    search_fields = ('name',)
+    list_filter = ('questions',)

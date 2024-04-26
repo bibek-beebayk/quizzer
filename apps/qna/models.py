@@ -25,6 +25,7 @@ class Question(models.Model):
     categories = models.ManyToManyField(Category, related_name="questions")
     tags = models.ManyToManyField(Tag, related_name="questions", blank=True)
     hint = models.TextField(blank=True, null=True)
+    answer_explanation = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.question_text
@@ -46,7 +47,18 @@ class Answer(models.Model):
 
 class Collection(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    questions = models.ManyToManyField(Question, related_name="collections")
+    questions = models.ManyToManyField(Question, related_name="collections", blank=True)
 
     def __str__(self) -> str:
         return self.name
+    
+
+class Quiz(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    questions = models.ManyToManyField(Question, related_name="quizzes", blank=True)
+
+    def __str__(self) -> str:
+        return self.name
+    
+    class Meta:
+        verbose_name_plural = "Quizzes"

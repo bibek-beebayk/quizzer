@@ -6,7 +6,7 @@
     <div class="random-question">
         <h2>Random Question</h2>
         <h4>{{random_question}}</h4>
-        <button id="showHintButton" class="button" style="background-color: rgb(221, 150, 57);">Show Hint</button>
+        <button id="showHintButton" class="button" style="background-color: rgb(223, 191, 148); font-size: large; padding: 10px 20px;">Show Hint</button>
         <div id="hintDiv" class="hint">
             <p>{{random_question.hint}}</p>
         </div>
@@ -17,9 +17,18 @@
             <p>=> &nbsp; {{answer.answer_text}}</p>
             {% endfor %}
         </div> -->
-        <button id="showCorrectAnswer" class="button" style="background-color: rgb(39, 128, 15);">Show Correct Answer</button>
+        <button id="showCorrectAnswer" class="button" style="background-color: rgb(165, 199, 155); font-size: large; padding: 10px 20px;">Show Correct Answer</button>
         <div class="correct-answer" id="correctAnswer">
             <p>{{random_question_correct_answer.answer_text}}</p>
+        </div>
+    </div>
+
+    <div class=" categories">
+        <h2>Question Categories</h2>
+        <div class="category-list">
+            {% for category in categories %}
+            <a href="">{{category.name}}</a>
+            {% endfor %}
         </div>
     </div>
 </div>
@@ -52,6 +61,42 @@
 
 
 <style>
+
+    .categories{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin-top: 40px;
+        padding: 10px;
+        background-color: rgb(218, 218, 218);
+    }
+
+    .category-list{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center ;
+        gap: 20px;
+        width: 60%;
+
+        a{
+            text-decoration: none;
+            font-size: larger;
+            /* width: 10%; */
+            text-align: center;
+            padding: 30px 40px;
+            border: 1px solid rgb(173, 173, 173);
+            border-radius: 10px;
+            color: rgb(63, 63, 63);
+        }
+
+        a:hover{
+            box-shadow: 0px 0px 5px 0px rgba(122, 122, 122, 1);
+            background-color: rgb(63, 63, 63);
+            color: rgb(218, 218, 218);
+        }
+    }
+
     .options {
         display: none;
     }
@@ -73,6 +118,8 @@
 
     .main-container {
         display: flex;
+        flex-direction: column;
+        align-items: center;
         justify-content: center;
         color: rgb(36, 36, 36);
     }
@@ -85,23 +132,31 @@
         align-items: center;
         justify-content: center;
         gap: 5px;
-        border: 1px solid rgb(170, 170, 170);
+        /* border: 1px solid rgb(170, 170, 170); */
         margin-bottom: 5px;
         margin-top: 20px;
-        border-radius: 5px;
-        box-shadow: 0px 0px 5px 0px rgba(122, 122, 122, 1);
+        /* border-radius: 5px;
+        box-shadow: 0px 0px 5px 0px rgba(122, 122, 122, 1); */
         padding-bottom: 5px;
+
+        h4{
+            color: rgb(56, 56, 56);
+            font-size: large;
+            font-weight: normal;
+        }
     }
 
     .correct-answer {
         display: none;
         color: rgb(39, 128, 15);
+        font-size: x-large;
     }
 
     .hint{
         display: none;
         font-style: italic;
         color: rgb(221, 150, 57);
+        font-size: larger;
     }
 
     @media screen and (max-width: 768px) {
