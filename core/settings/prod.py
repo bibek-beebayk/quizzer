@@ -7,7 +7,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ["quizzer-production-35fb.up.railway.app", "quiz.bibek0001.com.np"]
 
-CSRF_TRUSTED_ORIGINS = ["https://quizzer-production-35fb.up.railway.app", "https:quiz.bibek0001.com.np"]
+CSRF_TRUSTED_ORIGINS = ["https://quizzer-production-35fb.up.railway.app", "https://quiz.bibek0001.com.np"]
 
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
