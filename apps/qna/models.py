@@ -26,6 +26,7 @@ class Question(models.Model):
     tags = models.ManyToManyField(Tag, related_name="questions", blank=True)
     hint = models.TextField(blank=True, null=True)
     answer_explanation = models.TextField(blank=True, null=True)
+    weightage = models.FloatField(default=1.0)
 
     def __str__(self):
         return self.question_text
