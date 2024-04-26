@@ -6,18 +6,23 @@
     <div class="random-question">
         <h2>Random Question</h2>
         <h4>{{random_question}}</h4>
-        <button id="showHintButton" class="button" style="background-color: rgb(223, 191, 148); font-size: large; padding: 10px 20px;">Show Hint</button>
+        {% if random_question.hint %}
+        <button id="showHintButton" class="button"
+            style="background-color: rgb(223, 191, 148); font-size: large; padding: 10px 20px;">Show Hint</button>
+        {% endif %}
         <div id="hintDiv" class="hint">
             <p>{{random_question.hint}}</p>
         </div>
 
-        <!-- <button id="showButton" class="button">Show Choices</button> -->
-        <!-- <div class="options" id="options">
+        <!-- <button id="showButton" class="button">Show Choices</button>
+        <div class="options" id="options">
             {% for answer in random_question.answers.all %}
             <p>=> &nbsp; {{answer.answer_text}}</p>
             {% endfor %}
         </div> -->
-        <button id="showCorrectAnswer" class="button" style="background-color: rgb(165, 199, 155); font-size: large; padding: 10px 20px;">Show Correct Answer</button>
+        <button id="showCorrectAnswer" class="button"
+            style="background-color: rgb(165, 199, 155); font-size: large; padding: 10px 20px;">Show Correct
+            Answer</button>
         <div class="correct-answer" id="correctAnswer">
             <p>{{random_question_correct_answer.answer_text}}</p>
         </div>
@@ -27,7 +32,17 @@
         <h2>Question Categories</h2>
         <div class="category-list">
             {% for category in categories %}
-            <a href="">{{category.name}}</a>
+            <a href="">{{category.name}}
+                <br>
+                <span style="font-size: small;">
+                    {{category.questions.count}}
+                    {% if category.questions.count == 1 %}
+                    Question
+                    {% else %}
+                    Questions
+                    {% endif %}
+                </span>
+            </a>
             {% endfor %}
         </div>
     </div>
@@ -52,7 +67,7 @@
         showCorrectAnswerButton.style.display = 'none';
     });
 
-    showHintButton.addEventListener('click', function(){
+    showHintButton.addEventListener('click', function () {
         hintDiv.style.display = 'block';
         showHintButton.style.display = 'none';
     })
@@ -61,8 +76,7 @@
 
 
 <style>
-
-    .categories{
+    .categories {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -72,14 +86,14 @@
         background-color: rgb(218, 218, 218);
     }
 
-    .category-list{
+    .category-list {
         display: flex;
         flex-wrap: wrap;
-        justify-content: center ;
+        justify-content: center;
         gap: 20px;
         width: 60%;
 
-        a{
+        a {
             text-decoration: none;
             font-size: larger;
             /* width: 10%; */
@@ -90,7 +104,7 @@
             color: rgb(63, 63, 63);
         }
 
-        a:hover{
+        a:hover {
             box-shadow: 0px 0px 5px 0px rgba(122, 122, 122, 1);
             background-color: rgb(63, 63, 63);
             color: rgb(218, 218, 218);
@@ -139,7 +153,7 @@
         box-shadow: 0px 0px 5px 0px rgba(122, 122, 122, 1); */
         padding-bottom: 5px;
 
-        h4{
+        h4 {
             color: rgb(56, 56, 56);
             font-size: large;
             font-weight: normal;
@@ -152,7 +166,7 @@
         font-size: x-large;
     }
 
-    .hint{
+    .hint {
         display: none;
         font-style: italic;
         color: rgb(221, 150, 57);
