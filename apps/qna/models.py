@@ -27,6 +27,7 @@ class Question(models.Model):
     hint = models.TextField(blank=True, null=True)
     answer_explanation = models.TextField(blank=True, null=True)
     weightage = models.FloatField(default=1.0)
+    difficulty = models.CharField(max_length=50, choices=(("Easy", "Easy"), ("Medium", "Medium"), ("Hard", "Hard")), default="Easy")
 
     def __str__(self):
         return self.question_text

@@ -5,6 +5,7 @@
 <div class="main-container">
     <div class="random-question">
         <h2>Random Question</h2>
+        <a href="/" class="shuffle"><i class="fa fa-random" style="font-size: large;"></i></a>
         <h4>{{random_question}}</h4>
         {% if random_question.hint %}
         <button id="showHintButton" class="button"
@@ -21,7 +22,7 @@
             {% endfor %}
         </div> -->
         <button id="showCorrectAnswer" class="button"
-            style="background-color: rgb(165, 199, 155); font-size: large; padding: 10px 20px;">Show Correct
+            style="background-color: rgb(165, 199, 155); font-size: large; padding: 10px 20px; margin-top: 5px;">Show Correct
             Answer</button>
         <div class="correct-answer" id="correctAnswer">
             <p>{{random_question_correct_answer.answer_text}}</p>
@@ -32,7 +33,7 @@
         <h2>Question Categories</h2>
         <div class="category-list">
             {% for category in categories %}
-            <a href="">{{category.name}}
+            <a href="/quiz/{{category.id}}">{{category.name}}
                 <br>
                 <span style="font-size: small;">
                     {{category.questions.count}}
@@ -76,6 +77,19 @@
 
 
 <style>
+    .shuffle{
+        text-decoration: none;
+        border: 1px solid rgb(252, 169, 169);
+        padding: 5px 20px;
+        border-radius: 5px;
+        color: rgb(89, 56, 56);
+        font-size: smaller;
+    }
+
+    .shuffle:hover{
+        background-color: rgb(252, 169, 169);
+    }
+
     .categories {
         display: flex;
         flex-direction: column;
@@ -98,7 +112,7 @@
             font-size: larger;
             /* width: 10%; */
             text-align: center;
-            padding: 30px 40px;
+            padding: 20px 30px;
             border: 1px solid rgb(173, 173, 173);
             border-radius: 10px;
             color: rgb(63, 63, 63);
@@ -108,6 +122,7 @@
             box-shadow: 0px 0px 5px 0px rgba(122, 122, 122, 1);
             background-color: rgb(63, 63, 63);
             color: rgb(218, 218, 218);
+            /* border: 1px solid rgb(173, 173, 173); */
         }
     }
 

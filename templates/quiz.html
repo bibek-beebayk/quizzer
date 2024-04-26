@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-container">
+    <h2>{{category}} Quiz</h2>
+
+    <div class="quiz-overview">
+        
+    </div>
+
+    <div class="quiz-container">
+        <form action="" method="post">
+            {% for question in questions %}
+            <h3>{{forloop.counter}}. {{question}}</h3>
+            <div class="options-container">
+                {% for answer in question.answers.all %}
+                <input type="radio" name="{{question.id}}" value="{{answer.id}}"> {{answer}}
+                {% endfor %}
+            </div>
+            <br>
+            <br>
+            {% endfor %}
+        </form>
+    </div>
+</div>
+
+<style>
+    .main-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        var currentQuestionIndex = 0;
+        // var questions = { questions | json};
+
+        // Function to show next question
+        function showNextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                $('#question-' + currentQuestionIndex).show();
+            } else {
+                $('#quiz-container').html('<p>All questions answered!</p>');
+            }
+        }
+
+        // Hide all questions except the first one
+        $('.question').hide();
+
+        // Show next question on button click
+        $('#next-question-btn').click(function () {
+            showNextQuestion();
+        });
+    });
+</script>
+{% endblock %}
