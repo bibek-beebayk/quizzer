@@ -3,6 +3,7 @@ from django.shortcuts import render
 from apps.qna.models import Category, Question
 from django.db.models import Count
 from django.db.models import Sum
+import random
 
 
 def index(request):
@@ -19,7 +20,11 @@ def index(request):
 def quiz_view(request, category_id):
     context = {}
     category = Category.objects.get(id=category_id)
-    questions = category.questions.all()[:10]
+    questions = category.questions.order_by("?")[:10]
+    for question in questions:
+        answers = list(question.answers.all())
+        random.shuffle(answers)
+        question.shuffled_answers = answers
     context["category"] = category
     context["questions"] = questions
     context["questions_count"] = len(questions)

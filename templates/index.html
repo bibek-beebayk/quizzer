@@ -30,11 +30,11 @@
     </div>
 
     <div class=" categories">
-        <h2>Question Categories</h2>
+        <h2 style="font-weight: 100;">Take a quick quiz</h2>
         <div class="category-list">
             {% for category in categories %}
             <a href="/quiz/{{category.id}}">{{category.name}}
-                <br>
+                <!-- <br>
                 <span style="font-size: small;">
                     {{category.questions.count}}
                     {% if category.questions.count == 1 %}
@@ -42,7 +42,7 @@
                     {% else %}
                     Questions
                     {% endif %}
-                </span>
+                </span> -->
             </a>
             {% endfor %}
         </div>
@@ -109,10 +109,10 @@
 
         a {
             text-decoration: none;
-            font-size: larger;
+            font-size: 14px;
             /* width: 10%; */
             text-align: center;
-            padding: 20px 30px;
+            padding: 10px 15px;
             border: 1px solid rgb(173, 173, 173);
             border-radius: 10px;
             color: rgb(63, 63, 63);
