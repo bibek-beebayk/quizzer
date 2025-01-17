@@ -4,3 +4,4 @@ django-cors-headers
 django-ckeditor
 django-filter
 Pillow
+django-jazzmin
