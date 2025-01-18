@@ -167,6 +167,111 @@
         box-sizing: border-box;
     }
 
+    .timer {
+        position: fixed;
+        top: 100px;
+        right: 10px;
+        background-color: #fff;
+        padding: 8px 15px;
+        border-radius: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        font-size: 16px;
+        z-index: 1001;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .timer-icon {
+        color: #666;
+    }
+
+    /* Styles for completion popup */
+    .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 2000;
+        overflow-y: auto;
+    }
+
+    .popup-content {
+        background-color: white;
+        width: 90%;
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .popup-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .popup-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .popup-stat-item {
+        background-color: #f5f5f5;
+        padding: 10px;
+        border-radius: 6px;
+    }
+
+    .popup-stat-label {
+        font-size: 12px;
+        color: #666;
+    }
+
+    .popup-stat-value {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+        margin-top: 5px;
+    }
+
+    .answers-review {
+        margin-top: 20px;
+    }
+
+    .review-item {
+        margin-bottom: 15px;
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 6px;
+    }
+
+    .review-question {
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+
+    .review-answer {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-top: 5px;
+        font-size: 14px;
+    }
+
+    .review-answer.correct {
+        color: #00a000;
+    }
+
+    .review-answer.incorrect {
+        color: #ff0000;
+    }
+
     /* Responsive adjustments */
     @media (max-width: 480px) {
         .quiz-overview span {
@@ -187,11 +292,49 @@
     }
 </style>
 
+<!-- Timer Component -->
+<div class="timer" id="timer">
+    <span class="timer-icon">⏱️</span>
+    <span id="timer-display">00:00</span>
+</div>
+
+<!-- Completion Popup -->
+<div class="popup-overlay" id="completion-popup">
+    <div class="popup-content">
+        <div class="popup-header">
+            <h2>Quiz Complete!</h2>
+        </div>
+        <div class="popup-stats">
+            <div class="popup-stat-item">
+                <div class="popup-stat-label">Total Questions</div>
+                <div class="popup-stat-value" id="popup-total">0</div>
+            </div>
+            <div class="popup-stat-item">
+                <div class="popup-stat-label">Attempted</div>
+                <div class="popup-stat-value" id="popup-attempted">0</div>
+            </div>
+            <div class="popup-stat-item">
+                <div class="popup-stat-label">Correct</div>
+                <div class="popup-stat-value" id="popup-correct">0</div>
+            </div>
+            <div class="popup-stat-item">
+                <div class="popup-stat-label">Score</div>
+                <div class="popup-stat-value" id="popup-percentage">0%</div>
+            </div>
+        </div>
+        <div class="answers-review" id="answers-review">
+            <!-- Review items will be inserted here dynamically -->
+        </div>
+        <a href="/">Go to Homepage</a>
+    </div>
+</div>
+
+
 <div class="stats-panel">
     <div class="stats-item">
         <span class="stats-label">Progress:</span>
         <span class="stats-value">
-            <span id="attempted">0</span>/<span id="total">{{questions|length}}</span>
+            <span id="attempted">0</span>/<span id="total">{{questions_count}}</span>
         </span>
     </div>
     <div class="stats-item">
@@ -244,15 +387,24 @@
 </div>
 
 <script>
+    // Enhanced stats object with popup functionality
+    const questionCount = document.getElementById('total').textContent; 
     let stats = {
         attempted: 0,
         correct: 0,
-        total: 0,
+        total: questionCount,
+        selectedAnswers: new Map(),
 
-        update: function(isCorrect) {
+        update: function(isCorrect, questionId, selectedAnswer, correctAnswer) {
             this.attempted++;
             if (isCorrect) this.correct++;
+            this.selectedAnswers.set(questionId, {
+                selected: selectedAnswer,
+                correct: correctAnswer,
+                isCorrect: isCorrect
+            });
             this.updateDisplay();
+            this.checkCompletion();
         },
 
         updateDisplay: function() {
@@ -261,18 +413,114 @@
             const percentage = this.attempted ? Math.round((this.correct / this.attempted) * 100) : 0;
             document.getElementById('percentage').textContent = percentage;
             document.getElementById('progress-fill').style.width = `${(this.attempted / this.total) * 100}%`;
+        },
+
+        checkCompletion: function() {
+            console.log(this.attempted, this.total);
+            if (this.attempted ===  parseInt(this.total)) {
+                setTimeout(() => this.showCompletionPopup(), 2000);
+            }
+        },
+
+        showCompletionPopup: function() {
+            const popup = document.getElementById('completion-popup');
+            
+            // Update popup stats
+            document.getElementById('popup-total').textContent = this.total;
+            document.getElementById('popup-attempted').textContent = this.attempted;
+            document.getElementById('popup-correct').textContent = this.correct;
+            document.getElementById('popup-percentage').textContent = 
+                `${Math.round((this.correct / this.total) * 100)}%`;
+
+            // Generate review items
+            const reviewContainer = document.getElementById('answers-review');
+            reviewContainer.innerHTML = ''; // Clear existing content
+
+            document.querySelectorAll('.question-block').forEach((block, index) => {
+                const questionId = block.dataset.questionId;
+                const questionText = block.querySelector('h3').textContent;
+                const answerData = this.selectedAnswers.get(questionId);
+                
+                const reviewItem = document.createElement('div');
+                reviewItem.className = 'review-item';
+                reviewItem.innerHTML = `
+                    <div class="review-question">${questionText}</div>
+                    <div class="review-answer ${answerData.isCorrect ? 'correct' : 'incorrect'}">
+                        <span>Your answer: ${answerData.selected}</span>
+                        ${!answerData.isCorrect ? 
+                            `<div class="review-answer correct">
+                                <span>Correct answer: ${answerData.correct}</span>
+                            </div>` : ''
+                        }
+                    </div>
+                `;
+                reviewContainer.appendChild(reviewItem);
+            });
+
+            popup.style.display = 'block';
         }
     };
 
+    // Timer functionality
+    const timer = {
+        totalSeconds: Math.ceil(questionCount * 0.7 * 60), //TODO: 70% of questions count in minutes
+        remainingSeconds: 0,
+        timerId: null,
+
+        start: function() {
+            this.remainingSeconds = this.totalSeconds;
+            this.update();
+            this.timerId = setInterval(() => this.tick(), 1000);
+        },
+
+        tick: function() {
+            this.remainingSeconds--;
+            this.update();
+            
+            if (this.remainingSeconds <= 0) {
+                clearInterval(this.timerId);
+                this.timeUp();
+            }
+        },
+
+        update: function() {
+            const minutes = Math.floor(this.remainingSeconds / 60);
+            const seconds = this.remainingSeconds % 60;
+            document.getElementById('timer-display').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        },
+
+        timeUp: function() {
+            // Disable all remaining unchecked radio buttons
+            document.querySelectorAll('.radio-input:not(:checked)').forEach(radio => {
+                radio.disabled = true;
+            });
+            
+            // Show completion popup
+            stats.showCompletionPopup();
+        }
+    };
+
+    // Enhanced checkAnswer function
     function checkAnswer(radioButton) {
         const optionContainer = radioButton.closest('.option-container');
         const questionBlock = radioButton.closest('.question-block');
         const allOptions = questionBlock.querySelectorAll('.option-container');
         const allRadios = questionBlock.querySelectorAll('.radio-input');
         const isCorrect = optionContainer.dataset.isCorrect === 'true';
+        
+        // Get selected and correct answer text
+        const selectedAnswer = optionContainer.querySelector('span').textContent;
+        let correctAnswer = '';
+        allOptions.forEach(option => {
+            if (option.dataset.isCorrect === 'true') {
+                correctAnswer = option.querySelector('span').textContent;
+            }
+        });
 
-        stats.update(isCorrect);
+        stats.update(isCorrect, questionBlock.dataset.questionId, selectedAnswer, correctAnswer);
 
+        // Rest of the existing checkAnswer function remains the same
         allRadios.forEach(radio => radio.disabled = true);
         allOptions.forEach(option => {
             option.classList.add('disabled');
@@ -299,7 +547,7 @@
         }
         feedbackSpan.classList.add('visible');
 
-        // Scroll to the next unanswered question
+        // Scroll to next unanswered question
         const nextQuestionBlock = [...document.querySelectorAll('.question-block')]
             .find(block => !block.querySelector('input:disabled'));
         
@@ -310,15 +558,19 @@
         }
     }
 
+    // Initialize everything when the page loads
     document.addEventListener('DOMContentLoaded', function () {
+        stats.total = questionCount;
         stats.updateDisplay();
 
+        // Handle any pre-checked answers
         const checkedInputs = document.querySelectorAll('input[type="radio"]:checked');
         checkedInputs.forEach(input => {
-            const isCorrect = input.closest('.option-container').dataset.isCorrect === 'true';
-            stats.update(isCorrect);
             checkAnswer(input);
         });
+
+        // Start timer after 2 seconds
+        setTimeout(() => timer.start(), 2000);
     });
 </script>
 {% endblock %}
