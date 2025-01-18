@@ -410,7 +410,7 @@
         updateDisplay: function () {
             document.getElementById('attempted').textContent = this.attempted;
             document.getElementById('correct').textContent = this.correct;
-            const percentage = this.attempted ? Math.round((this.correct / this.attempted) * 100) : 0;
+            const percentage = this.attempted ? Math.round((this.correct / parseInt(questionCount)) * 100) : 0;
             document.getElementById('percentage').textContent = percentage;
             document.getElementById('progress-fill').style.width = `${(this.attempted / this.total) * 100}%`;
         },
@@ -443,17 +443,34 @@
 
                 const reviewItem = document.createElement('div');
                 reviewItem.className = 'review-item';
-                reviewItem.innerHTML = `
+
+                if (answerData) {
+                    // Question was answered
+                    reviewItem.innerHTML = `
                     <div class="review-question">${questionText}</div>
                     <div class="review-answer ${answerData.isCorrect ? 'correct' : 'incorrect'}">
                         <span>Your answer: ${answerData.selected}</span>
                         ${!answerData.isCorrect ?
-                        `<div class="review-answer correct">
-                                <span>Correct answer: ${answerData.correct}</span>
-                            </div>` : ''
-                    }
+                            `<div class="review-answer correct">
+                            <span>Correct answer: ${answerData.correct}</span>
+                        </div>` : ''
+                        }
                     </div>
                 `;
+                } else {
+                    // Question was not answered
+                    const correctAnswer = block.querySelector('.option-container[data-is-correct="true"] span').textContent;
+                    reviewItem.innerHTML = `
+                    <div class="review-question">${questionText}</div>
+                    <div class="review-answer incorrect">
+                        <span>Not attempted</span>
+                        <div class="review-answer correct">
+                            <span>Correct answer: ${correctAnswer}</span>
+                        </div>
+                    </div>
+                `;
+                }
+
                 reviewContainer.appendChild(reviewItem);
             });
 
@@ -464,6 +481,8 @@
     // Timer functionality
     const timer = {
         totalSeconds: Math.ceil(questionCount * 0.7 * 60),
+        // totalSeconds: Math.ceil(5),
+
         remainingSeconds: 0,
         timerId: null,
 
@@ -497,6 +516,19 @@
             // Disable all remaining unchecked radio buttons
             document.querySelectorAll('.radio-input:not(:checked)').forEach(radio => {
                 radio.disabled = true;
+            });
+
+            // Mark all unanswered questions as incorrect
+            document.querySelectorAll('.question-block').forEach(block => {
+                const hasAnswer = block.querySelector('input:checked');
+                if (!hasAnswer) {
+                    // Show correct answer for unanswered questions
+                    const correctOption = block.querySelector('.option-container[data-is-correct="true"]');
+                    correctOption.classList.add('correct');
+                    const feedbackSpan = correctOption.querySelector('.answer-feedback');
+                    feedbackSpan.textContent = '✓';
+                    feedbackSpan.classList.add('visible');
+                }
             });
 
             // Show completion popup
