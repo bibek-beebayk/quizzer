@@ -2,79 +2,6 @@
 {% load static %}
 
 {% block content %}
-<div class="main-container">
-    <div class="random-question">
-        <h2>Random Question</h2>
-        <a href="/" class="shuffle"><i class="fa fa-random" style="font-size: large;"></i></a>
-        <h4>{{random_question}}</h4>
-        {% if random_question.hint %}
-        <button id="showHintButton" class="button"
-            style="background-color: rgb(223, 191, 148); font-size: large; padding: 10px 20px;">Show Hint</button>
-        {% endif %}
-        <div id="hintDiv" class="hint">
-            <p>{{random_question.hint}}</p>
-        </div>
-
-        <!-- <button id="showButton" class="button">Show Choices</button>
-        <div class="options" id="options">
-            {% for answer in random_question.answers.all %}
-            <p>=> &nbsp; {{answer.answer_text}}</p>
-            {% endfor %}
-        </div> -->
-        <button id="showCorrectAnswer" class="button"
-            style="background-color: rgb(165, 199, 155); font-size: large; padding: 10px 20px; margin-top: 5px;">Show Correct
-            Answer</button>
-        <div class="correct-answer" id="correctAnswer">
-            <p>{{random_question_correct_answer.answer_text}}</p>
-        </div>
-    </div>
-
-    <div class=" categories">
-        <h2 style="font-weight: 100;">Take a quick quiz</h2>
-        <div class="category-list">
-            {% for category in categories %}
-            <a href="/quiz/{{category.id}}">{{category.name}}
-                <!-- <br>
-                <span style="font-size: small;">
-                    {{category.questions.count}}
-                    {% if category.questions.count == 1 %}
-                    Question
-                    {% else %}
-                    Questions
-                    {% endif %}
-                </span> -->
-            </a>
-            {% endfor %}
-        </div>
-    </div>
-</div>
-
-<script>
-    // const showButton = document.getElementById("showButton");
-    const showCorrectAnswerButton = document.getElementById("showCorrectAnswer");
-    // const optionsDiv = document.getElementById('options');
-    const correctAnswerDiv = document.getElementById('correctAnswer');
-    const showHintButton = document.getElementById('showHintButton');
-    const hintDiv = document.getElementById('hintDiv')
-
-    // showButton.addEventListener('click', function () {
-    //     optionsDiv.style.display = 'block';
-
-    //     showButton.style.display = 'none';
-    // });
-
-    showCorrectAnswerButton.addEventListener('click', function () {
-        correctAnswerDiv.style.display = 'block';
-        showCorrectAnswerButton.style.display = 'none';
-    });
-
-    showHintButton.addEventListener('click', function () {
-        hintDiv.style.display = 'block';
-        showHintButton.style.display = 'none';
-    })
-
-</script>
-
 
 <style>
     .shuffle{
@@ -106,8 +33,9 @@
         justify-content: center;
         gap: 20px;
         width: 60%;
+    }
 
-        a {
+    .tab {
             text-decoration: none;
             font-size: 14px;
             /* width: 10%; */
@@ -118,12 +46,11 @@
             color: rgb(63, 63, 63);
         }
 
-        a:hover {
-            box-shadow: 0px 0px 5px 0px rgba(122, 122, 122, 1);
-            background-color: rgb(63, 63, 63);
-            color: rgb(218, 218, 218);
-            /* border: 1px solid rgb(173, 173, 173); */
-        }
+    .tab:hover {
+        box-shadow: 0px 0px 5px 0px rgba(122, 122, 122, 1);
+        background-color: rgb(63, 63, 63);
+        color: rgb(218, 218, 218);
+        /* border: 1px solid rgb(173, 173, 173); */
     }
 
     .options {
@@ -203,4 +130,79 @@
         }
     }
 </style>
+
+<div class="main-container">
+    <div class="random-question">
+        <h2>Random Question</h2>
+        <a href="/" class="shuffle"><i class="fa fa-random" style="font-size: large;"></i></a>
+        <h4>{{random_question}}</h4>
+        {% if random_question.hint %}
+        <button id="showHintButton" class="button"
+            style="background-color: rgb(223, 191, 148); font-size: large; padding: 10px 20px;">Show Hint</button>
+        {% endif %}
+        <div id="hintDiv" class="hint">
+            <p>{{random_question.hint}}</p>
+        </div>
+
+        <!-- <button id="showButton" class="button">Show Choices</button>
+        <div class="options" id="options">
+            {% for answer in random_question.answers.all %}
+            <p>=> &nbsp; {{answer.answer_text}}</p>
+            {% endfor %}
+        </div> -->
+        <button id="showCorrectAnswer" class="button"
+            style="background-color: rgb(165, 199, 155); font-size: large; padding: 10px 20px; margin-top: 5px;">Show Correct
+            Answer</button>
+        <div class="correct-answer" id="correctAnswer">
+            <p>{{random_question_correct_answer.answer_text}}</p>
+        </div>
+    </div>
+
+    <div class=" categories">
+        <h2 style="font-weight: 100;">Take a quick quiz</h2>
+        <div class="category-list">
+            <a href="/quiz/?category=random" class="tab">Randomized Quiz</a>
+            {% for category in categories %}
+            <a href="/quiz/?category={{category.id}}" class="tab">{{category.name}}
+                <br>
+                <span style="font-size: small;">
+                    {{category.questions.count}}
+                    {% if category.questions.count == 1 %}
+                    Question
+                    {% else %}
+                    Questions
+                    {% endif %}
+                </span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    // const showButton = document.getElementById("showButton");
+    const showCorrectAnswerButton = document.getElementById("showCorrectAnswer");
+    // const optionsDiv = document.getElementById('options');
+    const correctAnswerDiv = document.getElementById('correctAnswer');
+    const showHintButton = document.getElementById('showHintButton');
+    const hintDiv = document.getElementById('hintDiv')
+
+    // showButton.addEventListener('click', function () {
+    //     optionsDiv.style.display = 'block';
+
+    //     showButton.style.display = 'none';
+    // });
+
+    showCorrectAnswerButton.addEventListener('click', function () {
+        correctAnswerDiv.style.display = 'block';
+        showCorrectAnswerButton.style.display = 'none';
+    });
+
+    showHintButton.addEventListener('click', function () {
+        hintDiv.style.display = 'block';
+        showHintButton.style.display = 'none';
+    })
+
+</script>
+
 {% endblock %}

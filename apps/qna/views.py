@@ -17,15 +17,21 @@ def index(request):
     return render(request, 'index.html', context)
 
 
-def quiz_view(request, category_id):
+def quiz_view(request):
+    category_id = request.GET.get('category')
+    # import ipdb; ipdb.set_trace()
     context = {}
-    category = Category.objects.get(id=category_id)
-    questions = category.questions.order_by("?")[:10]
+    if category_id == "random":
+        questions = Question.objects.order_by("?")[:10]
+        # context["category"] = None
+    else:
+        category = Category.objects.get(id=category_id)
+        questions = category.questions.order_by("?")[:10]
+        context["category"] = category
     for question in questions:
         answers = list(question.answers.all())
         random.shuffle(answers)
         question.shuffled_answers = answers
-    context["category"] = category
     context["questions"] = questions
     context["questions_count"] = len(questions)
     context["total_weightage"] = questions.aggregate(total_weightage=Sum('weightage'))["total_weightage"]
