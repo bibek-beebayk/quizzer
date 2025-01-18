@@ -11,6 +11,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'pwa',
+
     'apps.qna'
 ]
 
@@ -79,5 +81,28 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# PWA settings
+
+PWA_APP_NAME = 'qUIZZER'
+PWA_APP_DESCRIPTION = "Only place to quiz."
+PWA_APP_THEME_COLOR = '#000000'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_START_URL = '/'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/images/cropped.jpg',
+        'sizes': '192x192',
+        'type': 'image/jpg',
+    },
+    {
+        'src': '/static/images/cropped.jpg',
+        'sizes': '512x512',
+        'type': 'image/jpg',
+    },
+]
+PWA_APP_DIR = 'ltr'
+PWA_APP_LANG = 'en-US'

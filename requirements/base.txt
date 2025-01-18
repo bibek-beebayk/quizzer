@@ -7,3 +7,4 @@ Pillow
 django-jazzmin
 pandas
 openpyxl
+django-pwa
