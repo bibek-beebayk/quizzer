@@ -14,6 +14,7 @@ def index(request):
         context["random_question"] = random_question
         context["random_question_correct_answer"] = random_question.answers.get(is_correct=True)
     context["categories"] = categories 
+    context["questions_count"] = Question.objects.count()
     return render(request, 'index.html', context)
 
 
