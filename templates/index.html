@@ -136,20 +136,23 @@
         <h2>Random Question</h2>
         <a href="/" class="shuffle"><i class="fa fa-random" style="font-size: large;"></i></a>
         <h4>{{random_question}}</h4>
-        {% if random_question.hint %}
-        <button id="showButton" class="button" style="background-color: rgb(148, 223, 178); font-size: large; padding: 10px 20px; margin-bottom: 5px;">Show
+
+        <button id="showButton" class="button"
+            style="background-color: rgb(148, 223, 178); font-size: large; padding: 10px 20px; margin-bottom: 5px;">Show
             Choices</button>
         <div class="options" id="options">
             {% for answer in random_question.answers.all %}
             <p>=> &nbsp; {{answer.answer_text}}</p>
             {% endfor %}
         </div>
-        {% endif %}
+
+        {% if random_question.hint %}
         <button id="showHintButton" class="button"
             style="background-color: rgb(223, 191, 148); font-size: large; padding: 10px 20px;">Show Hint</button>
         <div id="hintDiv" class="hint">
             <p>{{random_question.hint}}</p>
         </div>
+        {% endif %}
 
         <button id="showCorrectAnswer" class="button"
             style="background-color: rgb(165, 199, 155); font-size: large; padding: 10px 20px; margin-top: 5px;">Show
