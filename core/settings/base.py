@@ -13,7 +13,8 @@ INSTALLED_APPS = [
 
     'pwa',
 
-    'apps.qna'
+    'apps.qna',
+    'apps.users',
 ]
 
 MIDDLEWARE = [

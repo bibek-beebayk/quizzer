@@ -1,5 +1,14 @@
 from django.contrib import admin
-from .models import Category, Collection, Question, Answer, Quiz, Tag
+from .models import (
+    Category,
+    Collection,
+    Question,
+    Answer,
+    Quiz,
+    Tag,
+    UserInterest,
+    UserQuiz,
+)
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
@@ -122,3 +131,18 @@ class QuizAdmin(admin.ModelAdmin):
     list_display_links = ("id", "name")
     search_fields = ("name",)
     list_filter = ("questions",)
+
+
+@admin.register(UserInterest)
+class UserInterestAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "category")
+    list_display_links = ("id", "user", "category")
+    search_fields = ("user__username", "category__name")
+    list_filter = ("category",)
+
+
+@admin.register(UserQuiz)
+class UserQuizAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "quiz")
+    list_display_links = ("id", "user")
+    search_fields = ("user__email",)

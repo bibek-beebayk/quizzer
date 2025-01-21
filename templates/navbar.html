@@ -6,9 +6,9 @@
         id="btn">qUIZZER</span>
 
     <div class="menu">
-
+        <a href="/">Home</a>
         {% if user.is_authenticated %}
-        <a href="#">Profile</a>
+        <a href="/profile">Profile</a>
         <a href="{% url 'logout' %}">Logout</a>
         {% else %}
         <a href="{% url 'login' %}">Login</a>
@@ -54,9 +54,8 @@
     }
 
     .menu.active {
-        opacity: 1;
+        opacity: 0.98;
         visibility: visible;
-        /* display: flex; */
     }
 
     @media screen and (max-width: 768px) {
