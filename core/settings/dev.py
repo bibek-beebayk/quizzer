@@ -1,4 +1,5 @@
 import os
+from .base import INSTALLED_APPS, MIDDLEWARE
 
 SECRET_KEY = 'django-insecure-i()o2=lv+0fj6f*=ha=rtuxc!g74$kj&t-q9dhh7i*sm6!+0!q'
 
@@ -7,6 +8,10 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = ["https://erp-tunnel.kalodhunga.com"]
+
+INSTALLED_APPS += ["django_browser_reload"]
+
+MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
 
 DATABASES = {
     "default": {

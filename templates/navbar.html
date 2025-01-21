@@ -1,167 +1,91 @@
 {% load static %}
 <div class="nav-container">
-    <a href="/" style="text-decoration: none;"><span
-            style="color: black; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-weight: 600; letter-spacing: 1px; font-size: x-large; ">qUIZZER</span></a>
+    <a href=""></a>
+    <span
+        style="color: black; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-weight: 600; letter-spacing: 1px; font-size: x-large; cursor: pointer;"
+        id="btn">qUIZZER</span>
 
-    <!-- <ul class="menu"> -->
-        <!-- <li><a href="#">collections</a></li> -->
-        <!-- <li><a href="#">categories</a></li> -->
-        <!-- <li><a href="#">quizzes</a></li> -->
-        <!-- <li><a href="#">profile</a></li> -->
-    <!-- </ul> -->
+    <div class="menu">
 
-    <!-- <ul class="mobile-menu" id="mobile-menu">
-        <div style="display: flex; justify-content: right; padding-right: 20px;">
-            <button id="close-menu" class="close-menu"><i class="fas fa-times"
-                    style="font-size: 32px; color: aliceblue;"></i></button> -->
-        <!-- </div> -->
-        <!-- <li><a href="/">Home</a></li> -->
-        <!-- <li><a href="/products/">collections</a></li> -->
-        <!-- <li><a href="/about/">categories</a></li> -->
-        <!-- <li><a href="/contact/">quizzes</a></li> -->
-        <!-- <li><a href="#">profile</a></li> -->
-    <!-- </ul> -->
-
-    <!-- <button class="open-menu" id="open-menu"><i class="fas fa-bars" style="font-size: 32px; color: white;"></i></button> -->
-    <!-- <button class="open-menu" id="close-menu">Close</button> -->
+        {% if user.is_authenticated %}
+        <a href="#">Profile</a>
+        <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        {% endif %}
+    </div>
 </div>
-
 <style>
-    .mobile-menu {
-        display: none;
-        position: fixed;
-        top: 0;
-        right: 0;
-        width: 40%;
-        height: auto;
-        background-color: #2e3192;
-        /* Semi-transparent background */
-        z-index: 9999;
-        margin-top: 0;
-
-        list-style: none;
-
-        li {
-            margin: 10px 10px;
-            font-size: large;
-
-            a {
-                color: rgb(226, 225, 225);
-                text-decoration: none;
-            }
-        }
-
-
-    }
-
-    .open-menu {
-        display: none;
-        outline: none;
-        width: 30px;
-        height: 30px;
-        appearance: none;
-        background: none;
-        border: none;
-    }
-
-    .close-menu {
-        /* display: none; */
-        /* background-color: #2e3192; */
-        outline: none;
-        width: 30px;
-        height: 30px;
-        appearance: none;
-        background: none;
-        border: none;
-    }
-
-    .menu {
-        display: flex;
-        list-style: none;
-        gap: 30px;
-        cursor: pointer;
-        /* color: white; */
-
-        li {
-            a {
-                color: black;
-                text-decoration: none;
-                font-weight: 500;
-                font-size: large;
-            }
-
-            a:hover {
-                color: rgb(31, 141, 3);
-            }
-        }
-
-
-    }
-
     .nav-container {
         height: auto;
         display: flex;
         color: white;
         align-items: center;
-        justify-content: space-around;
+        justify-content: center;
         padding: 10px 20px;
         background-color: lightgray;
     }
 
-    .search {
-        height: 35px;
+    .menu {
+        position: absolute;
+        top: 55px;
+        background-color: #d3d3d3;
+        z-index: 49;
+        border-radius: 5px;
         display: flex;
+        flex-direction: column;
+        gap: 20px;
         align-items: center;
-        justify-items: center;
-    }
-
-    .search-box {
-        height: 100%;
-        width: 400px;
-        border: 0;
-        border-radius: 5px 0 0 5px;
-        outline: none;
-        padding-left: 4px;
-    }
-
-    .search-button {
-        height: 37px;
-        border-radius: 0 5px 5px 0;
-        outline: none;
-        width: 100px;
-        background-color: #00a69a;
-        text-align: center;
         justify-content: center;
-        line-height: 200%;
-        text-decoration: none;
-        color: white;
+        width: 30%;
+        padding: 20px 0;
+        min-width: 200px;
+        box-shadow: 0px 0px 5px 0px rgba(122, 122, 122, 1);
+        
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+    }
+
+    .menu.active {
+        opacity: 1;
+        visibility: visible;
+        /* display: flex; */
     }
 
     @media screen and (max-width: 768px) {
-        .menu {
-            display: none;
-        }
-
-        .open-menu {
-            display: inline;
-        }
-
-        .nav-container {
-            justify-content: space-around;
-        }
+        /* .menu {
+            width: 100%;
+        } */
     }
 </style>
 
 <script>
-    var openButton = document.getElementById('open-menu');
-    var closeButton = document.getElementById('close-menu');
-    var navMenu = document.getElementById('mobile-menu');
+    var button = document.getElementById('btn');
+    var menuOpen = false;
+    var menu = document.querySelector('.menu');
 
-    openButton.addEventListener('click', function () {
-        navMenu.style.display = 'block';
-    });
+    const openMenu = () => {
+        menu.classList.add('active');
+        menuOpen = true;
+    }
 
-    closeButton.addEventListener('click', function () {
-        navMenu.style.display = 'none';
+    const closeMenu = () => {
+        menu.classList.remove('active');
+        menuOpen = false;
+    }
+
+    button.addEventListener('click', function () {
+        if (menuOpen) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
     });
 </script>
