@@ -1,13 +1,14 @@
 import random
 
 from django.contrib import messages
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Sum
 from django.shortcuts import redirect, render
-from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required
 
-from apps.qna.models import Category, Question
+from apps.qna.models import Category, Question, UserInterest
+
+User = get_user_model()
 
 
 def index(request):
@@ -51,19 +52,17 @@ def quiz_view(request):
 
 def login_view(request):
     if request.method == "POST":
-        username = request.POST.get("username")
+        email = request.POST.get("email")
         password = request.POST.get("password")
-        # if username == "admin" and password == "admin":
-        #     return render(request, 'admin.html')
         try:
-            user = User.objects.get(username=username)
+            user = User.objects.get(email=email)
             if user.check_password(password):
                 login(request, user)
                 return redirect("index")
             else:
                 messages.error(request, "Invalid credentials")
         except User.DoesNotExist:
-            messages.error(request, "Username does not exist.")
+            messages.error(request, "User does not exist.")
     return render(request, "login.html")
 
 
@@ -74,14 +73,27 @@ def logout_view(request):
     return redirect("index")
 
 
+from django.db import IntegrityError, transaction
+
+@transaction.atomic
 def register_view(request):
     context = {}
     if request.method == "POST":
-        # username = request.POST.get("username")
-        # password = request.POST.get("password")
-        # user = User.objects.create_user(username=username, password=password)
-        # login(request, user)
-        # return redirect("index")
-        return redirect("login")
+        # import ipdb; ipdb.set_trace()
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        interests = request.POST.getlist("interests")
+        
+        try:
+            with transaction.atomic():
+                user = User.objects.create_user(email=email, password=password)
+                for interest_id in interests:
+                    category = Category.objects.get(id=interest_id)
+                    UserInterest.objects.create(user=user, category=category)
+                login(request, user)
+                return redirect("index")
+        except IntegrityError as e:
+            messages.error(request, "Email already exists.")
+    
     context["interests"] = Category.objects.order_by("name")
     return render(request, "register.html", context)

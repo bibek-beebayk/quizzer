@@ -1,10 +1,29 @@
 from django.contrib import admin
-from .models import UserInfo
+
+from .models import User
 
 
-@admin.register(UserInfo)
-class UserInfoAdmin(admin.ModelAdmin):
-    list_display = ("id", "user")
-    list_display_links = ("id", "user")
-    search_fields = ("user__email",)
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "username",
+        "email",
+        "first_name",
+        "last_name",
+        "is_staff",
+        "is_superuser",
+    )
+    list_display_links = ("id", "username")
+    list_filter = ("is_staff", "is_superuser")
+    search_fields = ("username", "email", "first_name", "last_name")
+    list_per_page = 25
+    ordering = ("id",)
 
+    def save_model(self, request, obj, form, change) -> None:
+        password = request.POST.get("password")
+        if not (
+            form.initial.get("password") and form.initial.get("password") == password
+        ):
+            obj.set_password(password)
+        return super().save_model(request, obj, form, change)
