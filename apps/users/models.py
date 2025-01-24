@@ -45,10 +45,10 @@ class User(AbstractUser):
 
     @property
     def average_score(self):
-        if self.total_quizzes_taken == 0:
+        if self.total_questions_answered == 0:
             return 0
-        total_score = sum(quiz.percentage for quiz in self.quizzes.all())
-        return round(total_score / self.total_quizzes_taken, 2)
+        # total_score = sum(quiz.percentage for quiz in self.quizzes.all())
+        return round((self.total_correct_answers / self.total_questions_answered)*100, 2)
 
     @property
     def highest_score(self):

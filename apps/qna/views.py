@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
-from apps.qna.models import Category, Question, QuizResult, UserInterest
+from apps.qna.models import Category, Question, Quiz, QuizResult, UserInterest
 
 User = get_user_model()
 
@@ -34,15 +34,23 @@ def index(request):
 
 def quiz_view(request):
     category_id = request.GET.get("category")
+    quiz_id = request.GET.get("quiz")
     context = {}
-    if category_id == "random":
-        questions = Question.objects.order_by("?")[:10]
-        quiz_name = "Random Quiz"
-    else:
-        category = Category.objects.get(id=category_id)
-        questions = category.questions.order_by("?")[:10]
-        context["category"] = category
-        quiz_name  = category.name + " Quiz"
+    if category_id:
+        if category_id == "random":
+            questions = Question.objects.order_by("?")[:10]
+            quiz_name = "Random Quiz"
+        else:
+            category = Category.objects.get(id=category_id)
+            questions = category.questions.order_by("?")[:10]
+            context["category"] = category
+            quiz_name = category.name + " Quiz"
+    elif quiz_id:
+        quiz = Quiz.objects.get(id=quiz_id)
+        questions = quiz.questions.order_by("?")
+        quiz_name = quiz.name
+        context["quiz_id"] = quiz_id
+
     for question in questions:
         answers = list(question.answers.all())
         random.shuffle(answers)
@@ -114,3 +122,18 @@ def save_quiz_results(request):
         return JsonResponse({"status": "success"})
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
+
+
+@login_required
+def quiz_list_view(request):
+    category_id = request.GET.get("category")
+    context = {}
+    quizzes = (
+        Quiz.objects.filter(category_id=category_id)
+        if category_id
+        else Quiz.objects.all()
+    )
+    context["quizzes"] = quizzes.order_by("-created_at")
+    categories = Category.objects.filter(quizzes__isnull=False).distinct().order_by("name")
+    context["categories"] = categories
+    return render(request, "quiz_list.html", context)

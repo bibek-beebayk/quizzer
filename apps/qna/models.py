@@ -85,6 +85,7 @@ class Quiz(models.Model):
         blank=True,
         null=True,
     )
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         return self.name

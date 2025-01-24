@@ -356,6 +356,7 @@
 
 <div class="main-container">
     <h2 style="font-weight: 100; font-size: 20px; text-align: center;" id="quiz-name">{{quiz_name}}</h2>
+    <p id="quiz-id" style="display: none;">{{quiz_id}}</p>
 
     <div class="quiz-overview">
         <span>Questions: {{questions|length}}</span>
@@ -372,7 +373,7 @@
             {% csrf_token %}
             {% for question in questions %}
             <div class="question-block" data-question-id="{{question.id}}">
-                <h3>{{forloop.counter}}. {{question}}</h3>
+                <h3>{{forloop.counter}}. {{question.question_text}}</h3>
                 <div class="options-container">
                     {% for answer in question.shuffled_answers %}
                     <div class="option-container" data-is-correct="{{answer.is_correct|lower}}">
@@ -628,6 +629,7 @@
             })),
             time_spent: timer.totalSeconds - timer.remainingSeconds,
             quiz_name: document.getElementById('quiz-name').textContent,
+            quiz_id: document.getElementById('quiz-id').textContent
         };
 
         fetch('{% url "save_quiz_results" %}', {
