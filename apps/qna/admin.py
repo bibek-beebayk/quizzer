@@ -166,9 +166,6 @@ class QuizAdmin(admin.ModelAdmin):
                 from django.utils import timezone
 
                 file = request.FILES["file"]
-                import ipdb
-
-                ipdb.set_trace()
                 df = pd.read_excel(file)
 
                 try:
