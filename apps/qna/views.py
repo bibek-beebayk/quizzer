@@ -72,3 +72,16 @@ def logout_view(request):
     request.session.flush()
     logout(request)
     return redirect("index")
+
+
+def register_view(request):
+    context = {}
+    if request.method == "POST":
+        # username = request.POST.get("username")
+        # password = request.POST.get("password")
+        # user = User.objects.create_user(username=username, password=password)
+        # login(request, user)
+        # return redirect("index")
+        return redirect("login")
+    context["interests"] = Category.objects.order_by("name")
+    return render(request, "register.html", context)
