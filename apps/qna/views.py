@@ -4,7 +4,7 @@ import random
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, OuterRef, Exists, Subquery, FloatField
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
@@ -118,7 +118,6 @@ def register_view(request):
 def save_quiz_results(request):
     try:
         data = json.loads(request.body)
-        # import ipdb; ipdb.set_trace()
         quiz_id = data.pop("quiz_id")
         data["quiz_id"] = int(quiz_id) if quiz_id else None
         quiz_result = QuizResult.objects.create(user=request.user, **data)
@@ -129,21 +128,33 @@ def save_quiz_results(request):
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+
 @login_required
 def quiz_list_view(request):
     category_id = request.GET.get("category")
-    
+
     # Base queryset for quizzes
     quizzes = (
-        Quiz.objects.filter(category_id=category_id)
-        if category_id
-        else Quiz.objects.all()
-    ).order_by("-created_at")
-    
+        Quiz.objects.annotate(
+            is_taken=Exists(
+                QuizResult.objects.filter(user=request.user, quiz=OuterRef("pk"))
+            ),
+            user_score_percentage=Subquery(
+            QuizResult.objects.filter(
+                user=request.user,
+                quiz=OuterRef('pk')
+            ).values('percentage')[:1],
+            output_field=FloatField()
+        )
+        )
+        # .filter(category_id=category_id if category_id else None)
+        .order_by("-created_at")
+    )
+
     # Pagination
     paginator = Paginator(quizzes, 5)  # Show 10 quizzes per page
-    page = request.GET.get('page', 1)
-    
+    page = request.GET.get("page", 1)
+
     try:
         paginated_quizzes = paginator.page(page)
     except PageNotAnInteger:
@@ -152,12 +163,14 @@ def quiz_list_view(request):
     except EmptyPage:
         # If page is out of range, deliver last page of results
         paginated_quizzes = paginator.page(paginator.num_pages)
-    
+
     context = {
-        'quizzes': paginated_quizzes,
-        'categories': Category.objects.filter(quizzes__isnull=False).distinct().order_by("name"),
-        'total_quiz_count': Quiz.objects.count(),
-        'category_id': category_id  # Pass category_id to maintain filter in pagination
+        "quizzes": paginated_quizzes,
+        "categories": Category.objects.filter(quizzes__isnull=False)
+        .distinct()
+        .order_by("name"),
+        "total_quiz_count": Quiz.objects.count(),
+        "category_id": category_id,  # Pass category_id to maintain filter in pagination
     }
-    
+
     return render(request, "quiz_list.html", context)
