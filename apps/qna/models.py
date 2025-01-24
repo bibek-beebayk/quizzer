@@ -93,6 +93,11 @@ class Quiz(models.Model):
 
     def __str__(self) -> str:
         return self.name
+    
+    def save(self, *args, **kwargs):
+        if not self.category_id:
+            self.category = Category.objects.get_or_create(name="Random")[0]
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = "Quizzes"
@@ -124,6 +129,7 @@ class QuizResult(models.Model):
     category = models.CharField(max_length=100, blank=True, null=True)
 
     def save(self, *args, **kwargs):
+        # import ipdb; ipdb.set_trace()
         if self.quiz:
             self.quiz_name = self.quiz.name
         if not self.percentage:
