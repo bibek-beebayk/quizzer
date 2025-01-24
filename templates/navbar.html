@@ -42,7 +42,7 @@
         padding: 20px 0;
         min-width: 200px;
         box-shadow: 0px 0px 5px 0px rgba(122, 122, 122, 1);
-        
+
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -86,6 +86,14 @@
             closeMenu();
         } else {
             openMenu();
+        }
+    });
+
+    document.addEventListener('click', function (event) {
+        if (menuOpen &&
+            !menu.contains(event.target) &&
+            !button.contains(event.target)) {
+            closeMenu();
         }
     });
 </script>
