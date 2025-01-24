@@ -1,15 +1,16 @@
 from django.contrib import admin, messages
-from django.shortcuts import redirect, render
 from django.db.models import Count
+from django.shortcuts import redirect, render
+
 from .models import (
     Answer,
     Category,
     Collection,
     Question,
     Quiz,
+    QuizResult,
     Tag,
     UserInterest,
-    QuizResult,
 )
 
 
@@ -84,9 +85,13 @@ class QuestionAdmin(admin.ModelAdmin):
 
                 try:
                     for _, row in df.iterrows():
-                        category = Category.objects.get_or_create(name=row["Category"])[
-                            0
-                        ]
+                        categories = row["Category"].split(",")
+                        category_objs = []
+                        for category in categories:
+                            category_obj = Category.objects.get_or_create(
+                                name__iexact=category.strip()
+                            )[0]
+                            category_objs.append(category_obj)
                         question_text = row["Question"]
                         if Question.objects.filter(
                             question_text__iexact=question_text
@@ -98,7 +103,7 @@ class QuestionAdmin(admin.ModelAdmin):
                             question.hint = row["Hint"]
                         if type(row["Difficulty"]) == str:
                             question.difficulty = row["Difficulty"]
-                        question.categories.add(category)
+                        question.categories.set(category_objs)
                         question.save()
                         options = [
                             row["Option A"],
@@ -128,18 +133,13 @@ class QuestionAdmin(admin.ModelAdmin):
 
 @admin.register(Quiz)
 class QuizAdmin(admin.ModelAdmin):
-    list_display = ("id", "name",)
+    list_display = (
+        "id",
+        "name",
+    )
     list_display_links = ("id", "name")
     search_fields = ("name",)
     list_filter = ("questions",)
-
-    # def formfield_for_manytomany(self, db_field, request, **kwargs):
-    #     if db_field.name == "questions":
-    #         questions_not_in_quiz = Question.objects.annotate(
-    #             num_quizzes=Count("quizzes")
-    #         ).filter(num_quizzes=0)
-    #         kwargs["queryset"] = questions_not_in_quiz
-    #     return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def get_urls(self):
         from django.urls import path
@@ -182,20 +182,24 @@ class QuizAdmin(admin.ModelAdmin):
                         )
                     quiz = Quiz.objects.create(name=quiz_name)
                     for _, row in df.iterrows():
-                        category = Category.objects.get_or_create(name=row["Category"])[
-                            0
-                        ]
+                        categories = row["Category"].split(",")
+                        category_objs = []
+                        for category in categories:
+                            category = Category.objects.get_or_create(
+                                name=category.strip()
+                            )[0]
+                            category_objs.append(category)
                         question_text = row["Question"]
-                        if Question.objects.filter(
-                            question_text__iexact=question_text
-                        ).exists():
-                            continue
+                        # if Question.objects.filter(
+                        #     question_text__iexact=question_text
+                        # ).exists():
+                        #     continue
                         question = Question.objects.create(question_text=question_text)
                         if type(row["Hint"]) == str:
                             question.hint = row["Hint"]
                         if type(row["Difficulty"]) == str:
                             question.difficulty = row["Difficulty"]
-                        question.categories.add(category)
+                        question.categories.set(category_objs)
                         question.save()
                         options = [
                             row["Option A"],
