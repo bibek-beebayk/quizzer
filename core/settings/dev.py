@@ -9,9 +9,9 @@ ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = ["https://erp-tunnel.kalodhunga.com"]
 
-INSTALLED_APPS += ["django_browser_reload"]
+# INSTALLED_APPS += ["django_browser_reload"]
 
-MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
+# MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
 
 DATABASES = {
     "default": {

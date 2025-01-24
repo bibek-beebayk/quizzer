@@ -1,0 +1,54 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .form-container {
+        padding: 20px;
+        max-width: 800px;
+    }
+    .form-row {
+        margin-bottom: 20px;
+    }
+    .form-row label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    .form-row input[type="file"] {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 100%;
+        max-width: 400px;
+    }
+    .button-row {
+        margin-top: 20px;
+    }
+    .button-row .btn {
+        margin-right: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div id="content-main">
+        <h1>Import Questions</h1>
+        <p class="help">Upload your XLSX file to import questions into the system.</p>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row">
+                <label for="file">Choose Excel File:</label>
+                <input type="file" name="file" id="file" accept=".xlsx" required>
+            </div>
+            <div class="button-row">
+                <input type="submit" value="Upload" class="default" name="_save">
+                <a href="{% url 'admin:qna_question_changelist' %}" class="closelink">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
