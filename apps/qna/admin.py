@@ -48,9 +48,7 @@ class QuestionAdmin(admin.ModelAdmin):
     inlines = [AnswerInline]
 
     def category(self, obj):
-        # import ipdb; ipdb.set_trace()
         return ", ".join([c.name for c in obj.categories.all()])
-        # return("asdfasdf")
 
     def get_urls(self):
         from django.urls import path

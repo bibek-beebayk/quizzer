@@ -16,7 +16,7 @@ User = get_user_model()
 
 def index(request):
     context = {}
-    random_question = Question.random_question()
+    random_question = Question.random_question(request.user)
     categories = (
         Category.objects.annotate(questions_count=Count("questions"))
         .filter(questions_count__gt=0)

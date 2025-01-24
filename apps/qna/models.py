@@ -44,8 +44,11 @@ class Question(models.Model):
         return self.question_text
 
     @classmethod
-    def random_question(cls):
-        return cls.objects.order_by("?").first()
+    def random_question(cls, user):
+        if not user.is_authenticated:
+            return cls.objects.order_by("?").first()
+        user_interests = user.interests.values_list("category", flat=True)
+        return cls.objects.filter(categories__in=user_interests).order_by("?").first()
 
 
 class Answer(models.Model):
