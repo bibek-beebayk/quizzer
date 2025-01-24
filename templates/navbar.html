@@ -17,6 +17,11 @@
         {% endif %}
     </div>
 </div>
+{% if not user.is_authenticated %}
+<div style="background-color: rgb(210, 145, 145); padding: 2px 0; text-align: center; font-size: 12px; font-weight: 300; color: rgb(44, 44, 44);">
+    <i>Sign up to track your progress and get personalized content.</i>
+</div>
+{% endif %}
 <style>
     .nav-container {
         height: auto;

@@ -126,18 +126,22 @@
 
 <div class="profile-container">
     <div class="profile-header">
+        {% if user.info.profile_pic %}
         <img src="{{ user.info.profile_pic.url|default:'/static/default-profile.png' }}" alt="Profile Picture"
             class="profile-image">
+        {% else %}
+        <img src="{% static 'images/default-profile.png' %}" alt="Profile Picture" class="profile-image">
+        {% endif %}
         <div class="profile-info">
-            <h2>{{ user.username }}</h2>
+            <h2>{{ user.first_name }} {{user.last_name}}</h2>
             <p>{{ user.email }}</p>
             <p>Member since: {{ user.date_joined|date:"F j, Y" }}</p>
         </div>
-        <div class="profile-actions">
+        <!-- <div class="profile-actions">
             <a href="{% url 'index' %}" class="edit-button">Edit Profile</a>
             <a href="{% url 'index' %}" class="edit-button" style="background-color: rgb(223, 191, 148);">Change
                 Password</a>
-        </div>
+        </div> -->
     </div>
 
     <div class="stats-container">

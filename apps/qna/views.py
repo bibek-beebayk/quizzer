@@ -117,7 +117,10 @@ def register_view(request):
 @login_required
 def save_quiz_results(request):
     try:
+        # import ipdb; ipdb.set_trace()
         data = json.loads(request.body)
+        quiz_id = data.pop("quiz_id")
+        data["quiz_id"] = quiz_id if quiz_id else None
         quiz_result = QuizResult.objects.create(user=request.user, **data)
         return JsonResponse({"status": "success"})
     except Exception as e:
