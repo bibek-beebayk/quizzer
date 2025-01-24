@@ -15,15 +15,15 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name="userinterest",
-            name="user",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE,
-                related_name="interests",
-                to=settings.AUTH_USER_MODEL,
-            ),
-        ),
+        # migrations.AddField(
+        #     model_name="userinterest",
+        #     name="user",
+        #     field=models.ForeignKey(
+        #         on_delete=django.db.models.deletion.CASCADE,
+        #         related_name="interests",
+        #         to=settings.AUTH_USER_MODEL,
+        #     ),
+        # ),
         migrations.AddField(
             model_name="userquiz",
             name="quiz",

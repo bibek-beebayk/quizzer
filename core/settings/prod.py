@@ -1,5 +1,5 @@
 import os
-from .base import INSTALLED_APPS, MIDDLEWARE
+from .base import MIDDLEWARE
 
 SECRET_KEY = "django-insecure-i()o2=lv+0fj6f*=ha=rcuxc!g74$kj&t-q9dhh7i*sm6!+0!q"
 
