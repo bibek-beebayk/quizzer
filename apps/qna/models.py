@@ -53,6 +53,10 @@ class Question(models.Model):
             return cls.objects.order_by("?").first()
         user_interests = user.interests.values_list("category", flat=True)
         return cls.objects.filter(categories__in=user_interests).order_by("?").first()
+    
+    @property
+    def categories_str(self):
+        return ", ".join([category.name for category in self.categories.all()])
 
 
 class Answer(models.Model):
