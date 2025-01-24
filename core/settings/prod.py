@@ -5,7 +5,7 @@ SECRET_KEY = "django-insecure-i()o2=lv+0fj6f*=ha=rcuxc!g74$kj&t-q9dhh7i*sm6!+0!q
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["quizzer-production-35fb.up.railway.app", "quiz.bibek0001.com.np", '127.0.0.1']
+ALLOWED_HOSTS = ["quizzer-production-35fb.up.railway.app", "quiz.bibek0001.com.np", '127.0.0.1', 'localhost']
 
 CSRF_TRUSTED_ORIGINS = ["https://quizzer-production-35fb.up.railway.app", "https://quiz.bibek0001.com.np"]
 
@@ -57,3 +57,43 @@ sentry_sdk.init(
     profiles_sample_rate=1.0,
     environment="quiz",
 )
+
+# Email Settings
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "beebayk63478@gmail.com"
+EMAIL_HOST_PASSWORD = "eekafahcyhrvgmjx"
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "beebayk63478@gmail.com"
+SERVER_EMAIL = "beebayk63478@gmail.com"
+
+# logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": "./debug.log",
+        },
+        "mail_admins": {
+            "level": "ERROR",
+            "class": "django.utils.log.AdminEmailHandler",
+            "include_html": True,
+        },
+    },
+    "loggers": {
+        "": {  # empty string
+            "handlers": ["file"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+    },
+}
+
+
+ADMINS = [
+    ("Bibek Gautam", "beebayk0001@gmail.com"),
+]

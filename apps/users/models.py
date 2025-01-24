@@ -1,7 +1,6 @@
-from django.utils import timezone
-
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from django.utils import timezone
 
 
 class CustomUserManager(BaseUserManager):
@@ -98,3 +97,18 @@ class User(AbstractUser):
     @property
     def quizzes_this_month(self):
         return self.quizzes.filter(created_at__month=timezone.now().month).count()
+
+
+class RequestLog(models.Model):
+    endpoint = models.CharField(
+        max_length=1000, null=True
+    )
+    user = models.CharField(max_length=255)
+    response_code = models.PositiveSmallIntegerField()
+    method = models.CharField(max_length=10, null=True)
+    remote_address = models.CharField(max_length=1000, null=True)
+    exec_time = models.IntegerField(null=True)
+    date = models.DateTimeField(auto_now=True)
+    body_response = models.TextField(null=True)
+    body_request = models.TextField(null=True) 
+    created_at = models.DateTimeField(auto_now_add=True)
