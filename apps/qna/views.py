@@ -139,4 +139,5 @@ def quiz_list_view(request):
     context["quizzes"] = quizzes.order_by("-created_at")
     categories = Category.objects.filter(quizzes__isnull=False).distinct().order_by("name")
     context["categories"] = categories
+    context["total_quiz_count"] = Quiz.objects.count()
     return render(request, "quiz_list.html", context)

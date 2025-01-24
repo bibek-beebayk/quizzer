@@ -165,9 +165,6 @@ class QuizAdmin(admin.ModelAdmin):
 
         if request.method == "POST":
             if request.FILES.get("file"):
-                # Your file handling logic here
-                import math
-
                 import pandas as pd
                 from django.utils import timezone
 
@@ -175,12 +172,14 @@ class QuizAdmin(admin.ModelAdmin):
                 df = pd.read_excel(file)
 
                 try:
-                    quiz_name = file.name.split(".")[0]
+                    names = file.name.split(".")[0].split(",")
+                    quiz_name = names[0]
+                    category = Category.objects.get_or_create(name=names[1].strip())[0]
                     if Quiz.objects.filter(name=quiz_name).exists():
                         quiz_name = (
                             f"{quiz_name} - {timezone.now().strftime('%Y%m%d%H%M%S')}"
                         )
-                    quiz = Quiz.objects.create(name=quiz_name)
+                    quiz = Quiz.objects.create(name=quiz_name, category=category)
                     for _, row in df.iterrows():
                         categories = row["Category"].split(",")
                         category_objs = []
