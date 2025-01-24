@@ -89,7 +89,7 @@ class UserInterest(models.Model):
         return f"{self.user.username} - {self.category.name}"
 
 
-class UserQuiz(models.Model):
+class QuizResult(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="quizzes")
     quiz = models.ForeignKey(
         Quiz, on_delete=models.CASCADE, related_name="users", blank=True, null=True
@@ -100,6 +100,15 @@ class UserQuiz(models.Model):
     attempted_questions = models.IntegerField(default=0)
     correct_answers = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+    answers = models.JSONField(default=list)
+    percentage = models.FloatField(default=0)
+
+    def save(self, *args, **kwargs):
+        if self.quiz:
+            self.quiz_name = self.quiz.name
+        if not self.percentage:
+            self.percentage = self.score
+        super().save(*args, **kwargs)
 
     @property
     def score(self):
@@ -116,6 +125,3 @@ class UserQuiz(models.Model):
             return f"{self.user.username} - {self.quiz.name}"
         else:
             return f"{self.user.username} - {self.quiz_name}"
-
-    class Meta:
-        verbose_name_plural = "User Quizzes"

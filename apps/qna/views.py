@@ -1,12 +1,15 @@
+import json
 import random
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Sum
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
+from django.views.decorators.http import require_POST
 
-from apps.qna.models import Category, Question, UserInterest
+from apps.qna.models import Category, Question, QuizResult, UserInterest
 
 User = get_user_model()
 
@@ -34,10 +37,12 @@ def quiz_view(request):
     context = {}
     if category_id == "random":
         questions = Question.objects.order_by("?")[:10]
+        quiz_name = "Random Quiz"
     else:
         category = Category.objects.get(id=category_id)
         questions = category.questions.order_by("?")[:10]
         context["category"] = category
+        quiz_name  = category.name + " Quiz"
     for question in questions:
         answers = list(question.answers.all())
         random.shuffle(answers)
@@ -47,6 +52,7 @@ def quiz_view(request):
     context["total_weightage"] = questions.aggregate(total_weightage=Sum("weightage"))[
         "total_weightage"
     ]
+    context["quiz_name"] = quiz_name
     return render(request, "quiz.html", context)
 
 
@@ -75,15 +81,15 @@ def logout_view(request):
 
 from django.db import IntegrityError, transaction
 
+
 @transaction.atomic
 def register_view(request):
     context = {}
     if request.method == "POST":
-        # import ipdb; ipdb.set_trace()
         email = request.POST.get("email")
         password = request.POST.get("password")
         interests = request.POST.getlist("interests")
-        
+
         try:
             with transaction.atomic():
                 user = User.objects.create_user(email=email, password=password)
@@ -94,6 +100,17 @@ def register_view(request):
                 return redirect("index")
         except IntegrityError as e:
             messages.error(request, "Email already exists.")
-    
+
     context["interests"] = Category.objects.order_by("name")
     return render(request, "register.html", context)
+
+
+@require_POST
+@login_required
+def save_quiz_results(request):
+    try:
+        data = json.loads(request.body)
+        quiz_result = QuizResult.objects.create(user=request.user, **data)
+        return JsonResponse({"status": "success"})
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=400)

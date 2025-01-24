@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from apps.qna.models import UserQuiz
+from apps.qna.models import QuizResult
 
 
 @login_required
@@ -18,7 +18,7 @@ def profile(request):
     context["most_active_category"] = "Python"
     context["total_questions"] = 120
     context["correct_answers"] = 85
-    context["recent_quizzes"] = UserQuiz.objects.filter(user=request.user).order_by(
+    context["recent_quizzes"] = QuizResult.objects.filter(user=request.user).order_by(
         "-created_at"
     )[:5]
     return render(request, "profile.html", context)

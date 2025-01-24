@@ -9,7 +9,7 @@ from .models import (
     Quiz,
     Tag,
     UserInterest,
-    UserQuiz,
+    QuizResult,
 )
 
 
@@ -229,8 +229,11 @@ class UserInterestAdmin(admin.ModelAdmin):
     list_filter = ("category",)
 
 
-@admin.register(UserQuiz)
-class UserQuizAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "quiz")
+@admin.register(QuizResult)
+class QuizResultAdminAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "quiz_attempted", "percentage")
     list_display_links = ("id", "user")
     search_fields = ("user__email",)
+
+    def quiz_attempted(self, obj):
+        return obj.quiz_name
