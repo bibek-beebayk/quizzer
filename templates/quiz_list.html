@@ -154,30 +154,23 @@
         {% endfor %}
     </div>
 
-    {% if is_paginated %}
-    <div class="pagination">
-        {% if page_obj.has_previous %}
-        <a href="?page=1{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">First</a>
-        <a
-            href="?page={{ page_obj.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">Previous</a>
-        {% endif %}
+   <!-- Pagination Controls -->
+   {% if quizzes.has_other_pages %}
+   <div class="pagination">
+       {% if quizzes.has_previous %}
+           <a href="?page=1{% if category_id %}&category={{ category_id }}{% endif %}">&laquo; First</a>
+           <a href="?page={{ quizzes.previous_page_number }}{% if category_id %}&category={{ category_id }}{% endif %}">Previous</a>
+       {% endif %}
 
-        {% for num in page_obj.paginator.page_range %}
-        {% if page_obj.number == num %}
-        <span class="current">{{ num }}</span>
-        {% else %}
-        <a href="?page={{ num }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">{{ num
-            }}</a>
-        {% endif %}
-        {% endfor %}
+       <span class="current-page">
+           Page {{ quizzes.number }} of {{ quizzes.paginator.num_pages }}
+       </span>
 
-        {% if page_obj.has_next %}
-        <a
-            href="?page={{ page_obj.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">Next</a>
-        <a
-            href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">Last</a>
-        {% endif %}
-    </div>
-    {% endif %}
+       {% if quizzes.has_next %}
+           <a href="?page={{ quizzes.next_page_number }}{% if category_id %}&category={{ category_id }}{% endif %}">Next</a>
+           <a href="?page={{ quizzes.paginator.num_pages }}{% if category_id %}&category={{ category_id }}{% endif %}">Last &raquo;</a>
+       {% endif %}
+   </div>
+   {% endif %}
 </div>
 {% endblock %}

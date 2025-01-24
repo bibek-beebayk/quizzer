@@ -127,17 +127,37 @@ def save_quiz_results(request):
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 @login_required
 def quiz_list_view(request):
     category_id = request.GET.get("category")
-    context = {}
+    
+    # Base queryset for quizzes
     quizzes = (
         Quiz.objects.filter(category_id=category_id)
         if category_id
         else Quiz.objects.all()
-    )
-    context["quizzes"] = quizzes.order_by("-created_at")
-    categories = Category.objects.filter(quizzes__isnull=False).distinct().order_by("name")
-    context["categories"] = categories
-    context["total_quiz_count"] = Quiz.objects.count()
+    ).order_by("-created_at")
+    
+    # Pagination
+    paginator = Paginator(quizzes, 5)  # Show 10 quizzes per page
+    page = request.GET.get('page', 1)
+    
+    try:
+        paginated_quizzes = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page
+        paginated_quizzes = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range, deliver last page of results
+        paginated_quizzes = paginator.page(paginator.num_pages)
+    
+    context = {
+        'quizzes': paginated_quizzes,
+        'categories': Category.objects.filter(quizzes__isnull=False).distinct().order_by("name"),
+        'total_quiz_count': Quiz.objects.count(),
+        'category_id': category_id  # Pass category_id to maintain filter in pagination
+    }
+    
     return render(request, "quiz_list.html", context)
