@@ -8,16 +8,16 @@ from apps.qna.models import QuizResult
 def profile(request):
     context = {}
     # context['user'] = request.user
-    context["total_quizzes"] = 24
-    context["average_score"] = 70
-    context["highest_score"] = 90
-    context["highest_score_quiz"] = "Django Quiz"
-    context["lowest_score"] = 30
-    context["lowest_score_quiz"] = "Python Quiz"
-    context["monthly_quizzes"] = 12
-    context["most_active_category"] = "Python"
-    context["total_questions"] = 120
-    context["correct_answers"] = 85
+    context["total_quizzes"] = request.user.total_quizzes_taken
+    context["average_score"] = request.user.average_score
+    context["highest_score"] = request.user.highest_score
+    context["highest_score_quiz"] = request.user.highest_score_quiz
+    context["lowest_score"] = request.user.lowest_score
+    context["lowest_score_quiz"] = request.user.lowest_score_quiz
+    context["monthly_quizzes"] = request.user.quizzes_this_month
+    context["most_active_category"] = request.user.most_active_category
+    context["total_questions"] = request.user.total_questions_answered
+    context["correct_answers"] = request.user.total_correct_answers
     context["recent_quizzes"] = QuizResult.objects.filter(user=request.user).order_by(
         "-created_at"
     )[:5]

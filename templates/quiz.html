@@ -618,7 +618,7 @@
     document.getElementById("submit-data").addEventListener("click", function (e) {
         e.preventDefault();
         const quizResults = {
-            total_questions: stats.total,
+            total_questions: parseInt(stats.total),
             attempted_questions: stats.attempted,
             correct_answers: stats.correct,
             answers: Array.from(stats.selectedAnswers).map(([questionId, answerData]) => ({

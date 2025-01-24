@@ -102,12 +102,18 @@ class QuizResult(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     answers = models.JSONField(default=list)
     percentage = models.FloatField(default=0)
+    category = models.CharField(max_length=100, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if self.quiz:
             self.quiz_name = self.quiz.name
         if not self.percentage:
             self.percentage = self.score
+        if not self.category:
+            if self.quiz:
+                self.category = self.quiz.category.name
+            else:
+                self.category = self.quiz_name.split("Quiz")[0].strip()
         super().save(*args, **kwargs)
 
     @property
@@ -116,7 +122,7 @@ class QuizResult(models.Model):
             sc = (self.correct_answers / self.quiz.questions.count()) * 100
         elif self.total_questions == 0:
             sc = 0
-        else: 
+        else:
             sc = (self.correct_answers / self.total_questions) * 100
         return round(sc, 2)
 
