@@ -40,8 +40,12 @@ class Question(models.Model):
         default="Easy",
     )
 
+    @property
+    def has_quiz(self):
+        return self.quizzes.exists()
+
     def __str__(self):
-        return self.question_text
+        return f"{self.question_text} - {self.categories.first()} - {self.has_quiz}"
 
     @classmethod
     def random_question(cls, user):
@@ -74,6 +78,13 @@ class Collection(models.Model):
 class Quiz(models.Model):
     name = models.CharField(max_length=100, unique=True)
     questions = models.ManyToManyField(Question, related_name="quizzes", blank=True)
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name="quizzes",
+        blank=True,
+        null=True,
+    )
 
     def __str__(self) -> str:
         return self.name

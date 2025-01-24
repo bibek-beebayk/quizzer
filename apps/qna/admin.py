@@ -1,6 +1,6 @@
 from django.contrib import admin, messages
 from django.shortcuts import redirect, render
-
+from django.db.models import Count
 from .models import (
     Answer,
     Category,
@@ -132,6 +132,14 @@ class QuizAdmin(admin.ModelAdmin):
     list_display_links = ("id", "name")
     search_fields = ("name",)
     list_filter = ("questions",)
+
+    # def formfield_for_manytomany(self, db_field, request, **kwargs):
+    #     if db_field.name == "questions":
+    #         questions_not_in_quiz = Question.objects.annotate(
+    #             num_quizzes=Count("quizzes")
+    #         ).filter(num_quizzes=0)
+    #         kwargs["queryset"] = questions_not_in_quiz
+    #     return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def get_urls(self):
         from django.urls import path
