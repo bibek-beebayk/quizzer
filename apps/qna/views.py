@@ -66,28 +66,6 @@ def quiz_view(request):
     return render(request, "quiz.html", context)
 
 
-def login_view(request):
-    if request.method == "POST":
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        try:
-            user = User.objects.get(email=email)
-            if user.check_password(password):
-                login(request, user)
-                return redirect("index")
-            else:
-                messages.error(request, "Invalid credentials")
-        except User.DoesNotExist:
-            messages.error(request, "User does not exist.")
-    return render(request, "login.html")
-
-
-@login_required
-def logout_view(request):
-    request.session.flush()
-    logout(request)
-    return redirect("index")
-
 
 @transaction.atomic
 def register_view(request):

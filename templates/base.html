@@ -96,31 +96,39 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const loadingOverlay = document.getElementById('loading-overlay');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const forms = document.querySelectorAll('form');
 
-        // Show loading screen only for page navigation and form submissions
-        document.addEventListener('click', function (e) {
-            const target = e.target;
+    // Handle form submissions
+    // forms.forEach(form => {
+    //     form.addEventListener('submit', function (e) {
+    //         if (form.checkValidity()) {
+    //             loadingOverlay.style.display = 'flex';
+    //         } else {
+    //             e.preventDefault();
+    //             form.reportValidity();
+    //         }
+    //     });
+    // });
 
-            // Only show loading for specific actions
-            if (
-                target.tagName === 'A' ||
-                (target.type === 'submit' && target.closest('form'))
-            ) {
-                loadingOverlay.style.display = 'flex';
-            }
-        });
-
-        // Hide loading screen after page load
-        window.addEventListener('load', function () {
-            loadingOverlay.style.display = 'none';
-        });
-
-        // Fallback to hide loading in case of navigation errors
-        window.addEventListener('pageshow', function () {
-            loadingOverlay.style.display = 'none';
-        });
+    // Handle page navigation
+    document.addEventListener('click', function (e) {
+        const target = e.target.closest('a');
+        if (target && target.getAttribute('href')) {
+            // Optional: Add conditions to exclude certain links if needed
+            loadingOverlay.style.display = 'flex';
+        }
     });
+
+    // Hide overlay methods
+    window.addEventListener('load', function () {
+        loadingOverlay.style.display = 'none';
+    });
+
+    window.addEventListener('pageshow', function () {
+        loadingOverlay.style.display = 'none';
+    });
+});
 </script>
 
 </html>

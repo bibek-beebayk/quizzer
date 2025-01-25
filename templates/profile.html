@@ -18,7 +18,7 @@
         gap: 40px;
         width: 60%;
         min-width: 400px;
-        padding: 20px 0;
+        padding: 20px;
         background-color: rgb(218, 218, 218);
         border-radius: 10px;
         margin-bottom: 30px;
@@ -157,6 +157,64 @@
         flex-wrap: wrap;
     }
 
+    #passwordChangeModal .modal-content {
+        max-width: 400px;
+        padding: 30px;
+    }
+
+    #passwordChangeModal form>div {
+        margin-bottom: 15px;
+    }
+
+    #passwordChangeModal label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    #passwordChangeModal input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    #passwordChangeModal .modal-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    #passwordChangeModal .modal-actions button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    #passwordChangeModal .modal-actions button:first-child {
+        background-color: #f0f0f0;
+        color: #333;
+    }
+
+    #passwordChangeModal .modal-actions button:last-child {
+        background-color: rgb(148, 223, 178);
+        color: #333;
+    }
+
+    #passwordChangeModal .modal-actions button:hover {
+        opacity: 0.9;
+    }
+
+    #passwordChangeErrorDiv {
+        color: red;
+        margin-top: 10px;
+        text-align: center;
+    }
+
     @media screen and (max-width: 768px) {
 
         .profile-header,
@@ -170,6 +228,7 @@
             flex-direction: column;
             text-align: center;
             gap: 20px;
+            padding: 20px 0;
         }
 
         .stats-container {
@@ -178,6 +237,10 @@
 
         .profile-container {
             padding: 10px 0;
+        }
+
+        .modal-interests {
+            grid-template-columns: repeat(2, 1fr);
         }
     }
 </style>
@@ -195,11 +258,11 @@
             <p>{{ user.email }}</p>
             <p>Member since: {{ user.date_joined|date:"F j, Y" }}</p>
         </div>
-        <!-- <div class="profile-actions">
-            <a href="{% url 'index' %}" class="edit-button">Edit Profile</a>
-            <a href="{% url 'index' %}" class="edit-button" style="background-color: rgb(223, 191, 148);">Change
-                Password</a>
-        </div> -->
+        <div class="profile-actions">
+            <!-- <a href="{% url 'index' %}" class="edit-button">Edit Profile</a> -->
+            <button class="edit-button" style="background-color: rgb(223, 191, 148);" id="changePasswordBtn">Change
+                Password</button>
+        </div>
     </div>
 
     <div class="stats-container">
@@ -262,7 +325,8 @@
             <div class="modal-interests">
                 {% for interest in all_interests %}
                 <label>
-                    <input type="checkbox" name="interests" value="{{ interest.id }}" {% if interest in user.interests.all %}checked{% endif %}>
+                    <input type="checkbox" name="interests" value="{{ interest.id }}" 
+                    {% if interest in user.interests.all %}checked{% endif %}>
                     {{ interest }}
                 </label>
                 {% endfor %}
@@ -275,6 +339,38 @@
     </div>
 </div>
 
+<div id="passwordChangeModal" class="modal">
+    <div class="modal-content">
+        <h3>Change Password</h3>
+        <form method="POST" action="{% url 'change_password' %}" id="passwordChangeForm">
+            {% csrf_token %}
+            <div>
+                <label for="id_old_password">Current Password</label>
+                <input type="password" name="old_password" id="id_old_password" autocomplete="off" 
+                autocomplete="new-password" required>
+            </div>
+
+            <div>
+                <label for="id_new_password1">New Password</label>
+                <input type="password" name="new_password1" id="id_new_password1" autocomplete="off" 
+                autocomplete="new-password" required>
+            </div>
+
+            <div>
+                <label for="id_new_password2">Confirm New Password</label>
+                <input type="password" name="new_password2" id="id_new_password2" autocomplete="off" 
+                autocomplete="new-password" required>
+            </div>
+            <div class="modal-actions">
+                <button type="button" id="cancelPasswordChange">Cancel</button>
+                <button type="submit">Change Password</button>
+            </div>
+            <p style="display: none;" id="passwordChangeError"></p>
+        </form>
+    </div>
+
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const editBtn = document.getElementById('editInterestsBtn');
@@ -282,9 +378,18 @@
         const cancelBtn = document.getElementById('cancelInterests');
         const interestsForm = document.getElementById('interestsForm');
 
+        const passwordChangeBtn = document.getElementById('changePasswordBtn');
+        const passwordChangeModal = document.getElementById('passwordChangeModal');
+        const cancelPasswordChange = document.getElementById('cancelPasswordChange');
+        const passwordChangeForm = document.getElementById('passwordChangeForm');
+
         // Open modal
         editBtn.addEventListener('click', function () {
             modal.style.display = 'block';
+        });
+
+        passwordChangeBtn.addEventListener('click', function () {
+            passwordChangeModal.style.display = 'block';
         });
 
         // Close modal
@@ -292,12 +397,70 @@
             modal.style.display = 'none';
         });
 
-        // Close modal when clicking outside
-        window.addEventListener('click', function (event) {
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
+        cancelPasswordChange.addEventListener('click', function () {
+            passwordChangeModal.style.display = 'none';
         });
+
+        // Close modal when clicking outside
+        // window.addEventListener('click', function (event) {
+        //     if (event.target == modal) {
+        //         modal.style.display = 'none';
+        //     }
+        // });
+
+        // window.addEventListener('click', function (event) {
+        //     if (event.target == passwordChangeModal) {
+        //         passwordChangeModal.style.display = 'none';
+        //     }
+        // });
+
+        passwordChangeForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const oldPassword = document.getElementById('id_old_password').value;
+            const newPassword1 = document.getElementById('id_new_password1').value;
+            const newPassword2 = document.getElementById('id_new_password2').value;
+            const passwordChangeErrorDiv = document.getElementById("passwordChangeError");
+
+            // Basic client-side validation
+            if (newPassword1 !== newPassword2) {
+                passwordChangeErrorDiv.textContent = "New passwords do not match.";
+                passwordChangeErrorDiv.style.display = 'block';
+                return;
+            }
+
+            // Send AJAX request to change password
+            fetch("{% url 'change_password' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    old_password: oldPassword,
+                    new_password1: newPassword1,
+                    new_password2: newPassword2
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Password changed successfully
+                        alert('Password changed successfully');
+                        passwordChangeModal.style.display = 'none';
+                    } else {
+                        // Show error message
+                        passwordChangeErrorDiv.textContent = data.error || 'Failed to change password';
+                        passwordChangeErrorDiv.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    passwordChangeErrorDiv.textContent = 'An unexpected error occurred';
+                    passwordChangeErrorDiv.style.display = 'block';
+                });
+        });
+
 
         // Handle form submission
         interestsForm.addEventListener('submit', function (e) {
