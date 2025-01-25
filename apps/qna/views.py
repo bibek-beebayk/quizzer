@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
-from apps.qna.models import Category, Question, Quiz, QuizResult, UserInterest
+from apps.qna.models import Category, Question, Quiz, QuizResult
 
 User = get_user_model()
 
@@ -103,7 +103,7 @@ def register_view(request):
                 user = User.objects.create_user(email=email, password=password)
                 for interest_id in interests:
                     category = Category.objects.get(id=interest_id)
-                    UserInterest.objects.create(user=user, category=category)
+                    # UserInterest.objects.create(user=user, category=category)
                 login(request, user)
                 return redirect("index")
         except IntegrityError as e:
@@ -153,10 +153,10 @@ def quiz_list_view(request):
         quizzes = quizzes.filter(is_taken=True)
     elif taken == "not-taken":
         quizzes = quizzes.filter(is_taken=False)
-        
+
     quizzes = quizzes.order_by("-created_at")
     # Pagination
-    paginator = Paginator(quizzes, 5)  # Show 10 quizzes per page
+    paginator = Paginator(quizzes, 10)
     page = request.GET.get("page", 1)
 
     try:
@@ -178,3 +178,20 @@ def quiz_list_view(request):
     }
 
     return render(request, "quiz_list.html", context)
+
+
+@require_POST
+@login_required
+def update_interest(request):
+    try:
+        data = json.loads(request.body)
+        interest_ids = data.get("interests", [])
+        interest_ids = [int(id) for id in interest_ids]
+        user = request.user
+        user.interests.clear()
+        user.interests.add(*Category.objects.filter(id__in=interest_ids))
+        return JsonResponse({"status": "success"})
+    except json.JSONDecodeError:
+        return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)

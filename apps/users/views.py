@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from apps.qna.models import QuizResult
+from apps.qna.models import Category, QuizResult
 
 
 @login_required
@@ -21,4 +21,6 @@ def profile(request):
     context["recent_quizzes"] = QuizResult.objects.filter(user=request.user).order_by(
         "-created_at"
     )[:5]
+    context["all_interests"] = Category.objects.all().order_by("name")
+    # context["user_interests"] = request.user.interests.values_list("category", flat=True)
     return render(request, "profile.html", context)

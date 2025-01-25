@@ -30,6 +30,7 @@ class CustomUserManager(BaseUserManager):
 class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
+    interests = models.ManyToManyField("qna.Category", related_name="users")
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

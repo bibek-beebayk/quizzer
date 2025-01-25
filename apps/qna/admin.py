@@ -10,7 +10,6 @@ from .models import (
     Quiz,
     QuizResult,
     Tag,
-    UserInterest,
 )
 
 
@@ -227,12 +226,12 @@ class QuizAdmin(admin.ModelAdmin):
         return render(request, "admin/qna/quiz/import.html", context)
 
 
-@admin.register(UserInterest)
-class UserInterestAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "category")
-    list_display_links = ("id", "user", "category")
-    search_fields = ("user__username", "category__name")
-    list_filter = ("category",)
+# @admin.register(UserInterest)
+# class UserInterestAdmin(admin.ModelAdmin):
+#     list_display = ("id", "user", "category")
+#     list_display_links = ("id", "user", "category")
+#     search_fields = ("user__username", "category__name")
+#     list_filter = ("category",)
 
 
 @admin.register(QuizResult)

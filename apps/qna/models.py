@@ -51,7 +51,7 @@ class Question(models.Model):
     def random_question(cls, user):
         if not user.is_authenticated:
             return cls.objects.order_by("?").first()
-        user_interests = user.interests.values_list("category", flat=True)
+        user_interests = user.interests.all()
         return cls.objects.filter(categories__in=user_interests).order_by("?").first()
     
     @property
@@ -103,14 +103,14 @@ class Quiz(models.Model):
         verbose_name_plural = "Quizzes"
 
 
-class UserInterest(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="interests")
-    category = models.ForeignKey(
-        Category, on_delete=models.CASCADE, related_name="interests"
-    )
+# class UserInterest(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="interests")
+#     category = models.ForeignKey(
+#         Category, on_delete=models.CASCADE, related_name="interests"
+#     )
 
-    def __str__(self):
-        return f"{self.user.username} - {self.category.name}"
+#     def __str__(self):
+#         return f"{self.user.username} - {self.category.name}"
 
 
 class QuizResult(models.Model):
