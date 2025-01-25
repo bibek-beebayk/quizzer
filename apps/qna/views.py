@@ -132,27 +132,28 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 @login_required
 def quiz_list_view(request):
     category_id = request.GET.get("category")
-
+    taken = request.GET.get("taken")
     # Base queryset for quizzes
-    quizzes = (
-        Quiz.objects.annotate(
-            is_taken=Exists(
-                QuizResult.objects.filter(user=request.user, quiz=OuterRef("pk"))
-            ),
-            user_score_percentage=Subquery(
-                QuizResult.objects.filter(
-                    user=request.user, quiz=OuterRef("pk")
-                ).values("percentage")[:1],
-                output_field=FloatField(),
-            ),
-        )
-        # .filter(category_id=category_id if category_id else None)
-        # .order_by("-created_at")
+    quizzes = Quiz.objects.annotate(
+        is_taken=Exists(
+            QuizResult.objects.filter(user=request.user, quiz=OuterRef("pk"))
+        ),
+        user_score_percentage=Subquery(
+            QuizResult.objects.filter(user=request.user, quiz=OuterRef("pk")).values(
+                "percentage"
+            )[:1],
+            output_field=FloatField(),
+        ),
     )
 
     if category_id:
         quizzes = quizzes.filter(category_id=category_id)
 
+    if taken == "taken":
+        quizzes = quizzes.filter(is_taken=True)
+    elif taken == "not-taken":
+        quizzes = quizzes.filter(is_taken=False)
+        
     quizzes = quizzes.order_by("-created_at")
     # Pagination
     paginator = Paginator(quizzes, 5)  # Show 10 quizzes per page
