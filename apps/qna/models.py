@@ -52,6 +52,8 @@ class Question(models.Model):
         if not user.is_authenticated:
             return cls.objects.order_by("?").first()
         user_interests = user.interests.all()
+        if not user_interests.exists():
+            return cls.objects.order_by("?").first()
         return cls.objects.filter(categories__in=user_interests).order_by("?").first()
     
     @property
