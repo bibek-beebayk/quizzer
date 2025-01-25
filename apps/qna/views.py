@@ -4,7 +4,9 @@ import random
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Sum, OuterRef, Exists, Subquery, FloatField
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db import IntegrityError, transaction
+from django.db.models import Count, Exists, FloatField, OuterRef, Subquery, Sum
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
@@ -87,9 +89,6 @@ def logout_view(request):
     return redirect("index")
 
 
-from django.db import IntegrityError, transaction
-
-
 @transaction.atomic
 def register_view(request):
     context = {}
@@ -124,9 +123,6 @@ def save_quiz_results(request):
         return JsonResponse({"status": "success"})
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
-
-
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 @login_required

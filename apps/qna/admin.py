@@ -1,16 +1,7 @@
 from django.contrib import admin, messages
-from django.db.models import Count
 from django.shortcuts import redirect, render
 
-from .models import (
-    Answer,
-    Category,
-    Collection,
-    Question,
-    Quiz,
-    QuizResult,
-    Tag,
-)
+from .models import Answer, Category, Collection, Question, Quiz, QuizResult, Tag
 
 
 @admin.register(Category)
@@ -224,14 +215,6 @@ class QuizAdmin(admin.ModelAdmin):
                 messages.error(request, "Please select a file to import")
 
         return render(request, "admin/qna/quiz/import.html", context)
-
-
-# @admin.register(UserInterest)
-# class UserInterestAdmin(admin.ModelAdmin):
-#     list_display = ("id", "user", "category")
-#     list_display_links = ("id", "user", "category")
-#     search_fields = ("user__username", "category__name")
-#     list_filter = ("category",)
 
 
 @admin.register(QuizResult)

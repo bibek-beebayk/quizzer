@@ -49,7 +49,9 @@ class User(AbstractUser):
         if self.total_questions_answered == 0:
             return 0
         # total_score = sum(quiz.percentage for quiz in self.quizzes.all())
-        return round((self.total_correct_answers / self.total_questions_answered)*100, 2)
+        return round(
+            (self.total_correct_answers / self.total_questions_answered) * 100, 2
+        )
 
     @property
     def highest_score(self):
@@ -101,9 +103,7 @@ class User(AbstractUser):
 
 
 class RequestLog(models.Model):
-    endpoint = models.CharField(
-        max_length=1000, null=True
-    )
+    endpoint = models.CharField(max_length=1000, null=True)
     user = models.CharField(max_length=255)
     response_code = models.PositiveSmallIntegerField()
     method = models.CharField(max_length=10, null=True)
@@ -111,5 +111,5 @@ class RequestLog(models.Model):
     exec_time = models.IntegerField(null=True)
     date = models.DateTimeField(auto_now=True)
     body_response = models.TextField(null=True)
-    body_request = models.TextField(null=True) 
+    body_request = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)

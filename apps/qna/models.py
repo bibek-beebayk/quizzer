@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
 
 User = get_user_model()
 
@@ -55,7 +55,7 @@ class Question(models.Model):
         if not user_interests.exists():
             return cls.objects.order_by("?").first()
         return cls.objects.filter(categories__in=user_interests).order_by("?").first()
-    
+
     @property
     def categories_str(self):
         return ", ".join([category.name for category in self.categories.all()])
@@ -95,7 +95,7 @@ class Quiz(models.Model):
 
     def __str__(self) -> str:
         return self.name
-    
+
     def save(self, *args, **kwargs):
         if not self.category_id:
             self.category = Category.objects.get_or_create(name="Random")[0]
@@ -103,16 +103,6 @@ class Quiz(models.Model):
 
     class Meta:
         verbose_name_plural = "Quizzes"
-
-
-# class UserInterest(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="interests")
-#     category = models.ForeignKey(
-#         Category, on_delete=models.CASCADE, related_name="interests"
-#     )
-
-#     def __str__(self):
-#         return f"{self.user.username} - {self.category.name}"
 
 
 class QuizResult(models.Model):
