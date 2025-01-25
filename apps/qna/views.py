@@ -140,17 +140,20 @@ def quiz_list_view(request):
                 QuizResult.objects.filter(user=request.user, quiz=OuterRef("pk"))
             ),
             user_score_percentage=Subquery(
-            QuizResult.objects.filter(
-                user=request.user,
-                quiz=OuterRef('pk')
-            ).values('percentage')[:1],
-            output_field=FloatField()
-        )
+                QuizResult.objects.filter(
+                    user=request.user, quiz=OuterRef("pk")
+                ).values("percentage")[:1],
+                output_field=FloatField(),
+            ),
         )
         # .filter(category_id=category_id if category_id else None)
-        .order_by("-created_at")
+        # .order_by("-created_at")
     )
 
+    if category_id:
+        quizzes = quizzes.filter(category_id=category_id)
+
+    quizzes = quizzes.order_by("-created_at")
     # Pagination
     paginator = Paginator(quizzes, 5)  # Show 10 quizzes per page
     page = request.GET.get("page", 1)
