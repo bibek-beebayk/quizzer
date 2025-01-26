@@ -2,6 +2,8 @@ from django.contrib import admin, messages
 from django.shortcuts import redirect, render
 
 from .models import Answer, Category, Collection, Question, Quiz, QuizResult, Tag
+from django.db.models import Prefetch
+from django.utils import timezone
 
 
 @admin.register(Category)
@@ -22,6 +24,9 @@ class AnswerInline(admin.TabularInline):
     model = Answer
     extra = 0
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related("question")
+
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
@@ -32,14 +37,14 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ("id", "question_text", "category")
+    list_display = ("id", "question_text")
     list_display_links = ("id", "question_text")
     search_fields = ("question_text",)
-    list_filter = ("collections", "categories")
+    list_filter = ["categories"]
     inlines = [AnswerInline]
 
-    def category(self, obj):
-        return ", ".join([c.name for c in obj.categories.all()])
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("answers", "categories")
 
     def get_urls(self):
         from django.urls import path
@@ -123,13 +128,29 @@ class QuestionAdmin(admin.ModelAdmin):
 
 @admin.register(Quiz)
 class QuizAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "name",
-    )
+    list_display = ("id", "name", "question_count", "time_to_publish")
     list_display_links = ("id", "name")
     search_fields = ("name",)
-    list_filter = ("questions",)
+    list_filter = ("category",)
+    list_per_page = 50
+    autocomplete_fields = ["questions"]
+
+    def time_to_publish(self, obj):
+
+        if obj.publish_at <= timezone.now():
+            return "Published"
+        return obj.publish_at
+
+    def get_queryset(self, request):
+        return Quiz.objects.prefetch_related(
+            "questions",
+            "questions__categories",
+            "questions__answers",
+            "questions__tags",
+        ).select_related("category")
+
+    def question_count(self, obj):
+        return obj.questions.count()
 
     def get_urls(self):
         from django.urls import path
@@ -147,7 +168,7 @@ class QuizAdmin(admin.ModelAdmin):
     def import_view(self, request):
         context = dict(
             self.admin_site.each_context(request),
-            title="Import Quuiz",
+            title="Import Quiz",
             app_label=self.model._meta.app_label,
             opts=self.model._meta,
             has_permission=self.has_module_permission(request),
@@ -186,7 +207,9 @@ class QuizAdmin(admin.ModelAdmin):
                         #     question_text__iexact=question_text
                         # ).exists():
                         #     continue
-                        question = Question.objects.create(question_text=question_text, publist_at=publish_time)
+                        question = Question.objects.create(
+                            question_text=question_text, publist_at=publish_time
+                        )
                         if type(row["Hint"]) == str:
                             question.hint = row["Hint"]
                         if type(row["Difficulty"]) == str:

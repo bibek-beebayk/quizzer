@@ -10,8 +10,10 @@ ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = ["https://erp-tunnel.kalodhunga.com"]
 
 # INSTALLED_APPS += ["django_browser_reload"]
+INSTALLED_APPS += ["debug_toolbar"]
 
 # MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
+MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
 
 DATABASES = {
     "default": {
@@ -36,3 +38,22 @@ AWS_S3_ENDPOINT_URL = (
     "https://b46a64eb384beb50a5fc80946bc0abc7.r2.cloudflarestorage.com/bonewa"
 )
 AWS_S3_SIGNATURE_VERSION = "s3v4"
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+# LOGGING = {
+#     "version": 1,
+#     "handlers": {
+#         "console": {
+#             "class": "logging.StreamHandler",
+#         },
+#     },
+#     "loggers": {
+#         "django.db.backends": {
+#             "level": "DEBUG",
+#             "handlers": ["console"],
+#         },
+#     },
+# }
