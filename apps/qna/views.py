@@ -48,7 +48,7 @@ def quiz_view(request):
             context["category"] = category
             quiz_name = category.name + " Quiz"
     elif quiz_id:
-        quiz = Quiz.get(id=quiz_id)
+        quiz = Quiz.objects.get(id=quiz_id)
         questions = quiz.questions.order_by("?")
         quiz_name = quiz.name
         context["quiz_id"] = quiz_id
