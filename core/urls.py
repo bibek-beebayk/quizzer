@@ -9,6 +9,7 @@ urlpatterns = (
         path("", include("apps.qna.urls")),
         path("", include("pwa.urls")),
         path("", include("apps.users.urls")),
+        path("", include("apps.blog.urls")),
         # path("__reload__/", include("django_browser_reload.urls")),
         path("ckeditor5/", include('django_ckeditor_5.urls')),
     ]
