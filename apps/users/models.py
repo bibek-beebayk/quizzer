@@ -48,7 +48,6 @@ class User(AbstractUser):
     def average_score(self):
         if self.total_questions_answered == 0:
             return 0
-        # total_score = sum(quiz.percentage for quiz in self.quizzes.all())
         return round(
             (self.total_correct_answers / self.total_questions_answered) * 100, 2
         )

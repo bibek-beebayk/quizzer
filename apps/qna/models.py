@@ -51,7 +51,7 @@ class Question(models.Model):
 
     @classmethod
     def published(cls):
-        return cls.objects.filter(publish_at__lte=timezone.now())
+        return cls.objects.prefetch_related("answers").filter(publish_at__lte=timezone.now())
 
     @classmethod
     def random_question(cls, user):
@@ -113,7 +113,7 @@ class Quiz(models.Model):
 
     @classmethod
     def published(cls):
-        return cls.objects.filter(publish_at__lte=timezone.now())
+        return cls.objects.prefetch_related("questions").filter(publish_at__lte=timezone.now())
 
     def __str__(self) -> str:
         return self.name

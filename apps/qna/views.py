@@ -20,7 +20,7 @@ def index(request):
     context = {}
     random_question = Question.random_question(request.user)
     categories = (
-        Category.objects.annotate(questions_count=Count("questions"))
+        Category.objects.prefetch_related("questions").annotate(questions_count=Count("questions"))
         .filter(questions_count__gt=0)
         .order_by("name")
     )
@@ -44,12 +44,14 @@ def quiz_view(request):
             quiz_name = "Random Quiz"
         else:
             category = Category.objects.get(id=category_id)
-            questions = Question.published().filter(category=category).order_by("?")[:10]
+            questions = (
+                Question.published().filter(category=category).order_by("?")[:10]
+            )
             context["category"] = category
             quiz_name = category.name + " Quiz"
     elif quiz_id:
         quiz = Quiz.objects.get(id=quiz_id)
-        questions = quiz.questions.order_by("?")
+        questions = quiz.questions.prefetch_related("answers").order_by("?")
         quiz_name = quiz.name
         context["quiz_id"] = quiz_id
 
@@ -64,7 +66,6 @@ def quiz_view(request):
     ]
     context["quiz_name"] = quiz_name
     return render(request, "quiz.html", context)
-
 
 
 @transaction.atomic
