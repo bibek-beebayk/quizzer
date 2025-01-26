@@ -30,7 +30,7 @@ def index(request):
             is_correct=True
         )
     context["categories"] = categories
-    context["questions_count"] = Question.objects.count()
+    context["questions_count"] = Question.published().count()
     return render(request, "index.html", context)
 
 
@@ -40,15 +40,15 @@ def quiz_view(request):
     context = {}
     if category_id:
         if category_id == "random":
-            questions = Question.objects.order_by("?")[:10]
+            questions = Question.published().order_by("?")[:10]
             quiz_name = "Random Quiz"
         else:
             category = Category.objects.get(id=category_id)
-            questions = category.questions.order_by("?")[:10]
+            questions = Question.published().filter(category=category).order_by("?")[:10]
             context["category"] = category
             quiz_name = category.name + " Quiz"
     elif quiz_id:
-        quiz = Quiz.objects.get(id=quiz_id)
+        quiz = Quiz.get(id=quiz_id)
         questions = quiz.questions.order_by("?")
         quiz_name = quiz.name
         context["quiz_id"] = quiz_id
@@ -108,7 +108,7 @@ def quiz_list_view(request):
     category_id = request.GET.get("category")
     taken = request.GET.get("taken")
     # Base queryset for quizzes
-    quizzes = Quiz.objects.annotate(
+    quizzes = Quiz.published().annotate(
         is_taken=Exists(
             QuizResult.objects.filter(user=request.user, quiz=OuterRef("pk"))
         ),

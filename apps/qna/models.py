@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -39,6 +40,7 @@ class Question(models.Model):
         choices=(("Easy", "Easy"), ("Medium", "Medium"), ("Hard", "Hard")),
         default="Easy",
     )
+    publish_at = models.DateTimeField(default=timezone.now)
 
     @property
     def has_quiz(self):
@@ -48,13 +50,19 @@ class Question(models.Model):
         return f"{self.question_text} - {self.categories.first()} - {self.has_quiz}"
 
     @classmethod
+    def published(cls):
+        return cls.objects.filter(publish_at__lte=timezone.now())
+
+    @classmethod
     def random_question(cls, user):
         if not user.is_authenticated:
-            return cls.objects.order_by("?").first()
+            return cls.published().order_by("?").first()
         user_interests = user.interests.all()
         if not user_interests.exists():
-            return cls.objects.order_by("?").first()
-        return cls.objects.filter(categories__in=user_interests).order_by("?").first()
+            return cls.published().order_by("?").first()
+        return (
+            cls.published().filter(categories__in=user_interests).order_by("?").first()
+        )
 
     @property
     def categories_str(self):
@@ -92,14 +100,23 @@ class Quiz(models.Model):
         null=True,
     )
     created_at = models.DateTimeField(auto_now_add=True)
+    publish_at = models.DateTimeField(default=timezone.now)
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            old_quiz = Quiz.objects.get(pk=self.pk)
+            if old_quiz.publish_at != self.publish_at:
+                self.questions.update(publish_at=self.publish_at)
+        if not self.category_id:
+            self.category = Category.objects.get_or_create(name="Random")[0]
+        return super().save(*args, **kwargs)
+
+    @classmethod
+    def published(cls):
+        return cls.objects.filter(publish_at__lte=timezone.now())
 
     def __str__(self) -> str:
         return self.name
-
-    def save(self, *args, **kwargs):
-        if not self.category_id:
-            self.category = Category.objects.get_or_create(name="Random")[0]
-        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = "Quizzes"

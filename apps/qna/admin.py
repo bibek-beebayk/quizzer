@@ -147,7 +147,7 @@ class QuizAdmin(admin.ModelAdmin):
     def import_view(self, request):
         context = dict(
             self.admin_site.each_context(request),
-            title="Import Questions",
+            title="Import Quuiz",
             app_label=self.model._meta.app_label,
             opts=self.model._meta,
             has_permission=self.has_module_permission(request),
@@ -169,7 +169,10 @@ class QuizAdmin(admin.ModelAdmin):
                         quiz_name = (
                             f"{quiz_name} - {timezone.now().strftime('%Y%m%d%H%M%S')}"
                         )
-                    quiz = Quiz.objects.create(name=quiz_name, category=category)
+                    publish_time = timezone.now() + timezone.timedelta(minutes=1440)
+                    quiz = Quiz.objects.create(
+                        name=quiz_name, category=category, publish_at=publish_time
+                    )
                     for _, row in df.iterrows():
                         categories = row["Category"].split(",")
                         category_objs = []
@@ -183,7 +186,7 @@ class QuizAdmin(admin.ModelAdmin):
                         #     question_text__iexact=question_text
                         # ).exists():
                         #     continue
-                        question = Question.objects.create(question_text=question_text)
+                        question = Question.objects.create(question_text=question_text, publist_at=publish_time)
                         if type(row["Hint"]) == str:
                             question.hint = row["Hint"]
                         if type(row["Difficulty"]) == str:
