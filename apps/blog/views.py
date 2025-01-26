@@ -22,3 +22,12 @@ def blog_list_view(request):
         paginated_blogs = paginator.page(paginator.num_pages)
     context["blogs"] = paginated_blogs
     return render(request, "blog/list.html", context)
+
+
+def blog_detail_view(request, slug):
+    context = {}
+    blog = Blog.objects.get(slug=slug)
+    context["blog"] = blog
+    context["related_posts"] = Blog.objects.exclude(id=blog.id).order_by("-publish_at")[:5]
+    return render(request, "blog/detail.html", context)
+

@@ -2,6 +2,8 @@ from django.db import models
 from django.utils import timezone
 from django_ckeditor_5.fields import CKEditor5Field
 
+from core.libs.utils import calculate_reading_time
+
 
 class BlogCategory(models.Model):
     name = models.CharField(max_length=100)
@@ -30,6 +32,10 @@ class Blog(models.Model):
     publish_at = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def reading_time(self):
+        return calculate_reading_time(self.content)
 
     def __str__(self):
         return self.title
