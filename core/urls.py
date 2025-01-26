@@ -10,6 +10,7 @@ urlpatterns = (
         path("", include("pwa.urls")),
         path("", include("apps.users.urls")),
         # path("__reload__/", include("django_browser_reload.urls")),
+        path("ckeditor5/", include('django_ckeditor_5.urls')),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,7 +1,7 @@
 Django
 psycopg2-binary
 django-cors-headers
-django-ckeditor
+django-ckeditor-5
 django-filter
 Pillow
 django-jazzmin
