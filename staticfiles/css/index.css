@@ -109,6 +109,8 @@
     font-size: larger;
 }
 
+
+
 @media screen and (max-width: 768px) {
     .random-question {
         width: 98%;

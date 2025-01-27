@@ -7,17 +7,78 @@
 
 {% block content %}
 
+<style>
+    .answers {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .answer {
+        display: flex;
+        width: 42%;
+        height: 60px;
+        background-color: rgb(198, 195, 193);
+        align-items: center;
+        justify-content: center;
+        text-justify: center;
+        border-radius: 5px;
+        cursor: pointer;
+        padding: 5px;
+    }
+
+    .answer:hover {
+        box-shadow: 2px 2px 5px;
+    }
+
+    .recent-blogs-section {
+        width: auto;
+        margin-bottom: 20px;
+
+        h2 {
+            text-align: center;
+        }
+    }
+
+    .recent-posts {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+    }
+
+    .post-card {
+        width: 45%;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #dadada;
+
+        h3 {
+            margin: 0;
+        }
+    }
+
+    .post-card:hover {
+        box-shadow: 2px 2px 5px;
+    }
+
+    @media screen and (max-width: 480px) {
+        .post-card{
+            width: 90%;
+        }
+    }
+</style>
+
 <div class="main-container">
     <div class="random-question">
         <!-- <h2>Random Question</h2> -->
         <a href="/" class="shuffle"><i class="fa fa-random" style="font-size: large;"></i></a>
         <h4>{{random_question.question_text}} ({{random_question.categories_str}})</h4>
 
-        <div class="answers" style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between;">
+        <div class="answers">
             {%for answer in random_question.shuffled_answers%}
-            <span class="answer"
-                style="display: flex; width: 45%; height: 60px; background-color: rgb(198, 195, 193); align-items: center; justify-content: center; text-justify: center; border-radius: 5px; cursor: pointer;"
-                id="{{answer.id}}" onclick="handleAnswerClick(event)"
+            <span class="answer" id="{{answer.id}}" onclick="handleAnswerClick(event)"
                 data-is-correct="{{answer.is_correct}}">{{answer}}</span>
             {% endfor %}
         </div>
@@ -74,6 +135,20 @@
                     {% endif %}
                 </span>
             </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="recent-blogs-section">
+        <h2 style="font-weight: 100; margin-top: 20px;">Recent Blog Posts</h2>
+        <div class="recent-posts">
+            {% for blog in recent_blogs %}
+            <div class="post-card">
+                <h3>{{blog.title}}</h3>
+                <p>{{blog.publish_at}}</p>
+                <p>{{blog.reading_time}} minutes read</p>
+                <a href="/blogs/{{blog.slug}}">Read Post</a>
+            </div>
             {% endfor %}
         </div>
     </div>

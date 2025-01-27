@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
+from apps.blog.models import Blog
 from apps.qna.models import Category, Question, Quiz, QuizResult
 
 User = get_user_model()
@@ -49,6 +50,7 @@ def index(request):
         context["questions_count"] = request.user.interests.annotate(
             questions_count=Count("questions")
         ).aggregate(total_questions=Sum("questions_count"))["total_questions"]
+    context["recent_blogs"] = Blog.objects.order_by("-created_at")[:4]
     return render(request, "index.html", context)
 
 
