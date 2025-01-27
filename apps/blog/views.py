@@ -8,7 +8,7 @@ from apps.blog.models import Blog
 def blog_list_view(request):
     context = {}
     blogs = (
-        Blog.objects.select_related("category")
+        Blog.objects.prefetch_related("categories")
         .filter(publish_at__lte=timezone.now())
         .order_by("-publish_at")
     )

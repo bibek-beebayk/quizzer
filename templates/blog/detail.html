@@ -65,7 +65,7 @@
             {% if blog.author %}
             <span>Author: {{ blog.author.name }}</span>
             {% endif %}
-            <span>Category: {{ blog.category.name }}</span>
+            <span>Category: {{blog.category_str|safe}}</span>
         </div>
         <hr>
         <div class="blog-body">

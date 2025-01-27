@@ -10,7 +10,7 @@ class BlogCategory(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     class Meta:
         verbose_name_plural = "Blog Categories"
 
@@ -19,9 +19,7 @@ class Blog(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     content = CKEditor5Field(config_name="extends")
-    category = models.ForeignKey(
-        BlogCategory, on_delete=models.CASCADE, related_name="blogs"
-    )
+    categories = models.ManyToManyField(BlogCategory, related_name="blogs")
     author = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE,
@@ -32,6 +30,10 @@ class Blog(models.Model):
     publish_at = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def category_str(self):
+        return ", ".join([f"<a style='cursor:pointer;' href='/'>{category.name}</a>" for category in self.categories.all()])
 
     @property
     def reading_time(self):
