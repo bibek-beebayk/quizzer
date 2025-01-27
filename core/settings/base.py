@@ -99,12 +99,12 @@ PWA_APP_SCOPE = "/"
 PWA_APP_START_URL = "/"
 PWA_APP_ICONS = [
     {
-        "src": "/static/images/cropped.jpg",
+        "src": "/static/images/appicon.png",
         "sizes": "192x192",
         "type": "image/jpg",
     },
     {
-        "src": "/static/images/cropped.jpg",
+        "src": "/static/images/appicon.png",
         "sizes": "512x512",
         "type": "image/jpg",
     },
