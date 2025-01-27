@@ -35,6 +35,9 @@ def index(request):
             .order_by("name")
         )
     if random_question:
+        answers = list(random_question.answers.all())
+        random.shuffle(answers)
+        random_question.shuffled_answers = answers
         context["random_question"] = random_question
         context["random_question_correct_answer"] = random_question.answers.get(
             is_correct=True

@@ -14,7 +14,7 @@
         <h4>{{random_question.question_text}} ({{random_question.categories_str}})</h4>
 
         <div class="answers" style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between;">
-            {%for answer in random_question.answers.all%}
+            {%for answer in random_question.shuffled_answers%}
             <span class="answer"
                 style="display: flex; width: 45%; height: 60px; background-color: rgb(198, 195, 193); align-items: center; justify-content: center; text-justify: center; border-radius: 5px; cursor: pointer;"
                 id="{{answer.id}}" onclick="handleAnswerClick(event)"
