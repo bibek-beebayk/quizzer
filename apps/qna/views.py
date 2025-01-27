@@ -19,18 +19,33 @@ User = get_user_model()
 def index(request):
     context = {}
     random_question = Question.random_question(request.user)
-    categories = (
-        Category.objects.prefetch_related("questions").annotate(questions_count=Count("questions"))
-        .filter(questions_count__gt=0)
-        .order_by("name")
-    )
+
+    if request.user.pk:
+        categories = (
+            request.user.interests.prefetch_related("questions")
+            .annotate(questions_count=Count("questions"))
+            .filter(questions_count__gte=10)
+            .order_by("name")
+        )
+    else:
+        categories = (
+            Category.objects.prefetch_related("questions")
+            .annotate(questions_count=Count("questions"))
+            .filter(questions_count__gte=10)
+            .order_by("name")
+        )
     if random_question:
         context["random_question"] = random_question
         context["random_question_correct_answer"] = random_question.answers.get(
             is_correct=True
         )
     context["categories"] = categories
-    context["questions_count"] = Question.published().count()
+    if not request.user.pk:
+        context["questions_count"] = Question.published().count()
+    else:
+        context["questions_count"] = request.user.interests.annotate(
+            questions_count=Count("questions")
+        ).aggregate(total_questions=Sum("questions_count"))["total_questions"]
     return render(request, "index.html", context)
 
 
@@ -40,7 +55,14 @@ def quiz_view(request):
     context = {}
     if category_id:
         if category_id == "random":
-            questions = Question.published().order_by("?")[:10]
+            if request.user.pk:
+                questions = (
+                    Question.published()
+                    .filter(categories__in=request.user.interests.all())
+                    .order_by("?")[:10]
+                )
+            else:
+                questions = Question.published().order_by("?")[:10]
             quiz_name = "Random Quiz"
         else:
             category = Category.objects.get(id=category_id)

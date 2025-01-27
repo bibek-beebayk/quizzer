@@ -89,7 +89,7 @@
             {% csrf_token %}
             {% for question in questions %}
             <div class="question-block" data-question-id="{{question.id}}">
-                <h3>{{forloop.counter}}. {{question.question_text}}</h3>
+                <h3>{{forloop.counter}}. {{question.question_text}} ({{question.categories_str}})</h3>
                 <div class="options-container">
                     {% for answer in question.shuffled_answers %}
                     <div class="option-container" data-is-correct="{{answer.is_correct|lower}}">

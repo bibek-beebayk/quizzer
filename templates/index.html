@@ -9,11 +9,20 @@
 
 <div class="main-container">
     <div class="random-question">
-        <h2>Random Question</h2>
+        <!-- <h2>Random Question</h2> -->
         <a href="/" class="shuffle"><i class="fa fa-random" style="font-size: large;"></i></a>
         <h4>{{random_question.question_text}} ({{random_question.categories_str}})</h4>
 
-        <button id="showButton" class="button"
+        <div class="answers" style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: space-between;">
+            {%for answer in random_question.answers.all%}
+            <span class="answer"
+                style="display: flex; width: 45%; height: 60px; background-color: rgb(198, 195, 193); align-items: center; justify-content: center; text-justify: center; border-radius: 5px; cursor: pointer;"
+                id="{{answer.id}}" onclick="handleAnswerClick(event)"
+                data-is-correct="{{answer.is_correct}}">{{answer}}</span>
+            {% endfor %}
+        </div>
+
+        <!-- <button id="showButton" class="button"
             style="background-color: rgb(148, 223, 178); font-size: large; padding: 10px 20px; margin-bottom: 5px;">Show
             Choices</button>
         <div class="options" id="options">
@@ -36,11 +45,11 @@
             Answer</button>
         <div class="correct-answer" id="correctAnswer">
             <p>{{random_question_correct_answer.answer_text}}</p>
-        </div>
+        </div> -->
     </div>
 
     <div class=" categories">
-        <h2 style="font-weight: 100;">Take a quick quiz</h2>
+        <h2 style="font-weight: 100;">Take a quick quiz based on your interest</h2>
         <div class="category-list">
             <a href="/quiz/?category=random" class="tab">Randomized Quiz
                 <br>
@@ -93,6 +102,22 @@
         hintDiv.style.display = 'block';
         showHintButton.style.display = 'none';
     })
+
+    function handleAnswerClick(event) {
+        const isCorrect = event.target.dataset.isCorrect === "True";
+        console.log(isCorrect)
+        if (isCorrect) {
+            event.target.style.backgroundColor = 'rgb(148, 223, 178)';
+        } else {
+            const allAnswers = document.querySelectorAll('.answer');
+            event.target.style.backgroundColor = 'rgb(222, 124, 137)';
+            allAnswers.forEach(answer => {
+                if (answer.dataset.isCorrect === "True") {
+                    answer.style.backgroundColor = 'rgb(148, 223, 178)';
+                }
+            })
+        }
+    }
 
 </script>
 
