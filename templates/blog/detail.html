@@ -1,61 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block header %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/blog/detail.css' %}">
+{% endblock %}
+
 {% block content %}
-
-<style>
-    .blog-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        padding: 40px 0;
-    }
-
-    .blog-content {
-        width: 50%;
-        line-height: 1.6;
-        color: rgb(36, 36, 36);
-    }
-
-    .blog-meta {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-        color: rgb(89, 56, 56);
-        font-size: 14px;
-    }
-
-    .related-posts {
-        width: 50%;
-        margin-top: 40px;
-        background-color: rgb(218, 218, 218);
-        padding: 20px;
-        border-radius: 10px;
-    }
-
-    .related-post-link {
-        text-decoration: none;
-        display: block;
-        margin-bottom: 10px;
-        color: rgb(63, 63, 63);
-        padding: 10px;
-        border: 1px solid rgb(173, 173, 173);
-        border-radius: 10px;
-    }
-
-    .related-post-link:hover {
-        background-color: rgb(63, 63, 63);
-        color: rgb(218, 218, 218);
-    }
-
-    @media screen and (max-width: 768px) {
-        .blog-content, .related-posts {
-            width: 95%;
-        }
-    }
-</style>
-
 <div class="blog-container">
     <div class="blog-content">
         <h1>{{ blog.title }}</h1>
@@ -76,13 +26,13 @@
     <div class="related-posts">
         <h3>Related Posts</h3>
         {% for post in related_posts %}
-            <a href="/blogs/{{post.slug}}" class="related-post-link">
-                {{ post.title }}
-                <br>
-                <small>{{ post.category.name }}</small>
-            </a>
+        <a href="/blogs/{{post.slug}}" class="related-post-link">
+            {{ post.title }}
+            <br>
+            <small>{{ post.category.name }}</small>
+        </a>
         {% empty %}
-            <p>No related posts found.</p>
+        <p>No related posts found.</p>
         {% endfor %}
     </div>
 </div>

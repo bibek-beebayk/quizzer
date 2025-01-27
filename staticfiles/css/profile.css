@@ -1,0 +1,240 @@
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    color: rgb(36, 36, 36);
+    padding: 20px 0;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    width: 60%;
+    min-width: 400px;
+    padding: 20px;
+    background-color: rgb(218, 218, 218);
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgb(173, 173, 173);
+}
+
+.profile-info {
+    flex-grow: 1;
+}
+
+.edit-button {
+    text-decoration: none;
+    padding: 8px 16px;
+    background-color: rgb(148, 223, 178);
+    border: none;
+    border-radius: 5px;
+    color: rgb(63, 63, 63);
+    cursor: pointer;
+}
+
+.edit-button:hover {
+    box-shadow: 0px 0px 5px 0px rgba(122, 122, 122, 1);
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 60%;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px 0px rgba(122, 122, 122, 0.3);
+}
+
+.interests-section {
+    width: 60%;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* gap: 10px; */
+}
+
+.edit-interests-btn {
+    background-color: rgb(148, 223, 178);
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 500px;
+}
+
+.modal-interests {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.modal-interests label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.interests-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.interest-tag {
+    background-color: rgb(252, 169, 169);
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.recent-quizzes {
+    width: 60%;
+}
+
+.quiz-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: rgb(248, 248, 248);
+    border-radius: 5px;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+#passwordChangeModal .modal-content {
+    max-width: 400px;
+    padding: 30px;
+}
+
+#passwordChangeModal form>div {
+    margin-bottom: 15px;
+}
+
+#passwordChangeModal label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+#passwordChangeModal input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#passwordChangeModal .modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+#passwordChangeModal .modal-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#passwordChangeModal .modal-actions button:first-child {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+#passwordChangeModal .modal-actions button:last-child {
+    background-color: rgb(148, 223, 178);
+    color: #333;
+}
+
+#passwordChangeModal .modal-actions button:hover {
+    opacity: 0.9;
+}
+
+#passwordChangeErrorDiv {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+
+    .profile-header,
+    .stats-container,
+    .interests-section,
+    .recent-quizzes {
+        width: 95%;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        padding: 20px 0;
+    }
+
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-container {
+        padding: 10px 0;
+    }
+
+    .modal-interests {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block header %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+{% endblock %}
 
 {% block content %}
 
@@ -24,69 +29,5 @@
     </div>
     <button type="submit">Login</button>
 </form>
-
-<style>
-    form {
-        width: 95vw;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 85vh;
-        gap: 10px;
-        justify-self: center;
-    }
-
-    .form-group {
-        /* margin: 10px 0; */
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        min-width: 250px;
-    }
-
-    .form-control {
-        padding: 5px;
-        border-radius: 5px;
-        border: 1px solid rgb(173, 173, 173);
-        height: 30px;
-        outline: none;
-    }
-
-    button {
-        border-radius: 5px;
-        border: 1px solid rgb(173, 173, 173);
-        background-color: rgb(36, 20, 114);
-        color: white;
-        cursor: pointer;
-        outline: none;
-        min-width: 250px;
-        padding: 10px 0;
-        margin-top: 5px;
-    }
-
-    button:hover {
-        background-color: rgb(36, 20, 94);
-    }
-
-    .alert {
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid transparent;
-        border-radius: 5px;
-    }
-
-    .alert.error {
-        color: #a94442;
-        background-color: #f2dede;
-        border-color: #ebccd1;
-    }
-
-    .alert.success {
-        color: #3c763d;
-        background-color: #dff0d8;
-        border-color: #d6e9c6;
-    }
-</style>
 
 {% endblock %}

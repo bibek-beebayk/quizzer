@@ -45,7 +45,7 @@ def quiz_view(request):
         else:
             category = Category.objects.get(id=category_id)
             questions = (
-                Question.published().filter(category=category).order_by("?")[:10]
+                Question.published().filter(categories=category).order_by("?")[:10]
             )
             context["category"] = category
             quiz_name = category.name + " Quiz"

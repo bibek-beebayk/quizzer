@@ -1,28 +1,5 @@
 {% load static %}
-<div class="nav-container">
-    <a href=""></a>
-    <span
-        style="color: black; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-weight: 600; letter-spacing: 1px; font-size: x-large; cursor: pointer;"
-        id="btn">qUIZZER</span>
 
-    <div class="menu">
-        <a href="/">Home</a>
-        <a href="/blogs">Blog</a>
-        {% if user.is_authenticated %}
-        <a href="/quiz-list">Quizzes</a>
-        <a href="/profile">Profile</a>
-        <a href="{% url 'logout' %}">Logout</a>
-        {% else %}
-        <a href="{% url 'login' %}">Login</a>
-        <a href="{% url 'register' %}">Register</a>
-        {% endif %}
-    </div>
-</div>
-{% if not user.is_authenticated %}
-<div style="background-color: rgb(210, 145, 145); padding: 2px 0; text-align: center; font-size: 12px; font-weight: 300; color: rgb(44, 44, 44);">
-    <i>Sign up to track your progress and get personalized content.</i>
-</div>
-{% endif %}
 <style>
     .nav-container {
         height: auto;
@@ -72,6 +49,31 @@
         } */
     }
 </style>
+
+<div class="nav-container">
+    <a href=""></a>
+    <span
+        style="color: black; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-weight: 600; letter-spacing: 1px; font-size: x-large; cursor: pointer;"
+        id="btn">qUIZZER</span>
+
+    <div class="menu">
+        <a href="/">Home</a>
+        <a href="/blogs">Blog</a>
+        {% if user.is_authenticated %}
+        <a href="/quiz-list">Quizzes</a>
+        <a href="/profile">Profile</a>
+        <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+    </div>
+</div>
+{% if not user.is_authenticated %}
+<div style="background-color: rgb(210, 145, 145); padding: 2px 0; text-align: center; font-size: 12px; font-weight: 300; color: rgb(44, 44, 44);">
+    <i>Sign up to track your progress and get personalized content.</i>
+</div>
+{% endif %}
 
 <script>
     var button = document.getElementById('btn');
