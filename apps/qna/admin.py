@@ -131,6 +131,7 @@ class QuizAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "question_count", "time_to_publish")
     list_display_links = ("id", "name")
     search_fields = ("name",)
+    search_fields = ("name",)
     list_filter = ("category",)
     list_per_page = 50
     autocomplete_fields = ["questions"]
@@ -208,7 +209,7 @@ class QuizAdmin(admin.ModelAdmin):
                         # ).exists():
                         #     continue
                         question = Question.objects.create(
-                            question_text=question_text, publist_at=publish_time
+                            question_text=question_text, publish_at=publish_time
                         )
                         if type(row["Hint"]) == str:
                             question.hint = row["Hint"]
