@@ -33,7 +33,8 @@ class Blog(models.Model):
 
     @property
     def category_str(self):
-        return ", ".join([f"<a style='cursor:pointer;' href='/'>{category.name}</a>" for category in self.categories.all()])
+        # return ", ".join([f"<a style='cursor:pointer;' href='/'>{category.name}</a>" for category in self.categories.all()])
+        return ", ".join([category.name for category in self.categories.all()])
 
     @property
     def reading_time(self):

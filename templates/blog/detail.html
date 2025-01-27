@@ -76,7 +76,7 @@
     <div class="related-posts">
         <h3>Related Posts</h3>
         {% for post in related_posts %}
-            <a href="/" class="related-post-link">
+            <a href="/blogs/{{post.slug}}" class="related-post-link">
                 {{ post.title }}
                 <br>
                 <small>{{ post.category.name }}</small>
