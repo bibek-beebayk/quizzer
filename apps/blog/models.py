@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django_ckeditor_5.fields import CKEditor5Field
+from django_summernote.fields import SummernoteTextField
 
 from core.libs.utils import calculate_reading_time
 
@@ -18,7 +19,7 @@ class BlogCategory(models.Model):
 class Blog(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
-    content = CKEditor5Field(config_name="extends")
+    content = CKEditor5Field(config_name="default")
     categories = models.ManyToManyField(BlogCategory, related_name="blogs")
     cover_image = models.ImageField(upload_to="blog_covers/", blank=True, null=True)
     author = models.ForeignKey(

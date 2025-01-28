@@ -12,6 +12,9 @@ urlpatterns = (
         path("", include("apps.blog.urls")),
         # path("__reload__/", include("django_browser_reload.urls")),
         path("ckeditor5/", include('django_ckeditor_5.urls')),
+        # path("upload/", custom_upload_function, name="custom_upload_file"),
+        path('summernote/', include('django_summernote.urls')),
+
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
