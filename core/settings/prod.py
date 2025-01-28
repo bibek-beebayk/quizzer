@@ -11,8 +11,6 @@ CSRF_TRUSTED_ORIGINS = ["https://quizzer-production-35fb.up.railway.app", "https
 
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
 AWS_ACCESS_KEY_ID = '1f8bcff6b47d61799db7beaae02a3fa4'
 AWS_SECRET_ACCESS_KEY = '78e32042ccce9896aa5b5767338949146eda472fd532328302be87d2b0ed5260'
 AWS_STORAGE_BUCKET_NAME = 'quizzer'
