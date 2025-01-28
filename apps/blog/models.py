@@ -20,6 +20,7 @@ class Blog(models.Model):
     slug = models.SlugField(unique=True)
     content = CKEditor5Field(config_name="extends")
     categories = models.ManyToManyField(BlogCategory, related_name="blogs")
+    cover_image = models.ImageField(upload_to="blog_covers/", blank=True, null=True)
     author = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE,
