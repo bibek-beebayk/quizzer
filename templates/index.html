@@ -35,6 +35,9 @@
     .recent-blogs-section {
         width: auto;
         margin-bottom: 20px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
 
         h2 {
             text-align: center;
@@ -42,17 +45,22 @@
     }
 
     .recent-posts {
-        display: flex;
+        display: grid;
+        width: 100%;
+        grid-template-columns: repeat(2, 1fr);
         gap: 20px;
-        flex-wrap: wrap;
-        justify-content: space-evenly;
+        align-items: center;
+        justify-content: center;
     }
 
     .post-card {
-        width: 45%;
+        /* min-width: 250px; */
+        /* width: 45%; */
+        max-width: 400px;
         padding: 10px;
         border-radius: 5px;
         background-color: #dadada;
+        display: block;
 
         h3 {
             margin: 0;
@@ -65,7 +73,12 @@
 
     @media screen and (max-width: 480px) {
         .post-card {
-            width: 90%;
+            /* width: 90%; */
+            max-width: 100%;
+        }
+
+        .recent-posts{
+            grid-template-columns: repeat(1, 1fr);
         }
     }
 </style>
@@ -110,7 +123,7 @@
     </div>
 
     <div class=" categories">
-        <h2 style="font-weight: 100;">Take a quick quiz based on your interest</h2>
+        <h2 style="font-weight: 100; text-align: center;">Take a quick quiz based on your interest</h2>
         <div class="category-list">
             <a href="/quiz/?category=random" class="tab">Randomized Quiz
                 <br>
