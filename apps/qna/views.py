@@ -13,6 +13,7 @@ from django.views.decorators.http import require_POST
 
 from apps.blog.models import Blog
 from apps.qna.models import Category, Question, Quiz, QuizResult
+from django.urls import reverse
 
 User = get_user_model()
 
@@ -57,9 +58,6 @@ def index(request):
 def quiz_view(request):
     category_id = request.GET.get("category")
     quiz_id = request.GET.get("quiz")
-    if quiz_id and not request.user.is_authenticated:
-        messages.error(request, "Please login or signup to take quiz.")
-        return redirect("login")
     context = {}
     if category_id:
         if category_id == "random":
@@ -80,6 +78,17 @@ def quiz_view(request):
             context["category"] = category
             quiz_name = category.name + " Quiz"
     elif quiz_id:
+        if not request.user.is_authenticated:
+            messages.error(request, "Please login or signup to take quiz.")
+            return redirect("login")
+        user_quiz_results = QuizResult.objects.filter(user=request.user).values_list(
+            "quiz_id", flat=True
+        )
+        if int(quiz_id) in user_quiz_results:
+            messages.error(request, "You have already taken this quiz.Here are some quizes that you can take now.")
+            base_url = reverse("quiz-list")
+            params = "taken=taken"
+            return f"{base_url}?{params}"
         quiz = Quiz.objects.get(id=quiz_id)
         questions = quiz.questions.prefetch_related("answers").order_by("?")
         quiz_name = quiz.name
