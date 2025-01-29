@@ -8,14 +8,14 @@
 {% block content %}
 
 <style>
-    .blog-body img{
+    .blog-body img {
         width: 100%;
         height: auto;
-    }   
+    }
 </style>
 
-<div class="blog-container">30
-height: auto;    <div class="blog-content">
+<div class="blog-container">
+    <div class="blog-content">
         <h1>{{ blog.title }}</h1>
         <hr>
         <div class="blog-meta">
@@ -27,7 +27,8 @@ height: auto;    <div class="blog-content">
         </div>
         <hr>
         {% if blog.cover_image %}
-        <img src="{{blog.cover_image.url}}" alt="cover_image" style="width: 100%; border-radius: 5px; box-shadow: 2px 2px 2px;">
+        <img src="{{blog.cover_image.url}}" alt="cover_image"
+            style="width: 100%; border-radius: 5px; box-shadow: 2px 2px 2px;">
         {% endif %}
         <div class="blog-body">
             {{ blog.content|safe }}
