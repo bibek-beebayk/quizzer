@@ -86,7 +86,7 @@ def quiz_view(request):
         )
         if int(quiz_id) in user_quiz_results:
             messages.error(request, "You have already taken this quiz.Here are some quizes that you can take now.")
-            base_url = reverse("quiz-list")
+            base_url = reverse("quiz_list")
             params = "taken=taken"
             return f"{base_url}?{params}"
         quiz = Quiz.objects.get(id=quiz_id)
