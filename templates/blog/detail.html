@@ -15,11 +15,14 @@
         width: 100%;
         height: auto;
     }
+
+    
+
 </style>
 
 <div class="blog-container">
     <div class="blog-content">
-        <h1>{{ blog.title }}</h1>
+        <h1 class="blog-title">{{ blog.title }}</h1>
         <hr>
         <div class="blog-meta">
             <span><i class="fa fa-calendar"></i> {{ blog.publish_at|date:"F d, Y" }}</span>
