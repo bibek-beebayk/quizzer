@@ -133,6 +133,7 @@ CKEDITOR_5_CONFIGS = {
     "default": {
         "toolbar": [
             "heading",
+            "fontFamily",
             "|",
             "bold",
             "italic",
