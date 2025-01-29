@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block header %}
+{% block meta %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/blog/detail.css' %}">
+<meta name="title" content="quizNfacts | Blog | {{blog.title}}">
+<meta name="description" content="{{blog.excerpt}}">
+<meta name="keywords" content="{{blog.keywords}}">
 {% endblock %}
 
 {% block content %}
