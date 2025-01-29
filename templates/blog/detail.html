@@ -28,7 +28,7 @@
         <hr>
         {% if blog.cover_image %}
         <img src="{{blog.cover_image.url}}" alt="cover_image"
-            style="width: 100%; border-radius: 5px; box-shadow: 2px 2px 2px;">
+            style="width: 100%; border-radius: 5px;">
         {% endif %}
         <div class="blog-body">
             {{ blog.content|safe }}
