@@ -10,6 +10,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
+    "django.contrib.sitemaps",
     "django_ckeditor_5",
     "django_summernote",
     "pwa",
@@ -361,3 +363,7 @@ SUMMERNOTE_CONFIG = {
         "//somewhere_in_internet/summernote-plugin-name.js",
     },
 }
+
+SITE_ID = 1
+DOMAIN = "quiznfacts.com"
+SITE_NAME = "quizNfacts"

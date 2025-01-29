@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 
 User = get_user_model()
@@ -51,7 +52,9 @@ class Question(models.Model):
 
     @classmethod
     def published(cls):
-        return cls.objects.prefetch_related("answers").filter(publish_at__lte=timezone.now())
+        return cls.objects.prefetch_related("answers").filter(
+            publish_at__lte=timezone.now()
+        )
 
     @classmethod
     def random_question(cls, user):
@@ -113,7 +116,18 @@ class Quiz(models.Model):
 
     @classmethod
     def published(cls):
-        return cls.objects.prefetch_related("questions").filter(publish_at__lte=timezone.now())
+        return cls.objects.prefetch_related("questions").filter(
+            publish_at__lte=timezone.now()
+        )
+
+    def get_absolute_url(self):
+        from urllib.parse import urlencode
+
+        base_url = reverse("quiz")
+        query_params = {
+            "quiz": {self.id},
+        }
+        return f"{base_url}?{urlencode(query_params)}"
 
     def __str__(self) -> str:
         return self.name

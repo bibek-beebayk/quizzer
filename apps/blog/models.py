@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from django_ckeditor_5.fields import CKEditor5Field
 from django_summernote.fields import SummernoteTextField
@@ -41,6 +42,10 @@ class Blog(models.Model):
     @property
     def reading_time(self):
         return calculate_reading_time(self.content)
+    
+    def get_absolute_url(self):
+        url = reverse("blog", kwargs={"slug": self.slug})
+        return url
 
     def __str__(self):
         return self.title
