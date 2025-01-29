@@ -85,10 +85,10 @@ def quiz_view(request):
             "quiz_id", flat=True
         )
         if int(quiz_id) in user_quiz_results:
-            messages.error(request, "You have already taken this quiz.Here are some quizes that you can take now.")
+            messages.error(request, "You have already taken this quiz. Here are some quizes that you can take now.")
             base_url = reverse("quiz_list")
-            params = "taken=taken"
-            return f"{base_url}?{params}"
+            params = "taken=not-taken"
+            return redirect(f"{base_url}?{params}")
         quiz = Quiz.objects.get(id=quiz_id)
         questions = quiz.questions.prefetch_related("answers").order_by("?")
         quiz_name = quiz.name
