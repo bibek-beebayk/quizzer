@@ -57,6 +57,9 @@ def index(request):
 def quiz_view(request):
     category_id = request.GET.get("category")
     quiz_id = request.GET.get("quiz")
+    if quiz_id and not request.user.is_authenticated:
+        messages.error(request, "Please login or signup to take quiz.")
+        return redirect("login")
     context = {}
     if category_id:
         if category_id == "random":
