@@ -5,6 +5,16 @@ from django.conf import settings
 
 from django.contrib.sitemaps.views import sitemap
 from .sitemaps import Sitemaps
+from django.http import HttpResponse
+
+def robots_txt(request):
+    lines = [
+        "User-agent: *",
+        "Disallow: /admin/",
+        "Disallow: /ckeditor5/",
+        # "Sitemap: {}/sitemap.xml".format(settings.BASE_URL)
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain")
 
 urlpatterns = (
     [
@@ -18,6 +28,7 @@ urlpatterns = (
         # path("upload/", custom_upload_function, name="custom_upload_file"),
         path("summernote/", include("django_summernote.urls")),
         path("sitemap.xml", sitemap, {"sitemaps": Sitemaps()}, name="sitemap"),
+        path('robots.txt', robots_txt),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
