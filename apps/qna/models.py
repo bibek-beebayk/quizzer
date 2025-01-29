@@ -102,6 +102,7 @@ class Quiz(models.Model):
         blank=True,
         null=True,
     )
+    keywords = models.CharField(max_length=256, default="quiz, general knowledge, test, mind test", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     publish_at = models.DateTimeField(default=timezone.now)
 

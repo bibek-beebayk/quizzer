@@ -30,6 +30,9 @@ class Blog(models.Model):
         blank=True,
         null=True,
     )
+    excerpt = models.TextField(blank=True, null=True)
+    keywords = models.CharField(max_length=256, default="interesting blog, general knowledge, facts, interesting facts, random facts", blank=True)
+
     publish_at = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
