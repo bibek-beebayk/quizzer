@@ -7,11 +7,14 @@
     {% progressive_web_app_meta %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>qUIZZER</title>
+    <title>quizNfacts</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
 
     {% block header %}
+    <meta name="title" content="quizNfacts">
+    <meta name="description"
+        content="A place to read and test your knowledge. Read informative blogs and take quizzes to test your knowledge on different topics.">
     {% endblock %}
 </head>
 
@@ -99,39 +102,39 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-    const loadingOverlay = document.getElementById('loading-overlay');
-    const forms = document.querySelectorAll('form');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const forms = document.querySelectorAll('form');
 
-    // Handle form submissions
-    // forms.forEach(form => {
-    //     form.addEventListener('submit', function (e) {
-    //         if (form.checkValidity()) {
-    //             loadingOverlay.style.display = 'flex';
-    //         } else {
-    //             e.preventDefault();
-    //             form.reportValidity();
-    //         }
-    //     });
-    // });
+        // Handle form submissions
+        // forms.forEach(form => {
+        //     form.addEventListener('submit', function (e) {
+        //         if (form.checkValidity()) {
+        //             loadingOverlay.style.display = 'flex';
+        //         } else {
+        //             e.preventDefault();
+        //             form.reportValidity();
+        //         }
+        //     });
+        // });
 
-    // Handle page navigation
-    document.addEventListener('click', function (e) {
-        const target = e.target.closest('a');
-        if (target && target.getAttribute('href')) {
-            // Optional: Add conditions to exclude certain links if needed
-            loadingOverlay.style.display = 'flex';
-        }
+        // Handle page navigation
+        document.addEventListener('click', function (e) {
+            const target = e.target.closest('a');
+            if (target && target.getAttribute('href')) {
+                // Optional: Add conditions to exclude certain links if needed
+                loadingOverlay.style.display = 'flex';
+            }
+        });
+
+        // Hide overlay methods
+        window.addEventListener('load', function () {
+            loadingOverlay.style.display = 'none';
+        });
+
+        window.addEventListener('pageshow', function () {
+            loadingOverlay.style.display = 'none';
+        });
     });
-
-    // Hide overlay methods
-    window.addEventListener('load', function () {
-        loadingOverlay.style.display = 'none';
-    });
-
-    window.addEventListener('pageshow', function () {
-        loadingOverlay.style.display = 'none';
-    });
-});
 </script>
 
 </html>

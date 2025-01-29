@@ -90,8 +90,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # PWA settings
 
-PWA_APP_NAME = "qUIZZER"
-PWA_APP_DESCRIPTION = "Only place to quiz."
+PWA_APP_NAME = "quizNfacts"
+PWA_APP_DESCRIPTION = "A place to read and test your knowledge. Read informative blogs and take quizzes to test your knowledge on different topics."
 PWA_APP_THEME_COLOR = "#000000"
 PWA_APP_BACKGROUND_COLOR = "#ffffff"
 PWA_APP_DISPLAY = "standalone"
