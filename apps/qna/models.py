@@ -125,7 +125,7 @@ class Quiz(models.Model):
 
         base_url = reverse("quiz")
         query_params = {
-            "quiz": {self.id},
+            "quiz": self.id,
         }
         return f"{base_url}?{urlencode(query_params)}"
 
