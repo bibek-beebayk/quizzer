@@ -5,9 +5,9 @@ SECRET_KEY = "django-insecure-i()o2=lv+0fj6f*=ha=rcuxc!g74$kj&t-q9dhh7i*sm6!+0!q
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["quizzer-production-35fb.up.railway.app", "quiz.bibek0001.com.np", '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ["quizzer-production-35fb.up.railway.app", "quiz.bibek0001.com.np", '127.0.0.1', 'localhost', "quiznfacts.com"]
 
-CSRF_TRUSTED_ORIGINS = ["https://quizzer-production-35fb.up.railway.app", "https://quiz.bibek0001.com.np"]
+CSRF_TRUSTED_ORIGINS = ["https://quizzer-production-35fb.up.railway.app", "https://quiz.bibek0001.com.np", "https://quiznfacts.com"]
 
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
