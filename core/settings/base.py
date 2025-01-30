@@ -112,6 +112,14 @@ PWA_APP_ICONS = [
         "type": "image/jpg",
     },
 ]
+PWA_APP_SCREENSHOTS = [
+    {
+      'src': '/static/images/ss1.png',
+      'sizes': '470x638',
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+]
 PWA_APP_DIR = "ltr"
 PWA_APP_LANG = "en-US"
 
