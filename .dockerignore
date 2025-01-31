@@ -3,3 +3,4 @@
 core/settings/env.py
 *.sqlite3
 .vscode/
+*.deb
