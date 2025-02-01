@@ -104,12 +104,12 @@ PWA_APP_ICONS = [
     {
         "src": "/static/images/appicon.png",
         "sizes": "192x192",
-        "type": "image/jpg",
+        "type": "image/png",
     },
     {
         "src": "/static/images/appicon.png",
         "sizes": "512x512",
-        "type": "image/jpg",
+        "type": "image/png",
     },
 ]
 PWA_APP_SCREENSHOTS = [
