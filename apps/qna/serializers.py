@@ -16,7 +16,7 @@ class AnswerSerializer(serializers.ModelSerializer):
 
 class QuestionSerializer(serializers.ModelSerializer):
     answers = serializers.SerializerMethodField()
-    
+
     def get_answers(self, obj):
         answers = obj.answers.order_by("?")
         return AnswerSerializer(answers, many=True).data
