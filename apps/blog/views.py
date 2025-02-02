@@ -29,5 +29,7 @@ def blog_detail_view(request, slug):
     blog = Blog.objects.get(slug=slug)
     context["blog"] = blog
     context["related_posts"] = Blog.objects.exclude(id=blog.id).order_by("-publish_at")[:5]
+    if request.user.is_authenticated:
+        context["has_commented"] = blog.comments.filter(user=request.user).exists()
     return render(request, "blog/detail.html", context)
 

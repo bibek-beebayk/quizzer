@@ -1,8 +1,9 @@
+from apps.interaction.models import Comment
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django_ckeditor_5.fields import CKEditor5Field
-from django_summernote.fields import SummernoteTextField
 
 from core.libs.utils import calculate_reading_time
 
@@ -31,11 +32,16 @@ class Blog(models.Model):
         null=True,
     )
     excerpt = models.TextField(blank=True, null=True)
-    keywords = models.CharField(max_length=256, default="interesting blog, general knowledge, facts, interesting facts, random facts", blank=True)
+    keywords = models.CharField(
+        max_length=256,
+        default="interesting blog, general knowledge, facts, interesting facts, random facts",
+        blank=True,
+    )
 
     publish_at = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    comments = GenericRelation(Comment)
 
     @property
     def category_str(self):
@@ -45,7 +51,7 @@ class Blog(models.Model):
     @property
     def reading_time(self):
         return calculate_reading_time(self.content)
-    
+
     def get_absolute_url(self):
         url = reverse("blog", kwargs={"slug": self.slug})
         return url

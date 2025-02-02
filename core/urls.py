@@ -37,7 +37,8 @@ urlpatterns = (
         path("sitemap.xml", sitemap, {"sitemaps": Sitemaps()}, name="sitemap"),
         path('robots.txt', robots_txt),
 
-        path("api/v1/", include(router.urls))
+        path("api/v1/", include(router.urls)),
+        path("", include("apps.interaction.urls"))
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

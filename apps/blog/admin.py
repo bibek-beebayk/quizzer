@@ -11,6 +11,6 @@ class BlogCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Blog)
 class BlogAdmin(admin.ModelAdmin):
-    list_display = ["title"]
+    list_display = ["id", "title"]
     prepopulated_fields = {"slug": ("title",)}
     summernote_fields = ("content",)
