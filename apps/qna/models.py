@@ -11,6 +11,12 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+    
+    @classmethod
+    def get_by_user(cls, user):
+        if not user.is_authenticated:
+            return cls.objects.all()
+        return user.interests.all()
 
     class Meta:
         verbose_name_plural = "Categories"
