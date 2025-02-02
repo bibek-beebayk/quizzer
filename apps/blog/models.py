@@ -18,8 +18,8 @@ class BlogCategory(models.Model):
 
 
 class Blog(models.Model):
-    title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
+    title = models.CharField(max_length=256)
+    slug = models.SlugField(unique=True, max_length=256)
     content = CKEditor5Field(config_name="default")
     categories = models.ManyToManyField(BlogCategory, related_name="blogs")
     cover_image = models.ImageField(upload_to="blog_covers/", blank=True, null=True)
