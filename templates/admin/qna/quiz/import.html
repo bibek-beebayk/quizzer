@@ -8,14 +8,17 @@
         padding: 20px;
         max-width: 800px;
     }
+
     .form-row {
         margin-bottom: 20px;
     }
+
     .form-row label {
         display: block;
         margin-bottom: 5px;
         font-weight: bold;
     }
+
     .form-row input[type="file"] {
         padding: 5px;
         border: 1px solid #ccc;
@@ -23,9 +26,11 @@
         width: 100%;
         max-width: 400px;
     }
+
     .button-row {
         margin-top: 20px;
     }
+
     .button-row .btn {
         margin-right: 10px;
     }
@@ -44,6 +49,10 @@
                 <label for="file">Choose Excel File:</label>
                 <input type="file" name="file" id="file" accept=".xlsx" required>
             </div>
+            <div class="form-row">
+                <label for="publish">Publish Date and Time: &nbsp;</label> <br>
+                <input type="datetime-local" name="publish" id="publish" required>
+            </div>
             <div class="button-row">
                 <input type="submit" value="Upload" class="default" name="_save">
                 <a href="{% url 'admin:qna_question_changelist' %}" class="closelink">Cancel</a>
@@ -51,4 +60,27 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const publishInput = document.getElementById("publish");
+        if (publishInput) {
+            const now = new Date();
+
+            // Convert to Kathmandu timezone (UTC+5:45)
+            const kathmanduOffset = 5 * 60 + 45; // 5 hours 45 minutes in minutes
+            now.setMinutes(now.getMinutes() + now.getTimezoneOffset() + kathmanduOffset);
+
+            // Format the date manually as "YYYY-MM-DDTHH:MM"
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+            publishInput.value = formattedDateTime;
+        }
+    });
+</script>
 {% endblock %}

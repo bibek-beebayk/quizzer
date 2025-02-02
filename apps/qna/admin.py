@@ -136,6 +136,9 @@ class QuizAdmin(admin.ModelAdmin):
     list_per_page = 50
     autocomplete_fields = ["questions"]
 
+    def has_add_permission(self, request):
+        return False
+
     def time_to_publish(self, obj):
 
         if obj.publish_at <= timezone.now():
@@ -191,7 +194,8 @@ class QuizAdmin(admin.ModelAdmin):
                         quiz_name = (
                             f"{quiz_name} - {timezone.now().strftime('%Y%m%d%H%M%S')}"
                         )
-                    publish_time = timezone.now() + timezone.timedelta(minutes=1440)
+                    # publish_time = timezone.now() + timezone.timedelta(minutes=1440)
+                    publish_time = request.POST.get("publish")
                     quiz = Quiz.objects.create(
                         name=quiz_name, category=category, publish_at=publish_time
                     )
