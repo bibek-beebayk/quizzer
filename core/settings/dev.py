@@ -15,10 +15,12 @@ INSTALLED_APPS += ["debug_toolbar"]
 # MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
 MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
 
+CORS_ALLOW_ALL_ORIGINS: True
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.environ.get("PGDATABASE", "quiz"),
+        "NAME": os.environ.get("PGDATABASE", "quizbk"),
         "USER": os.environ.get("PGUSER", "postgres"),
         "PASSWORD": os.environ.get("PGPASSWORD", ""),
         "HOST": os.environ.get("PGHOST", ""),

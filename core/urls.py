@@ -6,6 +6,13 @@ from django.conf import settings
 from django.contrib.sitemaps.views import sitemap
 from .sitemaps import Sitemaps
 from django.http import HttpResponse
+from rest_framework.routers import DefaultRouter
+
+from apps.blog import api as blog_api
+
+router = DefaultRouter()
+
+router.register("blog", blog_api.BlogViewSet, basename="blog")
 
 def robots_txt(request):
     lines = [
@@ -29,6 +36,8 @@ urlpatterns = (
         path("summernote/", include("django_summernote.urls")),
         path("sitemap.xml", sitemap, {"sitemaps": Sitemaps()}, name="sitemap"),
         path('robots.txt', robots_txt),
+
+        path("api/v1/", include(router.urls))
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
