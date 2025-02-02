@@ -1,4 +1,3 @@
-{% extends "base.html" %}
 {% load static %}
 
 {% block meta %}
@@ -28,6 +27,10 @@
         <input type="password" name="password" id="password" class="form-control" required>
     </div>
     <button type="submit">Login</button>
+    <div style="display: flex; justify-content: space-between; width: 250px;">
+        <a href="/register">New Registration</a>
+        <a href="/password-reset-email">Reset Password</a>
+    </div>
 </form>
 
 {% endblock %}

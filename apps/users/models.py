@@ -99,6 +99,46 @@ class User(AbstractUser):
     @property
     def quizzes_this_month(self):
         return self.quizzes.filter(created_at__month=timezone.now().month).count()
+    
+    def send_password_reset_email(self, code):
+        from django.core.mail import send_mail
+        subject = "Password Reset Request"
+        # message = render_to_string(
+        #     "password_reset_email.html",
+        #     {
+        #         "user": self,
+        #         "uid": self.id,
+        #         "token": self.password_reset_token,
+        #     },
+        # )
+        message = f"Your OTP for password reset is {code}."
+        from_email = "beebayk63478@gmail.com"
+        recipient_list = [self.email]
+        send_mail(subject, message, from_email, recipient_list)
+
+    def generate_otp(self, type):
+        import random
+        if self.otps.exists():
+            Otp.objects.filter(user=self).delete()
+        otp_string = str(random.randint(100000, 999999))
+        otp = Otp.objects.create(user=self, code=otp_string, type=type)
+        self.send_password_reset_email(otp_string)
+        # send_mail(subject, message, from_email, recipient_list)
+
+
+class Otp(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="otps")
+    code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+    type = models.CharField(max_length=32, default="password_reset")
+
+    def __str__(self):
+        return self.code
+    
+    @property
+    def is_expired(self):
+        return (timezone.now() - self.created_at).total_seconds() > 300
 
 
 class RequestLog(models.Model):

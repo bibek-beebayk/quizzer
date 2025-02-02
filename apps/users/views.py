@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 from apps.qna.models import Category, QuizResult
+from apps.users.models import Otp
 
 User = get_user_model()
 
@@ -33,6 +34,52 @@ def logout_view(request):
     request.session.flush()
     logout(request)
     return redirect("index")
+
+
+def password_reset_email_view(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        try:
+            user = User.objects.get(email=email)
+            user.generate_otp("password_reset")
+            messages.success(request, "Password reset email sent.")
+            return redirect("otp_input")
+        except User.DoesNotExist:
+            messages.error(request, "User does not exist.")
+    return render(request, "password_reset.html")
+
+
+def otp_input_view(request):
+    if request.method == "POST":
+        otp = request.POST.get("otp")
+        try:
+            otp_obj = Otp.objects.get(code=otp, is_used=False)
+            otp_obj.is_used = True
+            return redirect(f"/new-password-input/?email={otp_obj.user.email}")
+        except Otp.DoesNotExist:
+            messages.error(request, "Invalid OTP.")
+    return render(request, "otp_input.html")
+
+
+def new_password_input_view(request):
+    if request.method == "POST":
+        password = request.POST.get("password")
+        confirm_password = request.POST.get("confirm_password")
+        if password == confirm_password:
+            # user = request.user
+            # user.set_password(password)
+            # user.save()
+            # login(request, user)
+            email = request.GET.get("email")
+            user = User.objects.get(email=email)
+            user.set_password(password)
+            # login(request, user)
+            user.save()
+            messages.success(request, "Password reset successful.")
+            return redirect("login")
+        else:
+            messages.error(request, "Passwords do not match.")
+    return render(request, "new_password_input.html")
 
 
 @login_required
