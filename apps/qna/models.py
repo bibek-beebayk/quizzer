@@ -17,6 +17,10 @@ class Category(models.Model):
         if not user.is_authenticated:
             return cls.objects.all()
         return user.interests.all()
+    
+    @property
+    def questions_count(self):
+        return self.questions.count()
 
     class Meta:
         verbose_name_plural = "Categories"

@@ -4,11 +4,11 @@ from django.shortcuts import redirect, render
 from .models import Answer, Category, Collection, Question, Quiz, QuizResult, Tag
 from django.db.models import Prefetch
 from django.utils import timezone
-
+from django.db.models  import Count
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("id", "name")
+    list_display = ("id", "name", "questions_count")
     list_display_links = ("id", "name")
     search_fields = ("name",)
 
@@ -37,7 +37,7 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ("id", "question_text")
+    list_display = ("id", "question_text", "categories_str")
     list_display_links = ("id", "question_text")
     search_fields = ("question_text",)
     list_filter = ["categories"]
@@ -127,6 +127,9 @@ class QuestionAdmin(admin.ModelAdmin):
         return render(request, "admin/qna/question/import.html", context)
 
 
+from django.db import models
+from django.forms.widgets import Textarea, SelectMultiple, CheckboxSelectMultiple, CheckboxInput
+
 @admin.register(Quiz)
 class QuizAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "question_count", "time_to_publish")
@@ -137,8 +140,29 @@ class QuizAdmin(admin.ModelAdmin):
     list_per_page = 50
     autocomplete_fields = ["questions"]
 
-    def has_add_permission(self, request):
-        return False
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': CheckboxSelectMultiple},
+    }
+
+    # def has_add_permission(self, request):
+    #     return False
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "questions":
+            kwargs["queryset"] = Question.objects.all().select_related().prefetch_related(
+                'categories',
+                'answers',
+                'tags'
+            ).order_by(
+                'categories__name',
+                '-publish_at',
+                'difficulty'
+            ).annotate(
+                quizzes_count = Count("quizzes")
+            ).filter(
+                quizzes_count=0
+            )[:200]
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def time_to_publish(self, obj):
 
