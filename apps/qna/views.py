@@ -25,15 +25,15 @@ def index(request):
     if request.user.pk:
         categories = (
             request.user.interests.prefetch_related("questions")
-            .annotate(questions_count=Count("questions"))
-            .filter(questions_count__gte=10)
+            .annotate(qc=Count("questions"))
+            .filter(qc__gte=10)
             .order_by("name")
         )
     else:
         categories = (
             Category.objects.prefetch_related("questions")
-            .annotate(questions_count=Count("questions"))
-            .filter(questions_count__gte=10)
+            .annotate(qc=Count("questions"))
+            .filter(qc__gte=10)
             .order_by("name")
         )
     if random_question:
