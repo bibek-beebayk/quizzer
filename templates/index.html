@@ -93,6 +93,54 @@
         background-color: #2874a6;
     }
 
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100vh;
+        overflow: auto;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        /* margin: 15% auto; */
+        padding: 20px;
+        border-radius: 10px;
+        /* width: 80%; */
+        max-width: 500px;
+    }
+
+    .modal-interests {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .modal-interests label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .form-group {
+        margin-top: 30px;
+    }
+
     @media screen and (max-width: 480px) {
         .post-card {
             /* width: 90%; */
@@ -101,6 +149,10 @@
 
         .recent-posts {
             grid-template-columns: repeat(1, 1fr);
+        }
+
+        .modal-interests {
+            grid-template-columns: repeat(2, 1fr);
         }
     }
 </style>
@@ -145,6 +197,12 @@
     </div>
 
     <div class=" categories">
+        {% if user.is_authenticated %}
+        <button
+            style="margin-top: 10px; padding: 10px; cursor: pointer; border-radius: 5px; outline: none; border: none;"
+            id="generate_quiz" onClick='openQuizModal()' type="button">Generate a Custom
+            Quiz</button>
+        {% endif %}
         <h2 style="font-weight: 100; text-align: center;">Take a quick quiz</h2>
         <div class="category-list">
             <a href="/quiz/?category=random" class="tab">Randomized Quiz
@@ -172,6 +230,7 @@
             </a>
             {% endfor %}
         </div>
+
     </div>
 
     <div class="recent-blogs-section">
@@ -189,6 +248,32 @@
     </div>
 </div>
 
+<div id="generateQuizModal" class="modal">
+    <div class="modal-content">
+        <h3>Select Categories</h3>
+        <form method="post" action="{% url 'quiz' %}">
+            {%csrf_token%}
+            <div class="modal-interests">
+                {% for interest in all_categories %}
+                <label>
+                    <input type="checkbox" name="interests" value="{{ interest.id }}">
+                    {{ interest }}
+                </label>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="">Question Count(10-20): </label>
+                <input type="number" name="count" id="question_count" value="10">
+            </div>
+            <span style="color: red; display: none;" id="countError"></span>
+            <div class="modal-actions">
+                <button type="button" onclick="closeQuizModal()">Cancel</button>
+                <button type="submit" id="submitQuizData">Generate Quiz</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
     // const showButton = document.getElementById("showButton");
     const showCorrectAnswerButton = document.getElementById("showCorrectAnswer");
@@ -196,6 +281,36 @@
     const correctAnswerDiv = document.getElementById('correctAnswer');
     const showHintButton = document.getElementById('showHintButton');
     const hintDiv = document.getElementById('hintDiv')
+
+    const generateQuizBtn = document.getElementById("generate_quiz")
+    const quizModal = document.getElementById("generateQuizModal")
+
+    const questionCountInput = document.getElementById("question_count")
+    const countErrorSpan = document.getElementById("countError")
+
+    const submitQuizButton = document.getElementById('submitQuizData')
+
+    questionCountInput.addEventListener('change', function () {
+        if (questionCountInput.value > 20 || questionCountInput.value < 10) {
+            countErrorSpan.style.display = "inline-block"
+            submitQuizButton.disabled = true
+        } else {
+            countErrorSpan.style.display = "none"
+            submitQuizButton.disabled = false
+        }
+    })
+
+    function openQuizModal() {
+        quizModal.style.display = "flex"
+    }
+
+    function closeQuizModal() {
+        quizModal.style.display = "none"
+    }
+
+    generateQuizBtn.addEventListener("click", function () {
+        openQuizModal();
+    })
 
     showButton.addEventListener('click', function () {
         optionsDiv.style.display = 'block';

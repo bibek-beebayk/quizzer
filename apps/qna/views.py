@@ -52,47 +52,58 @@ def index(request):
             questions_count=Count("questions")
         ).aggregate(total_questions=Sum("questions_count"))["total_questions"]
     context["recent_blogs"] = Blog.objects.order_by("-created_at")[:4]
+    context["all_categories"] = Category.objects.order_by("name")
     return render(request, "index.html", context)
 
 
 def quiz_view(request):
-    category_id = request.GET.get("category")
-    quiz_id = request.GET.get("quiz")
     context = {}
-    if category_id:
-        if category_id == "random":
-            if request.user.pk:
-                questions = (
-                    Question.published()
-                    .filter(categories__in=request.user.interests.all())
-                    .order_by("?")[:10]
-                )
+
+    if request.method == "GET":
+        category_id = request.GET.get("category")
+        quiz_id = request.GET.get("quiz")
+        if category_id:
+            if category_id == "random":
+                if request.user.pk:
+                    questions = (
+                        Question.published()
+                        .filter(categories__in=request.user.interests.all())
+                        .order_by("?")[:10]
+                    )
+                else:
+                    questions = Question.published().order_by("?")[:10]
+                quiz_name = "Random Quiz"
             else:
-                questions = Question.published().order_by("?")[:10]
-            quiz_name = "Random Quiz"
-        else:
-            category = Category.objects.get(id=category_id)
-            questions = (
-                Question.published().filter(categories=category).order_by("?")[:10]
-            )
-            context["category"] = category
-            quiz_name = category.name + " Quiz"
-    elif quiz_id:
-        if not request.user.is_authenticated:
-            messages.error(request, "Please login or signup to take quiz.")
-            return redirect("login")
-        user_quiz_results = QuizResult.objects.filter(user=request.user).values_list(
+                category = Category.objects.get(id=category_id)
+                questions = (
+                    Question.published().filter(categories=category).order_by("?")[:10]
+                )
+                context["category"] = category
+                quiz_name = category.name + " Quiz"
+        elif quiz_id:
+            if not request.user.is_authenticated:
+                messages.error(request, "Please login or signup to take quiz.")
+                return redirect("login")
+            user_quiz_results = QuizResult.objects.filter(user=request.user).values_list(
             "quiz_id", flat=True
-        )
-        if int(quiz_id) in user_quiz_results:
-            messages.error(request, "You have already taken this quiz. Here are some quizes that you can take now.")
-            base_url = reverse("quiz_list")
-            params = "taken=not-taken"
-            return redirect(f"{base_url}?{params}")
-        quiz = Quiz.objects.get(id=quiz_id)
-        questions = quiz.questions.prefetch_related("answers").order_by("?")
-        quiz_name = quiz.name
-        context["quiz_id"] = quiz_id
+            )
+            if int(quiz_id) in user_quiz_results:
+                messages.error(request, "You have already taken this quiz. Here are some quizes that you can take now.")
+                base_url = reverse("quiz_list")
+                params = "taken=not-taken"
+                return redirect(f"{base_url}?{params}")
+            quiz = Quiz.objects.get(id=quiz_id)
+            questions = quiz.questions.prefetch_related("answers").order_by("?")
+            quiz_name = quiz.name
+            context["quiz_id"] = quiz_id
+
+    elif request.method == "POST":
+        categories = request.POST.getlist("interests")
+        count = int(request.POST.get("count"))
+        questions = Question.objects.prefetch_related("answers").filter(
+            categories__in=categories
+        ).order_by("?")[:count]
+        quiz_name = "Custom Quiz"
 
     for question in questions:
         answers = list(question.answers.all())
