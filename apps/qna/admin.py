@@ -83,9 +83,10 @@ class QuestionAdmin(admin.ModelAdmin):
                         categories = row["Category"].split(",")
                         category_objs = []
                         for category in categories:
-                            category_obj = Category.objects.get_or_create(
-                                name__iexact=category.strip()
-                            )[0]
+                            cleaned = category.strip()
+                            category_obj = Category.objects.get_or_create(name=cleaned)[
+                                0
+                            ]
                             category_objs.append(category_obj)
                         question_text = row["Question"]
                         if Question.objects.filter(
