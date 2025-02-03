@@ -58,7 +58,7 @@ class Question(models.Model):
         return self.quizzes.exists()
 
     def __str__(self):
-        return f"{self.question_text} - {self.categories.first()} - {self.has_quiz}"
+        return f"{self.id}.-{self.question_text} - {self.categories_str} - {self.has_quiz} - {",".join([str(answer.id) for answer in self.answers.all()])}"
 
     @classmethod
     def published(cls):
