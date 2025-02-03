@@ -11,13 +11,13 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     @classmethod
     def get_by_user(cls, user):
         if not user.is_authenticated:
             return cls.objects.all()
         return user.interests.all()
-    
+
     @property
     def questions_count(self):
         return self.questions.count()
@@ -69,10 +69,20 @@ class Question(models.Model):
     @classmethod
     def random_question(cls, user):
         if not user.is_authenticated:
-            return cls.published().order_by("?").first()
+            return (
+                cls.published()
+                .filter(categories__name__in=["General Knowledge", "History", "Geography", "Literature"])
+                .order_by("?")
+                .first()
+            )
         user_interests = user.interests.all()
         if not user_interests.exists():
-            return cls.published().order_by("?").first()
+            return (
+                cls.published()
+                .filter(categories__name__iexact__in=["general knowledge"])
+                .order_by("?")
+                .first()
+            )
         return (
             cls.published().filter(categories__in=user_interests).order_by("?").first()
         )
@@ -112,7 +122,9 @@ class Quiz(models.Model):
         blank=True,
         null=True,
     )
-    keywords = models.CharField(max_length=256, default="quiz, general knowledge, test, mind test", blank=True)
+    keywords = models.CharField(
+        max_length=256, default="quiz, general knowledge, test, mind test", blank=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     publish_at = models.DateTimeField(default=timezone.now)
 
