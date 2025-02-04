@@ -125,6 +125,22 @@ class User(AbstractUser):
         self.send_password_reset_email(otp_string)
         # send_mail(subject, message, from_email, recipient_list)
 
+    @classmethod
+    def get_registration_data(cls):
+        # pages_vivits_coo = cls.objects.all().values('page').annotate(count=models.Count('page'))
+        response_data = {}
+        response_data["total_registration"] = cls.objects.count()
+        response_data["registrations_today"] = cls.objects.filter(
+            date_joined__date=timezone.now().date()
+        ).count()
+        response_data["registrations_last_7_days"] = cls.objects.filter(
+            date_joined__gte=timezone.now() - timezone.timedelta(days=7)
+        ).count()
+        response_data["registrations_last_30_days"] = cls.objects.filter(
+            date_joined__gte=timezone.now() - timezone.timedelta(days=30)
+        ).count()
+        return response_data
+
 
 class Otp(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="otps")

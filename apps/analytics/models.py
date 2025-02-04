@@ -1,6 +1,7 @@
 from django.db import models
 
 from core.libs.utils import get_client_ip
+from django.utils import timezone
 
 
 # class ActivityLog(models.Model):
@@ -39,6 +40,7 @@ def get_page_name(url):
         return "New Password Input"
     return "Not Defined"
 
+
 class PageVisit(models.Model):
     user = models.ForeignKey(
         "users.User",
@@ -64,8 +66,24 @@ class PageVisit(models.Model):
             user=request.user if request.user.pk else None,
             query_params=request.GET,
             obj_id=obj_id,
-            client_ip = get_client_ip(request)
+            client_ip=get_client_ip(request),
         )
+
+    @classmethod
+    def get_page_visit_data(cls):
+        # pages_vivits_coo = cls.objects.all().values('page').annotate(count=models.Count('page'))
+        response_data = {}
+        response_data["total_page_visits"] = cls.objects.count()
+        response_data["total_page_visits_today"] = cls.objects.filter(
+            created_at__date=timezone.now().date()
+        ).count()
+        response_data["page_visits_last_7_days"] = cls.objects.filter(
+            created_at__gte=timezone.now() - timezone.timedelta(days=7)
+        ).count()
+        response_data["page_visits_last_30_days"] = cls.objects.filter(
+            created_at__gte=timezone.now() - timezone.timedelta(days=30)
+        ).count()
+        return response_data
 
     def __str__(self):
         return self.page

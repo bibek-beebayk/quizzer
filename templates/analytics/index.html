@@ -1,3 +1,50 @@
-<div>
-    Hello
+{% extends "analytics/base.html" %}
+
+{% block content %}
+<style>
+    .content-container {
+        padding: 20px;
+        display: flex;
+        flex: 1;
+        /* flex-direction: row;     */
+        gap: 20px;
+    }
+
+    .analytics-card {
+        border: 1px solid rgb(214, 214, 214);
+        padding: 10px;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        /* box-shadow: 2px -2px 2px 1px rgb(134, 134, 134); */
+    }
+
+    p {
+        margin: 0;
+    }
+
+    h3 {
+        margin: 0;
+        text-decoration: underline;
+    }
+</style>
+<div class="content-container">
+
+    <div class="analytics-card">
+        <h3>Page Visits</h3>
+        <p>Today: <span>{{page_visit_data.total_page_visits_today}}</span></p>
+        <p>Last 7 days: <span>{{page_visit_data.page_visits_last_7_days}}</span></p>
+        <p>Last 30 days: <span>{{page_visit_data.page_visits_last_30_days}}</span></p>
+        <p>Lifetime: <span>{{page_visit_data.total_page_visits}}</span></p>
+    </div>
+
+    <div class="analytics-card">
+        <h3>New Registrations</h3>
+        <p>Today: <span>{{registration_data.registrations_today}}</span></p>
+        <p>Last 7 days: <span>{{registration_data.registrations_last_7_days}}</span></p>
+        <p>Last 30 days: <span>{{registration_data.registrations_last_30_days}}</span></p>
+        <p>Lifetime: <span>{{registration_data.total_registration}}</span></p>
+    </div>
 </div>
+{% endblock %}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics | quizNfacts</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: rgb(236, 236, 236);
+        }
+
+        .outer {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .side-panel {
+            /* width: 200px; */
+            /* padding: 10px; */
+            display: flex;
+            flex-direction: column;
+            background-color: antiquewhite;
+        }
+
+        .menu-item {
+            text-decoration: none;
+            padding: 20px;
+            font-size: large;
+            color: rgb(70, 70, 70);
+            border-bottom: 1px solid rgb(169, 169, 169);
+        }
+
+        /* .content-section{
+            background-color: beige;
+        } */
+    </style>
+</head>
+
+<body>
+    <div class="outer">
+        <div class="side-panel">
+            <a href="/analytics" class="menu-item">Dashboard</a>
+        </div>
+
+        <div class="content-section">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+
+</html>
