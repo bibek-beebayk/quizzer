@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 
 from apps.users.models import RequestLog
+from core.libs.utils import get_client_ip
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +40,7 @@ class APILogMiddleware:
             endpoint=endpoint,
             response_code=status_code,
             method=method,
-            remote_address=self.get_client_ip(request),
+            remote_address=get_client_ip(request),
             exec_time=duration,
             body_request=request.readlines(),
             body_response=response_data,
@@ -54,10 +55,3 @@ class APILogMiddleware:
 
         return response
 
-    def get_client_ip(self, request):
-        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
-        if x_forwarded_for:
-            _ip = x_forwarded_for.split(",")[0]
-        else:
-            _ip = request.META.get("REMOTE_ADDR")
-        return _ip

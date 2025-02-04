@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from rest_framework.routers import DefaultRouter
 
 from apps.blog import api as blog_api
+from apps.analytics import views as analytics_views
 
 router = DefaultRouter()
 
@@ -38,7 +39,9 @@ urlpatterns = (
         path('robots.txt', robots_txt),
 
         path("api/v1/", include(router.urls)),
-        path("", include("apps.interaction.urls"))
+        path("", include("apps.interaction.urls")),
+
+        path("analytics/", analytics_views.analytics_dashboard, name="analytics_dashboard")
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

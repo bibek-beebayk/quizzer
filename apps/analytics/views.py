@@ -1,3 +1,7 @@
 from django.shortcuts import render
+from core.libs.decorators import superadmin_required
 
-# Create your views here.
+
+@superadmin_required(login_url="/")
+def analytics_dashboard(request):
+    return render(request, "analytics/index.html")

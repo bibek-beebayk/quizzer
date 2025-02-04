@@ -7,6 +7,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
+from apps.analytics.models import PageVisit
 from apps.qna.models import Category, QuizResult
 from apps.users.models import Otp
 
@@ -26,6 +27,9 @@ def login_view(request):
                 messages.error(request, "Invalid credentials")
         except User.DoesNotExist:
             messages.error(request, "User does not exist.")
+
+    PageVisit.create_object(request)
+
     return render(request, "login.html")
 
 
@@ -46,6 +50,7 @@ def password_reset_email_view(request):
             return redirect("otp_input")
         except User.DoesNotExist:
             messages.error(request, "User does not exist.")
+    PageVisit.create_object(request)
     return render(request, "password_reset.html")
 
 
@@ -58,6 +63,7 @@ def otp_input_view(request):
             return redirect(f"/new-password-input/?email={otp_obj.user.email}")
         except Otp.DoesNotExist:
             messages.error(request, "Invalid OTP.")
+    PageVisit.create_object(request)
     return render(request, "otp_input.html")
 
 
@@ -79,6 +85,7 @@ def new_password_input_view(request):
             return redirect("login")
         else:
             messages.error(request, "Passwords do not match.")
+    PageVisit.create_object(request)
     return render(request, "new_password_input.html")
 
 
@@ -101,6 +108,7 @@ def profile(request):
         .order_by("-created_at")[:5]
     )
     context["all_interests"] = Category.objects.all().order_by("name")
+    PageVisit.create_object(request)
     return render(request, "profile.html", context)
 
 

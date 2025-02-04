@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
+from apps.analytics.models import PageVisit
 from apps.blog.models import Blog
 from apps.qna.models import Category, Question, Quiz, QuizResult
 from django.urls import reverse
@@ -53,6 +54,10 @@ def index(request):
         ).aggregate(total_questions=Sum("questions_count"))["total_questions"]
     context["recent_blogs"] = Blog.objects.order_by("-created_at")[:4]
     context["all_categories"] = Category.objects.order_by("name")
+
+    # Create Page View Object
+    PageVisit.create_object(request)
+
     return render(request, "index.html", context)
 
 
@@ -123,6 +128,9 @@ def quiz_view(request):
         "total_weightage"
     ]
     context["quiz_name"] = quiz_name
+
+    PageVisit.create_object(request, quiz_id)
+
     return render(request, "quiz.html", context)
 
 
@@ -146,6 +154,8 @@ def register_view(request):
             messages.error(request, "Email already exists.")
 
     context["interests"] = Category.objects.order_by("name")
+
+    PageVisit.create_object(request)
     return render(request, "register.html", context)
 
 
@@ -210,6 +220,7 @@ def quiz_list_view(request):
         "category_id": category_id,  # Pass category_id to maintain filter in pagination
     }
 
+    PageVisit.create_object(request)
     return render(request, "quiz_list.html", context)
 
 
