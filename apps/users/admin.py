@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import User
+from .models import User, RequestLog
 
 
 @admin.register(User)
@@ -27,3 +27,22 @@ class UserAdmin(admin.ModelAdmin):
         ):
             obj.set_password(password)
         return super().save_model(request, obj, form, change)
+
+
+@admin.register(RequestLog)
+class RequestLogAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "endpoint",
+        "user",
+        "response_code",
+        "method",
+        "remote_address",
+        "exec_time",
+        "date",
+    )
+    list_display_links = ("id", "endpoint")
+    list_filter = ("response_code", "method")
+    search_fields = ("endpoint", "user", "remote_address")
+    list_per_page = 25
+    ordering = ("-id",)
