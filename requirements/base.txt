@@ -12,3 +12,4 @@ django-storages
 boto3==1.35.84
 django-summernote
 djangorestframework
+plotly
