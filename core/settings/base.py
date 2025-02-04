@@ -20,7 +20,8 @@ INSTALLED_APPS = [
     "apps.qna",
     "apps.users",
     "apps.blog",
-    "apps.interaction"
+    "apps.interaction",
+    "apps.analytics"
 ]
 
 MIDDLEWARE = [
