@@ -58,7 +58,7 @@ def index(request):
 
 def quiz_view(request):
     context = {}
-
+    questions = None
     if request.method == "GET":
         category_id = request.GET.get("category")
         quiz_id = request.GET.get("quiz")
@@ -92,7 +92,11 @@ def quiz_view(request):
                 base_url = reverse("quiz_list")
                 params = "taken=not-taken"
                 return redirect(f"{base_url}?{params}")
-            quiz = Quiz.objects.get(id=quiz_id)
+            try:
+                quiz = Quiz.objects.get(id=quiz_id)
+            except Quiz.DoesNotExist:
+                messages.error(request, "Quiz not found.")
+                return redirect("/quiz-list/?taken=not-taken")
             questions = quiz.questions.prefetch_related("answers").order_by("?")
             quiz_name = quiz.name
             context["quiz_id"] = quiz_id
@@ -104,6 +108,10 @@ def quiz_view(request):
             categories__in=categories
         ).order_by("?")[:count]
         quiz_name = "Custom Quiz"
+
+    if not questions  or questions.count() == 0:
+        messages.error(request, "No questions found. Try these quizzes instead.")
+        return redirect("/quiz-list/?taken=not-taken")
 
     for question in questions:
         answers = list(question.answers.all())
