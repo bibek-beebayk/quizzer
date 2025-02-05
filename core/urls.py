@@ -10,6 +10,7 @@ from rest_framework.routers import DefaultRouter
 
 from apps.blog import api as blog_api
 from apps.analytics import views as analytics_views
+from apps.analytics import api as analytics_api
 
 router = DefaultRouter()
 
@@ -41,7 +42,8 @@ urlpatterns = (
         path("api/v1/", include(router.urls)),
         path("", include("apps.interaction.urls")),
 
-        path("analytics/", analytics_views.analytics_dashboard, name="analytics_dashboard")
+        path("analytics/", analytics_views.analytics_dashboard, name="analytics_dashboard"),
+        path("api/analytics/", analytics_api.AnalyticsDashboardView.as_view(), name="analytics_dashboard_api"),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

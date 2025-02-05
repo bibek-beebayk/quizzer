@@ -29,7 +29,8 @@
     h3 {
         margin: 0;
         text-decoration: underline;
-    }
+    }    
+
 </style>
 <div class="content-container">
 
@@ -60,4 +61,15 @@
         {{graph_html|safe}}
     </div>
 </div>
+
+<script>
+    // Reload the page every 5 minutes (300,000 milliseconds)
+    setTimeout(function() {
+        alert("Page will reload in 10 seconds to fetch the latest data.");
+    }, 290000); // 290 seconds = 4 minutes and 50 seconds
+
+    setInterval(function() {
+        window.location.reload();
+    }, 300000); // 5 minutes in milliseconds
+</script>
 {% endblock %}

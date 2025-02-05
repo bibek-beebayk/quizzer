@@ -2,6 +2,7 @@ from django.db import models
 
 from core.libs.utils import get_client_ip
 from django.utils import timezone
+from django.db.models.functions import TruncDate, TruncHour, ExtractHour
 
 
 # class ActivityLog(models.Model):
@@ -90,3 +91,94 @@ class PageVisit(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+
+
+class WebsiteAnalytics:
+    def __init__(self, queryset=None):
+        self.queryset = queryset if queryset else PageVisit.objects.all()
+
+    def daily_traffic(self, days=30):
+        return (
+            self.queryset.annotate(date=TruncDate("created_at"))
+            .values("date")
+            .annotate(visits=models.Count("id"))
+            .order_by("-date")[:days]
+        )
+
+    def popular_pages(self, limit=10):
+        return (
+            self.queryset.values("page")
+            .annotate(
+                total_visits=models.Count("id"),
+                unique_visitors=models.Count("user", distinct=True),
+                unique_ips=models.Count("client_ip", distinct=True),
+            )
+            .order_by("-total_visits")[:limit]
+        )
+
+    def user_engagement(self):
+        return (
+            self.queryset.exclude(user=None)
+            .values("user")
+            .annotate(
+                visit_count=models.Count("id"),
+                first_visit=models.Min("created_at"),
+                last_visit=models.Max("created_at"),
+                unique_pages=models.Count("page", distinct=True),
+            )
+            .order_by("-visit_count")
+        )
+
+    def hourly_distribution(self):
+        qs = (
+            self.queryset.annotate(hour=ExtractHour("created_at"))
+            .values("hour")
+            .annotate(visits=models.Count("id"))
+            .order_by("hour")
+        )
+
+        data_init = [{
+            "hour": x,
+            "visits": 0
+        } for x in range (0, 24)]
+
+        for obj in qs:
+            data_init[obj["hour"]]["hour"] = obj["hour"]
+            data_init[obj["hour"]]["visits"] = obj["visits"]
+        return data_init
+
+    def bounce_rate(self):
+        """Calculate bounce rate (users with single page visit)."""
+        total_sessions = self.queryset.values("client_ip", "user").distinct().count()
+
+        bounce_sessions = (
+            self.queryset.values("client_ip", "user")
+            .annotate(pages=models.Count("page"))
+            .filter(pages=1)
+            .count()
+        )
+
+        return {
+            "total_sessions": total_sessions,
+            "bounce_sessions": bounce_sessions,
+            "bounce_rate": (
+                (bounce_sessions / total_sessions * 100) if total_sessions > 0 else 0
+            ),
+        }
+
+    def retention_analysis(self, days=30):
+        """Analyze user retention over time."""
+        today = timezone.now().date()
+        start_date = today - timezone.timedelta(days=days)
+
+        return (
+            self.queryset.filter(created_at__date__gte=start_date)
+            .exclude(user=None)
+            .values("user")
+            .annotate(
+                first_visit_date=TruncDate(models.Min("created_at")),
+                days_active=models.Count("created_at__date", distinct=True),
+                last_visit_date=TruncDate(models.Max("created_at")),
+            )
+            .order_by("first_visit_date")
+        )

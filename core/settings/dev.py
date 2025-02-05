@@ -7,7 +7,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-CSRF_TRUSTED_ORIGINS = ["https://erp-tunnel.kalodhunga.com"]
+CSRF_TRUSTED_ORIGINS = ["https://tunnel.quiznfacts.com"]
 
 # INSTALLED_APPS += ["django_browser_reload"]
 INSTALLED_APPS += ["debug_toolbar"]
