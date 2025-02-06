@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from apps.analytics.models import PageVisit
+from apps.analytics.models import PageVisit, WebsiteAnalytics
 from core.libs.decorators import superadmin_required
 from django.utils import timezone
 from django.contrib.auth import get_user_model
@@ -11,40 +11,61 @@ import plotly.express as px
 User = get_user_model()
 
 
-def get_hourly_visits_graph():
-    now = timezone.now()
-    twelve_hours_ago = now - timezone.timedelta(hours=12)
-
-    hourly_visits = (
-        PageVisit.objects.filter(
-            created_at__gte=twelve_hours_ago
-        )  # Filter visits in the last 12 hours
-        .annotate(hour=TruncHour("created_at"))  # Truncate the timestamp to the hour
-        .values("hour")  # Group by hour
-        .annotate(visit_count=Count("id"))  # Count visits per hour
-        .order_by("hour")  # Order by hour
-    )
-
-    hourly_data = {hour: 0 for hour in range(24)}
-
-    for entry in hourly_visits:
-        hour = entry["hour"].hour  # Extract the hour from the datetime object
-        hourly_data[hour] = entry["visit_count"]
-
-    hours = list(hourly_data.keys())[-12:]  # Last 12 hours
-    visits = list(hourly_data.values())[-12:]
-
-    df = pd.DataFrame({"Hour": hours, "Visits": visits})
-
+def get_daily_traffic_graph():
+    analytics = WebsiteAnalytics()
+    daily_traffic_data = analytics.daily_traffic(days=7)
+    df = pd.DataFrame(daily_traffic_data)
     fig = px.line(
         df,
-        x="Hour",
-        y="Visits",
-        title="Total Visits for last 12 hours",
+        x="date",
+        y="visits",
+        title="Daily Traffic",
         markers=True,
-        labels={"Hour": "Hour of the day", "Visits": "Number of page visits"},
+        labels={"date": "Date", "visits": "Number of page visits"},
+        line_shape="spline",
     )
-    fig.update_layout(xaxis=dict(tickmode="linear", tick0=0, dtick=1))
+    fig.update_layout(
+        autosize=True,
+        showlegend=True,
+        xaxis_title="Date",
+        yaxis_title="Visits",
+        title="Visits Over Time",
+        margin=dict(t=0, b=0, l=0, r=0),
+        dragmode=False,
+        xaxis=dict(showgrid=True),
+        yaxis=dict(showgrid=True),
+        # modebar=dict(orientation="v"),
+    )
+    graph_html = fig.to_html(full_html=False)
+    return graph_html
+
+
+def get_hourly_distribution_graph():
+    analytics = WebsiteAnalytics()
+    hourly_distribution_data = analytics.hourly_distribution()
+    print("Hourly Distribution Data: ", hourly_distribution_data)
+    df = pd.DataFrame(hourly_distribution_data)
+    fig = px.line(
+        df,
+        x="hour",
+        y="visits",
+        title="Hourly Distribution",
+        markers=True,
+        labels={"hour": "Hour", "visits": "Number of page visits"},
+        line_shape="spline",
+    )
+    fig.update_layout(
+        autosize=True,
+        showlegend=True,
+        xaxis_title="Hour",
+        yaxis_title="Visits",
+        title="Visits Over Time",
+        margin=dict(t=0, b=0, l=0, r=0),
+        dragmode=False,
+        xaxis=dict(showgrid=True),
+        yaxis=dict(showgrid=True),
+        # modebar=dict(orientation="v"),
+    )
     graph_html = fig.to_html(full_html=False)
     return graph_html
 
@@ -60,6 +81,7 @@ def analytics_dashboard(request):
         .order_by("-visit_count")[:4]
     )
 
-    context["graph_html"] = get_hourly_visits_graph()
+    context["daily_traffic"] = get_daily_traffic_graph()
+    context["hourly_distribution"] = get_hourly_distribution_graph()
 
     return render(request, "analytics/index.html", context)

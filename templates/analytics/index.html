@@ -29,46 +29,56 @@
     h3 {
         margin: 0;
         text-decoration: underline;
-    }    
-
+    }
 </style>
-<div class="content-container">
+<div>
 
-    <div class="analytics-card">
-        <h3>Page Visits</h3>
-        <p>Today: <span>{{page_visit_data.total_page_visits_today}}</span></p>
-        <p>Last 7 days: <span>{{page_visit_data.page_visits_last_7_days}}</span></p>
-        <p>Last 30 days: <span>{{page_visit_data.page_visits_last_30_days}}</span></p>
-        <p>Lifetime: <span>{{page_visit_data.total_page_visits}}</span></p>
+    <div class="content-container">
+
+        <div class="analytics-card">
+            <h3>Page Visits</h3>
+            <p>Today: <span>{{page_visit_data.total_page_visits_today}}</span></p>
+            <p>Last 7 days: <span>{{page_visit_data.page_visits_last_7_days}}</span></p>
+            <p>Last 30 days: <span>{{page_visit_data.page_visits_last_30_days}}</span></p>
+            <p>Lifetime: <span>{{page_visit_data.total_page_visits}}</span></p>
+        </div>
+
+        <div class="analytics-card">
+            <h3>New Registrations</h3>
+            <p>Today: <span>{{registration_data.registrations_today}}</span></p>
+            <p>Last 7 days: <span>{{registration_data.registrations_last_7_days}}</span></p>
+            <p>Last 30 days: <span>{{registration_data.registrations_last_30_days}}</span></p>
+            <p>Lifetime: <span>{{registration_data.total_registration}}</span></p>
+        </div>
+
+        <div class="analytics-card">
+            <h3>Most Visited Pages</h3>
+            {%for page in most_visited_pages%}
+            <p>{{page.page}}: <span>{{page.visit_count}}</span></p>
+            {%endfor%}
+        </div>
+
+    </div>
+    <div class="analytics-card" style="width: 1200px; margin-left: 20px;">
+        <h3>Page Visits in last 7 days</h3>
+        <br>
+        {{daily_traffic|safe}}
     </div>
 
-    <div class="analytics-card">
-        <h3>New Registrations</h3>
-        <p>Today: <span>{{registration_data.registrations_today}}</span></p>
-        <p>Last 7 days: <span>{{registration_data.registrations_last_7_days}}</span></p>
-        <p>Last 30 days: <span>{{registration_data.registrations_last_30_days}}</span></p>
-        <p>Lifetime: <span>{{registration_data.total_registration}}</span></p>
-    </div>
-
-    <div class="analytics-card">
-        <h3>Most Visited Pages</h3>
-        {%for page in most_visited_pages%}
-        <p>{{page.page}}: <span>{{page.visit_count}}</span></p>
-        {%endfor%}
-    </div>
-
-    <div>
-        {{graph_html|safe}}
+    <div class="analytics-card" style="width: 1200px; margin-left: 20px; margin-top:20px;">
+        <h3>Hourly Traffic Distribution</h3>
+        <br>
+        {{hourly_distribution|safe}}
     </div>
 </div>
 
 <script>
     // Reload the page every 5 minutes (300,000 milliseconds)
-    setTimeout(function() {
+    setTimeout(function () {
         alert("Page will reload in 10 seconds to fetch the latest data.");
     }, 290000); // 290 seconds = 4 minutes and 50 seconds
 
-    setInterval(function() {
+    setInterval(function () {
         window.location.reload();
     }, 300000); // 5 minutes in milliseconds
 </script>
