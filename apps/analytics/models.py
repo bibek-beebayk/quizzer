@@ -162,7 +162,7 @@ class WebsiteAnalytics:
             "total_sessions": total_sessions,
             "bounce_sessions": bounce_sessions,
             "bounce_rate": (
-                (bounce_sessions / total_sessions * 100) if total_sessions > 0 else 0
+                round((bounce_sessions / total_sessions * 100), 2) if total_sessions > 0 else 0
             ),
         }
 
