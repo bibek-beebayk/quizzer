@@ -182,3 +182,6 @@ class WebsiteAnalytics:
             )
             .order_by("first_visit_date")
         )
+
+    def total_visits_today(self):
+        return self.queryset.filter(created_at__date=timezone.now().date()).count()

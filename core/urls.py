@@ -15,6 +15,7 @@ from apps.analytics import api as analytics_api
 router = DefaultRouter()
 
 router.register("blog", blog_api.BlogViewSet, basename="blog")
+router.register("analytics", analytics_api.AnalyticsViewSet, basename="analytics")
 
 def robots_txt(request):
     lines = [
@@ -42,8 +43,7 @@ urlpatterns = (
         path("api/v1/", include(router.urls)),
         path("", include("apps.interaction.urls")),
 
-        path("analytics/", analytics_views.analytics_dashboard, name="analytics_dashboard"),
-        path("api/analytics/", analytics_api.AnalyticsDashboardView.as_view(), name="analytics_dashboard_api"),
+        path("analytics/", analytics_views.analytics_dashboard, name="analytics_dashboard")
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
