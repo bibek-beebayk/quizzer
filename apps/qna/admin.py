@@ -135,7 +135,7 @@ class QuizAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     list_filter = ("category",)
     list_per_page = 50
-    autocomplete_fields = ["questions"]
+    # autocomplete_fields = ["questions"]
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == "questions":
