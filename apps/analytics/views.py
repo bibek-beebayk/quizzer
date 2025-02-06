@@ -10,6 +10,17 @@ import plotly.express as px
 
 User = get_user_model()
 
+default_layout_config = {
+    "height": 300,
+    "autosize": True,
+    "showlegend": False,
+    "margin": {"t": 50, "b": 0, "l": 60, "r": 20},
+    "dragmode": False,
+    "xaxis": {"showgrid": True, "ticklen": 1, "tickangle": 0, "title_standoff": 20},
+    "yaxis": {"showgrid": True},
+    "modebar": {"orientation": "h"},
+}
+
 
 def get_daily_traffic_graph():
     analytics = WebsiteAnalytics()
@@ -24,18 +35,7 @@ def get_daily_traffic_graph():
         labels={"date": "Date", "visits": "Number of page visits"},
         line_shape="spline",
     )
-    fig.update_layout(
-        autosize=True,
-        showlegend=True,
-        xaxis_title="Date",
-        yaxis_title="Visits",
-        title="Visits Over Time",
-        margin=dict(t=0, b=0, l=0, r=0),
-        dragmode=False,
-        xaxis=dict(showgrid=True),
-        yaxis=dict(showgrid=True),
-        # modebar=dict(orientation="v"),
-    )
+    fig.update_layout(**default_layout_config)
     graph_html = fig.to_html(full_html=False)
     return graph_html
 
@@ -43,7 +43,6 @@ def get_daily_traffic_graph():
 def get_hourly_distribution_graph():
     analytics = WebsiteAnalytics()
     hourly_distribution_data = analytics.hourly_distribution()
-    print("Hourly Distribution Data: ", hourly_distribution_data)
     df = pd.DataFrame(hourly_distribution_data)
     fig = px.line(
         df,
@@ -55,16 +54,7 @@ def get_hourly_distribution_graph():
         line_shape="spline",
     )
     fig.update_layout(
-        autosize=True,
-        showlegend=True,
-        xaxis_title="Hour",
-        yaxis_title="Visits",
-        title="Visits Over Time",
-        margin=dict(t=0, b=0, l=0, r=0),
-        dragmode=False,
-        xaxis=dict(showgrid=True),
-        yaxis=dict(showgrid=True),
-        # modebar=dict(orientation="v"),
+        **default_layout_config,
     )
     graph_html = fig.to_html(full_html=False)
     return graph_html
