@@ -64,6 +64,7 @@ def index(request):
 def quiz_view(request):
     context = {}
     questions = None
+    quiz_id = None
     if request.method == "GET":
         category_id = request.GET.get("category")
         quiz_id = request.GET.get("quiz")
@@ -89,11 +90,14 @@ def quiz_view(request):
             if not request.user.is_authenticated:
                 messages.error(request, "Please login or signup to take quiz.")
                 return redirect("login")
-            user_quiz_results = QuizResult.objects.filter(user=request.user).values_list(
-            "quiz_id", flat=True
-            )
+            user_quiz_results = QuizResult.objects.filter(
+                user=request.user
+            ).values_list("quiz_id", flat=True)
             if int(quiz_id) in user_quiz_results:
-                messages.error(request, "You have already taken this quiz. Here are some quizes that you can take now.")
+                messages.error(
+                    request,
+                    "You have already taken this quiz. Here are some quizes that you can take now.",
+                )
                 base_url = reverse("quiz_list")
                 params = "taken=not-taken"
                 return redirect(f"{base_url}?{params}")
@@ -109,12 +113,14 @@ def quiz_view(request):
     elif request.method == "POST":
         categories = request.POST.getlist("interests")
         count = int(request.POST.get("count"))
-        questions = Question.objects.prefetch_related("answers").filter(
-            categories__in=categories
-        ).order_by("?")[:count]
+        questions = (
+            Question.objects.prefetch_related("answers")
+            .filter(categories__in=categories)
+            .order_by("?")[:count]
+        )
         quiz_name = "Custom Quiz"
 
-    if not questions  or questions.count() == 0:
+    if not questions or questions.count() == 0:
         messages.error(request, "No questions found. Try these quizzes instead.")
         return redirect("/quiz-list/?taken=not-taken")
 
