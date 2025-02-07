@@ -94,7 +94,7 @@
                 {% else %}
                 <a href="/quiz?quiz={{quiz.id}}" class="take-quiz-btn">Take Quiz</a>
                 {% endif %}
-                <p>Added: {{ quiz.created_at|date:"M d, Y" }}</p>
+                <p>Added: {{ quiz.publish_at|date:"M d, Y" }}</p>
             </div>
         </div>
         

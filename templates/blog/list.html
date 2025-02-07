@@ -51,13 +51,10 @@
         <div class="quiz-card">
             <div class="quiz-details">
                 <h3>{{ blog.title }}</h3>
-                <p>
-                    {{blog.reading_time}} minutes
-                </p>
+                <p>Published: {{ blog.publish_at|date:"M d, Y" }}</p>
             </div>
             <div class="quiz-meta">
                 <a href="/blogs/{{blog.slug}}" class="take-quiz-btn">Read</a>
-                <p>Published: {{ blog.publish_at|date:"M d, Y" }}</p>
             </div>
         </div>
 

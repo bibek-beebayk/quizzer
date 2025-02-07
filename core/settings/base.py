@@ -21,7 +21,7 @@ INSTALLED_APPS = [
     "apps.users",
     "apps.blog",
     "apps.interaction",
-    "apps.analytics"
+    "apps.analytics",
 ]
 
 MIDDLEWARE = [
@@ -104,7 +104,7 @@ PWA_APP_BACKGROUND_COLOR = "#ffffff"
 PWA_APP_DISPLAY = "standalone"
 PWA_APP_SCOPE = "/"
 PWA_APP_START_URL = "/"
-PWA_APP_ORIENTATION = 'portrait'
+PWA_APP_ORIENTATION = "portrait"
 PWA_APP_ICONS = [
     {
         "src": "/static/images/appicon.png",
@@ -119,10 +119,10 @@ PWA_APP_ICONS = [
 ]
 PWA_APP_SCREENSHOTS = [
     {
-      'src': '/static/images/ss1.png',
-      'sizes': '470x638',
-      "type": "image/png",
-      "form_factor": "wide"
+        "src": "/static/images/ss1.png",
+        "sizes": "470x638",
+        "type": "image/png",
+        "form_factor": "wide",
     }
 ]
 PWA_APP_DIR = "ltr"
@@ -162,22 +162,17 @@ CKEDITOR_5_CONFIGS = {
             "imageStyle:alignCenter",
             "imageStyle:alignRight",
         ],
-        # "plugins": ["Image", "ImageResize"],
-        # "image": {
-        #     "resizeUnit": "%",
-        #     "resizeOptions": [
-        #         {"name": "resizeImage:original", "value": None, "label": "Original"},
-        #         {"name": "resizeImage:50", "value": "50", "label": "50%"},
-        #         {"name": "resizeImage:75", "value": "75", "label": "75%"},
-        #     ],
-        #     "toolbar": [
-        #         "imageStyle:alignLeft",
-        #         "imageStyle:alignCenter",
-        #         "imageStyle:alignRight",
-        #         "|",
-        #         "resizeImage",
-        #     ],
-        # },
+        "fontFamily": {
+            "options": [
+                "Verdana, Geneva, sans-serif",  # Set Verdana as an option
+                "Arial, sans-serif",
+                "Georgia, serif",
+                "Courier New, Courier, monospace",
+                "Times New Roman, Times, serif",
+            ],
+            "supportAllValues": True,  # Allow custom font-family values
+        },
+        # "extraPlugins": "font",
     },
     "extends": {
         "blockToolbar": [
@@ -382,3 +377,7 @@ SUMMERNOTE_CONFIG = {
 SITE_ID = 1
 DOMAIN = "quiznfacts.com"
 SITE_NAME = "quizNfacts"
+
+CKEDITOR_5_CONFIGS["default"]["contentStyles"] = [
+    "body { font-family: 'Verdana', sans-serif; }"
+]

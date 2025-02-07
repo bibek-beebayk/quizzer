@@ -123,6 +123,10 @@
         max-width: 500px;
     }
 
+    .ck-content {
+        font-family: "Verdana", Geneva, sans-serif !important;
+    }
+
     @media screen and (max-width: 768px) {
         .comments-section {
             width: 95%;
@@ -171,9 +175,21 @@
         {% if blog.cover_image %}
         <img src="{{blog.cover_image.url}}" alt="cover_image" style="width: 100%; border-radius: 5px;">
         {% endif %}
+
+        {% for section in blog.sections.all %}
         <div class="blog-body">
-            {{ blog.content|safe }}
+            {% if section.title %}
+            <h3>{{section.title}}</h3>
+            {% endif %}
+            {% if section.image %}
+            <div style="width: 100%; display: flex; justify-content: center;">
+
+                <img src="{{section.image.url}}" alt="" style="width: 70%;">
+            </div>
+            {% endif %}
+            {{ section.content|safe }}
         </div>
+        {% endfor %}
     </div>
 
     <div class="related-posts">

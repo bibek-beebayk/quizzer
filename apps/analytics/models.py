@@ -137,10 +137,7 @@ class WebsiteAnalytics:
             .order_by("hour")
         )
 
-        data_init = [{
-            "hour": x,
-            "visits": 0
-        } for x in range (0, 24)]
+        data_init = [{"hour": x, "visits": 0} for x in range(0, 24)]
 
         for obj in qs:
             data_init[obj["hour"]]["hour"] = obj["hour"]
@@ -162,7 +159,9 @@ class WebsiteAnalytics:
             "total_sessions": total_sessions,
             "bounce_sessions": bounce_sessions,
             "bounce_rate": (
-                round((bounce_sessions / total_sessions * 100), 2) if total_sessions > 0 else 0
+                round((bounce_sessions / total_sessions * 100), 2)
+                if total_sessions > 0
+                else 0
             ),
         }
 
@@ -185,4 +184,3 @@ class WebsiteAnalytics:
 
     def total_visits_today(self):
         return self.queryset.filter(created_at__date=timezone.now().date()).count()
-    
