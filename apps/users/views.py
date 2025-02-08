@@ -30,7 +30,7 @@ def login_view(request):
 
     PageVisit.create_object(request)
 
-    return render(request, "login.html")
+    return render(request, "auth/login.html")
 
 
 @login_required
@@ -51,7 +51,7 @@ def password_reset_email_view(request):
         except User.DoesNotExist:
             messages.error(request, "User does not exist.")
     PageVisit.create_object(request)
-    return render(request, "password_reset.html")
+    return render(request, "auth/password_reset.html")
 
 
 def otp_input_view(request):
@@ -64,7 +64,7 @@ def otp_input_view(request):
         except Otp.DoesNotExist:
             messages.error(request, "Invalid OTP.")
     PageVisit.create_object(request)
-    return render(request, "otp_input.html")
+    return render(request, "auth/otp_input.html")
 
 
 def new_password_input_view(request):
@@ -86,7 +86,7 @@ def new_password_input_view(request):
         else:
             messages.error(request, "Passwords do not match.")
     PageVisit.create_object(request)
-    return render(request, "new_password_input.html")
+    return render(request, "auth/new_password_input.html")
 
 
 @login_required

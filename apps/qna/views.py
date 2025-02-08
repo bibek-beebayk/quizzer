@@ -162,7 +162,7 @@ def register_view(request):
     context["interests"] = Category.objects.order_by("name")
 
     PageVisit.create_object(request)
-    return render(request, "register.html", context)
+    return render(request, "auth/register.html", context)
 
 
 @require_POST

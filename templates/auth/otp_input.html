@@ -1,3 +1,4 @@
+{% extends "auth/base.html" %}
 {% load static %}
 
 {% block content %}
@@ -60,9 +61,8 @@ button:hover {
         {% endif %}
 
         <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" class="form-control" required
-                placeholder="Enter your registered email">
+            <input type="text" name="otp" id="otp" class="form-control" required
+                placeholder="Enter otp received in email.">
         </div>
         <button type="submit">Submit</button>
     </form>
