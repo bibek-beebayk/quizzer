@@ -215,9 +215,8 @@
 
     <div class=" categories">
         {% if user.is_authenticated %}
-        <button
-            style="margin-top: 10px; padding: 10px; cursor: pointer; border-radius: 5px; outline: none; border: none;"
-            id="generate_quiz" onClick='openQuizModal()' type="button">Generate a Custom
+        <button style="margin-top: 20px;" class="tab" id="generate_quiz" onClick='openQuizModal()'
+            type="button">Generate a Custom
             Quiz</button>
         {% endif %}
         <h2 style="font-weight: 100; text-align: center;">Take a quick quiz</h2>
@@ -255,7 +254,8 @@
         <div class="recent-posts">
             {% for blog in recent_blogs %}
             <div class="post-card">
-                <img src="{{blog.cover_image.url}}" alt="" style="height: 200px; object-fit: contain; margin-bottom: 10px; border-radius: 5px;">
+                <img src="{{blog.cover_image.url}}" alt=""
+                    style="height: 200px; object-fit: contain; margin-bottom: 10px; border-radius: 5px;">
                 <h3>{{blog.title}}</h3>
                 <p style="font-size: 0.8rem; margin: 5px 0;"><i>{{blog.publish_at}}</i></p>
                 <!-- <p>{{blog.excerpt}}</p> -->
@@ -281,12 +281,12 @@
             </div>
             <div class="form-group">
                 <label for="">Question Count(10-20): </label>
-                <input type="number" name="count" id="question_count" value="10">
+                <input type="number" name="count" id="question_count" value="10" style="padding: 5px; border-radius: 5px; outline: none; width: 50px;">
             </div>
-            <span style="color: red; display: none;" id="countError"></span>
+            <span style="color: red; display: none; font-size: 12px;" id="countError"></span>
             <div class="modal-actions">
-                <button type="button" onclick="closeQuizModal()">Cancel</button>
-                <button type="submit" id="submitQuizData">Generate Quiz</button>
+                <button type="button" onclick="closeQuizModal()" class="tab">Cancel</button>
+                <button type="submit" id="submitQuizData" class="tab">Generate Quiz</button>
             </div>
         </form>
     </div>
@@ -312,6 +312,7 @@
         if (questionCountInput.value > 20 || questionCountInput.value < 10) {
             countErrorSpan.style.display = "inline-block"
             submitQuizButton.disabled = true
+            countErrorSpan.innerText = "Minimum 10 and Maximum 20 allowed"
         } else {
             countErrorSpan.style.display = "none"
             submitQuizButton.disabled = false
