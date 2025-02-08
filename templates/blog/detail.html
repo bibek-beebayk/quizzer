@@ -182,9 +182,12 @@
             <h3>{{section.title}}</h3>
             {% endif %}
             {% if section.image %}
-            <div style="width: 100%; display: flex; justify-content: center;">
+            <div style="width: 100%; display: flex; justify-content: center; flex-direction: column; align-items: center;">
 
-                <img src="{{section.image.url}}" alt="" style="width: 70%;">
+                <img src="{{section.image.url}}" alt="{% if section.image_alt %}{{section.image_alt}}{% else %}{{section.title}}{% endif %}" style="width: 70%; border-radius: 3px;">
+                {% if section.image_label %}
+                <i style="font-size: 12px;">{{section.image_label}}</i>
+                {% endif %}
             </div>
             {% endif %}
             {{ section.content|safe }}
