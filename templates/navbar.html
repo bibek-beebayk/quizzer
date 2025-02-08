@@ -2,110 +2,310 @@
 
 <style>
     .nav-container {
-        height: auto;
+        height: 60px;
         display: flex;
-        color: white;
         align-items: center;
-        justify-content: center;
-        padding: 10px 20px;
+        justify-content: space-between;
+        padding: 0 20px;
         background-color: lightgray;
+        position: relative;
     }
 
-    .menu {
+    .logo {
+        color: black;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        font-weight: 600;
+        letter-spacing: 1px;
+        font-size: 24px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: opacity 0.2s ease;
+    }
+
+    .logo:hover {
+        opacity: 0.8;
+    }
+
+    .desktop-menu {
+        display: flex;
+        gap: 25px;
+        align-items: center;
+    }
+
+    .desktop-menu a {
+        text-decoration: none;
+        color: black;
+        font-size: 15px;
+        transition: all 0.2s ease;
+        padding: 5px 10px;
+        border-radius: 4px;
+    }
+
+    .desktop-menu a:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .desktop-menu a.active,
+    .mobile-menu a.active {
+        background-color: rgb(36, 20, 114);
+        color: white;
+    }
+
+    .mobile-menu-button {
+        display: none;
+        color: black;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .mobile-menu {
+        display: none;
         position: absolute;
-        top: 55px;
+        top: 100%;
+        right: 20px;
         background-color: #d3d3d3;
         z-index: 49;
-        border-radius: 5px;
-        display: flex;
+        border-radius: 8px;
         flex-direction: column;
-        gap: 20px;
-        align-items: center;
-        justify-content: center;
-        width: 30%;
-        padding: 20px 0;
-        min-width: 200px;
-        box-shadow: 0px 0px 5px 0px rgba(122, 122, 122, 1);
-
+        width: 200px;
+        padding: 10px 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         opacity: 0;
         visibility: hidden;
-        transition: opacity 0.3s ease, visibility 0.3s ease;
-
-        a {
-            text-decoration: none;
-            color: black;
-        }
-
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
     }
 
-    .menu.active {
-        opacity: 0.98;
+    .mobile-menu.active {
+        opacity: 1;
         visibility: visible;
+        transform: translateY(0);
+    }
+
+    .mobile-menu a {
+        text-decoration: none;
+        color: black;
+        padding: 12px 20px;
+        transition: background-color 0.2s ease;
+    }
+
+    .mobile-menu a:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .notification-banner {
+        background-color: rgb(210, 145, 145);
+        padding: 8px 0;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 300;
+        color: rgb(44, 44, 44);
+    }
+
+    .fa-user {
+        cursor: pointer;
+        font-size: 20px;
+        transition: opacity 0.2s ease;
+    }
+
+    .fa-user:hover {
+        opacity: 0.7;
+    }
+
+    #profile-menu {
+        position: absolute;
+        top: 100%;
+        right: 20px;
+        background-color: #d3d3d3;
+        z-index: 50; /* Higher than mobile menu */
+        border-radius: 8px;
+        width: 200px;
+        padding: 10px 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+    }
+
+    #profile-menu.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    #profile-menu a {
+        text-decoration: none;
+        color: black;
+        padding: 12px 20px;
+        display: block;
+        transition: background-color 0.2s ease;
+    }
+
+    #profile-menu a:hover {
+        background-color: rgba(0, 0, 0, 0.05);
     }
 
     @media screen and (max-width: 768px) {
-        /* .menu {
-            width: 100%;
-        } */
+        .nav-container {
+            justify-content: center;
+            padding: 0 15px;
+        }
+
+        .desktop-menu {
+            display: none;
+        }
+
+        .mobile-menu-button {
+            display: block;
+            position: absolute;
+            right: 20px;
+        }
+
+        .mobile-menu {
+            display: flex;
+            right: 15px;
+            width: calc(100% - 30px);
+        }
+
+        #profile-icon {
+            display: none; /* Hide profile icon on mobile */
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        .nav-container {
+            height: 50px;
+        }
+
+        .logo {
+            font-size: 20px;
+        }
+
+        .notification-banner {
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+
+        #profile-icon {
+            display: none; /* Hide profile icon on mobile */
+        }
     }
 </style>
 
-<div class="nav-container">
-    <a href=""></a>
-    <span
-        style="color: black; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-weight: 600; letter-spacing: 1px; font-size: x-large; cursor: pointer;"
-        id="btn">quizNfacts</span>
 
-    <div class="menu">
-        <a href="/">Home</a>
-        <a href="/blogs">Blog</a>
+
+<div class="nav-container">
+    <a href="/" class="logo">quizNfacts</a>
+
+    <div class="desktop-menu">
+        <!-- <a href="/" {% if request.path == '/' %}class="active"{% endif %}>Home</a> -->
+        <a href="/blogs" {% if '/blogs' in request.path %}class="active" {% endif %}>Blog</a>
         {% if user.is_authenticated %}
-        <a href="/quiz-list">Quizzes</a>
-        <a href="/profile">Profile</a>
-        <a href="{% url 'logout' %}">Logout</a>
+        <a href="/quiz-list" {% if '/quiz-list' in request.path %}class="active" {% endif %}>Quizzes</a>
+        {% endif %}
+        <i class="fa fa-user" id="profile-icon"></i>
+    </div>
+
+
+    <div id="profile-menu">
+        {% if user.is_authenticated %}
+        <a href="/profile" {% if '/profile' in request.path %}class="active"{% endif %}>Profile</a>
+        <a href="{% url 'logout' %}" {% if '/logout' in request.path %}class="active"{% endif %}>Logout</a>
         {% if user.is_superuser %}
-        <a href="/analytics">Analytics</a>
+        <a href="/analytics" {% if '/analytics' in request.path %}class="active"{% endif %}>Analytics</a>
         {% endif %}
         {% else %}
-        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'login' %}" {% if '/login' in request.path %}class="active"{% endif %}>Login</a>
+        <a href="{% url 'register' %}" {% if '/register' in request.path %}class="active"{% endif %}>Register</a>
+        {% endif %}
+    </div>
+
+    <span class="mobile-menu-button" id="mobile-btn">☰</span>
+
+    <div class="mobile-menu">
+        <a href="/blogs" {% if '/blogs' in request.path %}class="active" {% endif %}>Blog</a>
+        {% if user.is_authenticated %}
+        <a href="/quiz-list" {% if '/quiz-list' in request.path %}class="active" {% endif %}>Quizzes</a>
+        <a href="/profile" {% if '/profile' in request.path %}class="active" {% endif %}>Profile</a>
+        <a href="{% url 'logout' %}" {% if '/logout' in request.path %}class="active" {% endif %}>Logout</a>
+        {% else %}
+        <a href="{% url 'login' %}" {% if '/login' in request.path %}class="active" {% endif %}>Login</a>
+        {% endif %}
+        {% if user.is_superuser %}
+        <a href="/analytics" {% if '/analytics' in request.path %}class="active" {% endif %}>Analytics</a>
         {% endif %}
     </div>
 </div>
+
 {% if not user.is_authenticated %}
-<div
-    style="background-color: rgb(210, 145, 145); padding: 2px 0; text-align: center; font-size: 12px; font-weight: 300; color: rgb(44, 44, 44);">
+<div class="notification-banner">
     <i>Sign up to track your progress and get personalized content.</i>
 </div>
 {% endif %}
 
 <script>
-    var button = document.getElementById('btn');
-    var menuOpen = false;
-    var menu = document.querySelector('.menu');
+    const mobileButton = document.getElementById('mobile-btn');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const profileButton = document.getElementById('profile-icon');
+    const profileMenu = document.getElementById('profile-menu');
+    
+    let menuOpen = false;
+    let profileMenuOpen = false;
 
-    const openMenu = () => {
-        menu.classList.add('active');
-        menuOpen = true;
-    }
+    const toggleMenu = (shouldOpen) => {
+        menuOpen = shouldOpen;
+        mobileMenu.classList.toggle('active', shouldOpen);
+        if (shouldOpen && profileMenuOpen) {
+            toggleProfileMenu(false);
+        }
+    };
 
-    const closeMenu = () => {
-        menu.classList.remove('active');
-        menuOpen = false;
-    }
+    const toggleProfileMenu = (shouldOpen) => {
+        profileMenuOpen = shouldOpen;
+        profileMenu.classList.toggle('active', shouldOpen);
+        if (shouldOpen && menuOpen) {
+            toggleMenu(false);
+        }
+    };
 
-    button.addEventListener('click', function () {
-        if (menuOpen) {
-            closeMenu();
-        } else {
-            openMenu();
+    mobileButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMenu(!menuOpen);
+    });
+
+    profileButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleProfileMenu(!profileMenuOpen);
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('#profile-menu') && !event.target.closest('#profile-icon')) {
+            toggleProfileMenu(false);
+        }
+        if (!event.target.closest('.mobile-menu') && !event.target.closest('#mobile-btn')) {
+            toggleMenu(false);
         }
     });
 
-    document.addEventListener('click', function (event) {
-        if (menuOpen &&
-            !menu.contains(event.target) &&
-            !button.contains(event.target)) {
-            closeMenu();
+    // Close menus on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            toggleMenu(false);
+            toggleProfileMenu(false);
         }
+    });
+
+    // Close menus when clicking a link
+    mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            toggleMenu(false);
+        });
+    });
+
+    profileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            toggleProfileMenu(false);
+        });
     });
 </script>
