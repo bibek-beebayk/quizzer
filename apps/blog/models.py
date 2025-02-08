@@ -79,6 +79,8 @@ class BlogSection(models.Model):
     image = models.ImageField(
         upload_to=blog_section_upload_path, blank=True, null=True
     )
+    image_alt = models.CharField(max_length=256, blank=True, null=True)
+    image_label = models.CharField(max_length=256, blank=True, null=True)
     video = models.FileField(
         upload_to=blog_section_upload_path, blank=True, null=True
     )
