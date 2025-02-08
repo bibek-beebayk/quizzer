@@ -7,11 +7,6 @@ from rest_framework.decorators import action
 
 
 class AnalyticsViewSet(GenericViewSet):
-    # def get_queryset(self):
-    #     return None
-    
-    # def get_serializer_class(self):
-    #     return None
 
     @action(methods=["GET"], detail=False)
     def dashboard(self, request, *args, **kwargs):

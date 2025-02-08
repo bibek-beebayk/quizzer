@@ -73,5 +73,8 @@ def analytics_dashboard(request):
 
     context["daily_traffic"] = get_daily_traffic_graph()
     context["hourly_distribution"] = get_hourly_distribution_graph()
+    
+    analytics = WebsiteAnalytics()
+    print(analytics.bounce_rate())
 
     return render(request, "analytics/index.html", context)

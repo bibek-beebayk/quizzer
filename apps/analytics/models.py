@@ -25,7 +25,7 @@ def get_page_name(url):
         return "Quiz"
     elif url.startswith("/blogs/"):
         return "Blog"
-    elif url.startswith("/quiz-llist/"):
+    elif url.startswith("/quiz-list/"):
         return "Quiz List"
     elif url.startswith("/profile/"):
         return "Profile"
