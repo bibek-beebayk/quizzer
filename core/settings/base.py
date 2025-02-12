@@ -15,6 +15,7 @@ INSTALLED_APPS = [
     "django_ckeditor_5",
     "rest_framework",
     "django_summernote",
+    "django_check_seo",
     "corsheaders",
     "pwa",
     "apps.qna",

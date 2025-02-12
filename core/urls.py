@@ -17,6 +17,7 @@ router = DefaultRouter()
 router.register("blog", blog_api.BlogViewSet, basename="blog")
 router.register("analytics", analytics_api.AnalyticsViewSet, basename="analytics")
 
+
 def robots_txt(request):
     lines = [
         "User-agent: *",
@@ -25,6 +26,7 @@ def robots_txt(request):
         # "Sitemap: {}/sitemap.xml".format(settings.BASE_URL)
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")
+
 
 urlpatterns = (
     [
@@ -38,12 +40,15 @@ urlpatterns = (
         # path("upload/", custom_upload_function, name="custom_upload_file"),
         path("summernote/", include("django_summernote.urls")),
         path("sitemap.xml", sitemap, {"sitemaps": Sitemaps()}, name="sitemap"),
-        path('robots.txt', robots_txt),
-
+        path("robots.txt", robots_txt),
         path("api/v1/", include(router.urls)),
         path("", include("apps.interaction.urls")),
-
-        path("analytics/", analytics_views.analytics_dashboard, name="analytics_dashboard")
+        path(
+            "analytics/",
+            analytics_views.analytics_dashboard,
+            name="analytics_dashboard",
+        ),
+        path("django-check-seo/", include("django_check_seo.urls")),
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
