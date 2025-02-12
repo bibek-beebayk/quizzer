@@ -6,6 +6,7 @@
 <meta name="title" content="quizNfacts | Blog | {{blog.title}}">
 <meta name="description" content="{{blog.excerpt}}">
 <meta name="keywords" content="{{blog.keywords}}">
+<title>quizNfacts | Blogs | {{blog.title}}</title>
 {% endblock %}
 
 {% block content %}
@@ -193,7 +194,7 @@
         {% for section in blog.sections.all|dictsort:"order" %}
         <div class="blog-body">
             {% if section.title %}
-            <h3>{{section.title}}</h3>
+            <h2 style="font-size: large;">{{section.title}}</h2>
             {% endif %}
             {% if section.image %}
             <div style="width: 100%; display: flex; justify-content: center; flex-direction: column; align-items: center;">
