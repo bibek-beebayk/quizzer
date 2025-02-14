@@ -18,3 +18,12 @@ class PageVisitAdmin(admin.ModelAdmin):
     search_fields = ("user__username", "page")
     date_hierarchy = "created_at"
     ordering = ("-created_at",)
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False

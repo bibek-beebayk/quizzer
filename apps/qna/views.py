@@ -52,7 +52,7 @@ def index(request):
         context["questions_count"] = request.user.interests.annotate(
             questions_count=Count("questions")
         ).aggregate(total_questions=Sum("questions_count"))["total_questions"]
-    context["recent_blogs"] = Blog.objects.order_by("-created_at")[:4]
+    context["recent_blogs"] = Blog.published().order_by("-created_at")[:4]
     context["all_categories"] = Category.objects.order_by("name")
 
     # Create Page View Object

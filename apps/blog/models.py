@@ -37,6 +37,7 @@ class Blog(models.Model):
         default="interesting blog, general knowledge, facts, interesting facts, random facts",
         blank=True,
     )
+    is_draft = models.BooleanField(default=False)
 
     publish_at = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -56,6 +57,12 @@ class Blog(models.Model):
         url = reverse("blog", kwargs={"slug": self.slug})
         return url
 
+    @classmethod
+    def published(cls):
+        return cls.objects.filter(
+            publish_at__lte=timezone.now(), is_draft=False
+        )
+
     def __str__(self):
         return self.title
 
@@ -64,9 +71,7 @@ def blog_section_upload_path(instance, filename):
     if instance.blog and instance.blog.id:
         blog_folder = f"Blog_{instance.blog.id}"
     else:
-        blog_folder = (
-            "Blog_default"
-        )
+        blog_folder = "Blog_default"
 
     return os.path.join("blog_sections", blog_folder, filename)
 
@@ -76,14 +81,10 @@ class BlogSection(models.Model):
     order = models.PositiveIntegerField(default=0)
     title = models.CharField(max_length=256, blank=True, null=True)
     content = CKEditor5Field(config_name="default")
-    image = models.ImageField(
-        upload_to=blog_section_upload_path, blank=True, null=True
-    )
+    image = models.ImageField(upload_to=blog_section_upload_path, blank=True, null=True)
     image_alt = models.CharField(max_length=256, blank=True, null=True)
     image_label = models.CharField(max_length=256, blank=True, null=True)
-    video = models.FileField(
-        upload_to=blog_section_upload_path, blank=True, null=True
-    )
+    video = models.FileField(upload_to=blog_section_upload_path, blank=True, null=True)
 
     def __str__(self):
         return f"{self.title}-Section_{str(self.order)}"

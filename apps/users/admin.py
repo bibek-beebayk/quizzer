@@ -46,3 +46,12 @@ class RequestLogAdmin(admin.ModelAdmin):
     search_fields = ("endpoint", "user", "remote_address")
     list_per_page = 25
     ordering = ("-id",)
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False

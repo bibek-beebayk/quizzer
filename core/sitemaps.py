@@ -22,7 +22,7 @@ class BlogSitemap(Sitemap):
     priority = 0.7
 
     def items(self):
-        return Blog.objects.filter(publish_at__lte=timezone.now()).order_by(
+        return Blog.published().order_by(
             "-publish_at"
         )
 

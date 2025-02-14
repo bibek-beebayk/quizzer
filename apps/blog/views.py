@@ -9,8 +9,7 @@ from apps.blog.models import Blog
 def blog_list_view(request):
     context = {}
     blogs = (
-        Blog.objects.prefetch_related("categories")
-        .filter(publish_at__lte=timezone.now())
+        Blog.published().prefetch_related("categories")
         .order_by("-publish_at")
     )
     paginator = Paginator(blogs, 10)
@@ -31,7 +30,7 @@ def blog_detail_view(request, slug):
     context = {}
     blog = Blog.objects.get(slug=slug)
     context["blog"] = blog
-    context["related_posts"] = Blog.objects.exclude(id=blog.id).order_by("-publish_at")[:5]
+    context["related_posts"] = Blog.published().exclude(id=blog.id).order_by("-publish_at")[:5]
     if request.user.is_authenticated:
         context["has_commented"] = blog.comments.filter(user=request.user).exists()
     
