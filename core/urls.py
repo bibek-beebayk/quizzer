@@ -28,6 +28,10 @@ def robots_txt(request):
     return HttpResponse("\n".join(lines), content_type="text/plain")
 
 
+def ads(request):
+    return HttpResponse("google.com, pub-7039769360692466, DIRECT, f08c47fec0942fa0", content_type="text/plain")
+
+
 urlpatterns = (
     [
         path("admin/", admin.site.urls),
@@ -41,6 +45,7 @@ urlpatterns = (
         path("summernote/", include("django_summernote.urls")),
         path("sitemap.xml", sitemap, {"sitemaps": Sitemaps()}, name="sitemap"),
         path("robots.txt", robots_txt),
+        path("ads.txt/", ads),
         path("api/v1/", include(router.urls)),
         path("", include("apps.interaction.urls")),
         path(
