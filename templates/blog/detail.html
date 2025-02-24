@@ -128,8 +128,20 @@
         font-family: "Verdana", Geneva, sans-serif !important;
     }
 
-    .section-image{
-        width: 70%; border-radius: 3px;
+    .section-image {
+        width: 70%;
+        border-radius: 3px;
+    }
+
+    .change-btn {
+        border: none;
+        background: transparent;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    .change-btn:hover {
+        text-decoration: underline;
     }
 
     @media screen and (max-width: 768px) {
@@ -141,24 +153,24 @@
             padding: 15px;
         }
 
-        .section-image{
+        .section-image {
             width: 80%;
         }
     }
 
-    @media screen and (max-width: 480px){
-        .section-image{
+    @media screen and (max-width: 480px) {
+        .section-image {
             width: 100%;
         }
     }
 </style>
 
-<div id="deleteCommentModal" class="modal">
+<div id="editCommentModal" class="modal">
     <div class="modal-content">
-        <h3>Delete Comment</h3>
-        <p>Are you sure?</p>
-        <form method="POST" action="{% url 'change_password' %}" id="passwordChangeForm">
+        <h3>Edit Comment</h3>
+        <form method="POST" action="{% url 'edit_comment' %}" id="editCommentForm">
             {% csrf_token %}
+            <input type="hidden" name="comment_id" id="commentId">
             <div>
                 <label for="comment">Comment</label>
                 <div class="form-group">
@@ -166,8 +178,8 @@
                 </div>
             </div>
             <div class="modal-actions">
-                <button type="button" id="cancelPasswordChange">Cancel</button>
-                <button type="submit">Change Password</button>
+                <button type="button" id="cancelEdit">Cancel</button>
+                <button type="submit">Submit</button>
             </div>
             <p style="display: none;" id="passwordChangeError"></p>
         </form>
@@ -197,9 +209,12 @@
             <h2 style="font-size: large;">{{section.title}}</h2>
             {% endif %}
             {% if section.image %}
-            <div style="width: 100%; display: flex; justify-content: center; flex-direction: column; align-items: center;">
+            <div
+                style="width: 100%; display: flex; justify-content: center; flex-direction: column; align-items: center;">
 
-                <img src="{{section.image.url}}" alt="{% if section.image_alt %}{{section.image_alt}}{% else %}{{section.title}}{% endif %}" class="section-image">
+                <img src="{{section.image.url}}"
+                    alt="{% if section.image_alt %}{{section.image_alt}}{% else %}{{section.title}}{% endif %}"
+                    class="section-image">
                 {% if section.image_label %}
                 <i style="font-size: 12px;">{{section.image_label}}</i>
                 {% endif %}
@@ -221,7 +236,7 @@
         {% else %}
         <div class="comment-form">
             <h4>Leave a Comment</h4>
-            <form method="post" action="{% url 'add_blog_comment' blog.id%}">
+            <form method="post">
                 {% csrf_token %}
                 <div class="form-group">
                     <textarea name="comment" placeholder="Your Comment" required></textarea>
@@ -242,10 +257,13 @@
                     {{ comment.text }}
                 </div>
                 {% if comment.user == user %}
-                <!-- <div style="margin-top: 10px;">
-                    <button id="edit_comment" onClick="handleEditComment()">Edit</button>
-                    <button id="delete_comment" onclick="handleDeleteComment()">Delete</button>
-                </div> -->
+                <div style="margin-top: 10px; display: flex; gap: 10px;">
+                    <button class="change-btn" id="edit_comment"
+                        onClick="handleEditComment('{{comment.id}}', '{{comment.text}}')"
+                        style="color:orange">Edit</button>
+                    <button class="change-btn" id="delete_comment" onclick="handleDeleteComment('{{comment.id}}')"
+                        style="color: red">Delete</button>
+                </div>
                 {% endif %}
             </div>
             {% empty %}
@@ -269,16 +287,49 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const deleteBtn = document.getElementById('delete_comment')
-        function handleDeleteComment() {
-            console.log("Delete button pressed.")
-        };
+<div id="deleteCommentModal" class="modal">
+    <div class="modal-content">
+        <h3>Are you sure? This action is irreversible.</h3>
+        <form method="POST" action="{% url 'delete_comment' %}" id="deleteCommentForm">
+            {% csrf_token %}
+            <input type="hidden" name="comment_id" id="deleteCommentId">
+            <div class="modal-actions">
+                <button type="button" id="cancelDelete">Cancel</button>
+                <button type="submit">Submit</button>
+            </div>
+            <p style="display: none;" id="passwordChangeError"></p>
+        </form>
+    </div>
+</div>
 
-        function handleEditComment() {
-            console.log("Edit button pressed.")
-        };
-    })
+<script>
+
+    const cancelEdit = document.getElementById("cancelEdit");
+    const cancelDelete = document.getElementById("cancelDelete");
+    const editCommentModal = document.getElementById("editCommentModal");
+    
+    const handleDeleteComment = (commentId) => {
+        deleteCommentModal.style.display = "block";
+        const deleteCommentId = document.getElementById("deleteCommentId");
+        deleteCommentId.value = commentId;
+    };
+    
+    const handleEditComment = (commentId, commentText) => {
+        const commentTextArea = document.querySelector("textarea[name='comment']");
+        console.log("Comment: ", commentText)
+        commentTextArea.value = commentText;
+        const commentIdInput = document.getElementById("commentId");
+        commentIdInput.value = commentId;
+        editCommentModal.style.display = "block";
+    };
+
+    cancelEdit.onclick = () => {
+        editCommentModal.style.display = "none";
+    };
+
+    cancelDelete.onclick = () => {
+        deleteCommentModal.style.display = "none";
+    };
+
 </script>
 {% endblock %}
