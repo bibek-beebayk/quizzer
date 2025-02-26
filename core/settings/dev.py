@@ -20,7 +20,7 @@ CORS_ALLOW_ALL_ORIGINS: True
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.environ.get("PGDATABASE", "quizbk"),
+        "NAME": os.environ.get("PGDATABASE", "quiz"),
         "USER": os.environ.get("PGUSER", "postgres"),
         "PASSWORD": os.environ.get("PGPASSWORD", ""),
         "HOST": os.environ.get("PGHOST", ""),

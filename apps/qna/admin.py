@@ -35,13 +35,75 @@ class TagAdmin(admin.ModelAdmin):
     search_fields = ("name",)
 
 
+from django.contrib.admin import SimpleListFilter
+
+
+class HasCorrectAnswerFilter(SimpleListFilter):
+    title = "Has Correct Answer"
+    parameter_name = "has_correct_answer"
+
+    def lookups(self, request, model_admin):
+        return (
+            ("yes", "Yes"),
+            ("no", "No"),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == "yes":
+            return queryset.filter(answers__is_correct=True).distinct()
+        if self.value() == "no":
+            return queryset.exclude(answers__is_correct=True).distinct()
+        if not self.value():
+            return queryset
+
+
+class HasDuplicateAnswerFilter(SimpleListFilter):
+    title = "Has Duplicate Answer"
+    parameter_name = "has_duplicate_answer"
+
+    def lookups(self, request, model_admin):
+        return (
+            ("yes", "Yes"),
+            ("no", "No"),
+        )
+
+    def queryset(self, request, queryset):
+        qs = queryset.annotate(
+            num_duplicate_answers=Count("answers__answer_text")
+            - Count("answers__answer_text", distinct=True)
+        )
+        if self.value() == "yes":
+            return qs.filter(num_duplicate_answers__gt=0)
+        if self.value() == "no":
+            return qs.exclude(num_duplicate_answers__gt=0)
+        if not self.value():
+            return qs
+
+
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ("id", "question_text", "categories_str")
+    list_display = (
+        "id",
+        "question_text",
+        "categories_str",
+        "has_correct_answer",
+        "has_duplicate_answer",
+    )
     list_display_links = ("id", "question_text")
     search_fields = ("question_text",)
-    list_filter = ["categories"]
+    list_filter = ["categories", HasCorrectAnswerFilter, HasDuplicateAnswerFilter]
     inlines = [AnswerInline]
+
+    def has_duplicate_answer(self, obj):
+        return (
+            obj.answers.values("answer_text")
+            .annotate(count=Count("answer_text"))
+            .filter(count__gt=1)
+            .exists()
+        )
+
+    def has_correct_answer(self, obj):
+        return obj.answers.filter(is_correct=True).exists()
 
     def get_queryset(self, request):
         return super().get_queryset(request).prefetch_related("answers", "categories")
