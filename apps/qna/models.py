@@ -79,7 +79,7 @@ class Question(models.Model):
         if not user_interests.exists():
             return (
                 cls.published()
-                .filter(categories__name__iexact__in=["general knowledge"])
+                .filter(categories__name__in=["General Knowledge"])
                 .order_by("?")
                 .first()
             )

@@ -110,5 +110,6 @@ LOGGING = {
 
 
 ADMINS = [
-    ("Bibek Gautam", "beebayk0001@gmail.com"),
+    # ("Bibek Gautam", "beebayk0001@gmail.com"),
+    ("Quiznfacts", "quiznfacts2024@gmail.com")
 ]

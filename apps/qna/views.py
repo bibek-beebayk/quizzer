@@ -15,6 +15,8 @@ from apps.analytics.models import PageVisit
 from apps.blog.models import Blog
 from apps.qna.models import Category, Question, Quiz, QuizResult
 from django.urls import reverse
+from django.core.mail import send_mail
+from django.conf import settings
 
 User = get_user_model()
 
@@ -57,7 +59,6 @@ def index(request):
 
     # Create Page View Object
     PageVisit.create_object(request)
-
     return render(request, "index.html", context)
 
 
@@ -151,16 +152,23 @@ def register_view(request):
         try:
             with transaction.atomic():
                 user = User.objects.create_user(email=email, password=password)
-                for interest_id in interests:
-                    category = Category.objects.get(id=interest_id)
-                    # UserInterest.objects.create(user=user, category=category)
+                # categories = Category.objects.filter(id__in=interests)
+                user.interests.set([int(interest) for interest in interests])
+                try:
+                    send_mail(
+                        "New User Registration",
+                        f"New user registered with email {user.email}",
+                        settings.EMAIL_HOST_USER,
+                        ["quiznfacts2024@gmail.com"],
+                        fail_silently=False,
+                    )
+                except Exception as e:
+                    print(e)
                 login(request, user)
                 return redirect("index")
         except IntegrityError as e:
             messages.error(request, "Email already exists.")
-
     context["interests"] = Category.objects.order_by("name")
-
     PageVisit.create_object(request)
     return render(request, "auth/register.html", context)
 
