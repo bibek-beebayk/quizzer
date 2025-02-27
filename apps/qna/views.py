@@ -141,34 +141,58 @@ def quiz_view(request):
     return render(request, "quiz.html", context)
 
 
+import smtplib
+import dns.resolver
+
+def verify_email_exists(email):
+    domain = email.split('@')[1]
+    try:
+        # Get mail server
+        records = dns.resolver.resolve(domain, 'MX')
+        mx_record = str(records[0].exchange)
+        
+        # SMTP conversation
+        server = smtplib.SMTP(mx_record)
+        server.set_debuglevel(0)
+        server.ehlo()
+        server.mail('verify@yourdomain.com')  # Your email here
+        code, message = server.rcpt(email)
+        server.quit()
+        
+        # 250 means success
+        return code == 250
+    except Exception as e:
+        print(e)
+        return False
+
+
 @transaction.atomic
 def register_view(request):
     context = {}
+    context["interests"] = Category.objects.order_by("name")
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
         interests = request.POST.getlist("interests")
 
+        # if not verify_email_exists(email):
+        #     messages.error(request, "Email does not seem to be valid. Please enter a valid email address.")
+            # return render(request, "auth/register.html", context)
+
         try:
-            with transaction.atomic():
-                user = User.objects.create_user(email=email, password=password)
-                # categories = Category.objects.filter(id__in=interests)
-                user.interests.set([int(interest) for interest in interests])
-                try:
-                    send_mail(
-                        "New User Registration",
-                        f"New user registered with email {user.email}",
-                        settings.EMAIL_HOST_USER,
-                        ["quiznfacts2024@gmail.com"],
-                        fail_silently=False,
-                    )
-                except Exception as e:
-                    print(e)
-                login(request, user)
-                return redirect("index")
+            user = User.objects.create_user(email=email, password=password)
+            user.interests.set([int(interest) for interest in interests])
+            send_mail(
+                "New User Registration",
+                f"New user registered with email {user.email}",
+                settings.EMAIL_HOST_USER,
+                ["quiznfacts2024@gmail.com"],
+                fail_silently=False,
+            )
+            login(request, user)
+            return redirect("index")
         except IntegrityError as e:
             messages.error(request, "Email already exists.")
-    context["interests"] = Category.objects.order_by("name")
     PageVisit.create_object(request)
     return render(request, "auth/register.html", context)
 
