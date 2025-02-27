@@ -247,7 +247,23 @@
             </a>
             {% endfor %}
         </div>
+    </div>
 
+    <div class="recent-blogs-section">
+        <h2 style="font-weight: 100; margin-top: 20px;">Recently Added Quizzes</h2>
+        <div class="recent-posts">
+            {% for quiz in recent_quizzes %}
+            <div class="post-card">
+                <!-- <img src="{{blog.cover_image.url}}" alt=""
+                    style="height: 200px; object-fit: contain; margin-bottom: 10px; border-radius: 5px;"> -->
+                <h3>{{quiz.name}}</h3>
+                <p style="font-size: 0.8rem; margin: 5px 0;"><i>{{quiz.publish_at}}</i></p>
+                <!-- <p>{{blog.excerpt}}</p> -->
+                <a href="/quiz/?quiz={{quiz.id}}" style="text-align: center; margin-top: 10px;" class="tab">Take Quiz</a>
+            </div>
+            {% endfor %}
+            <a href="/quiz-list/" style="text-align: center; grid-column: span 2;" class="tab">Explore Available Quizzes</a>
+        </div>
     </div>
 
     <div class="recent-blogs-section">

@@ -59,6 +59,7 @@ def index(request):
         ).aggregate(total_questions=Sum("questions_count"))["total_questions"]
     context["recent_blogs"] = Blog.published().order_by("-created_at")[:4]
     context["all_categories"] = Category.objects.order_by("name")
+    context["recent_quizzes"] = Quiz.published().order_by("-created_at")[:4]
 
     # Create Page View Object
     PageVisit.create_object(request)
@@ -236,8 +237,12 @@ def save_quiz_results(request):
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
 
-@login_required
 def quiz_list_view(request):
+
+    if not request.user.is_authenticated:
+        messages.error(request, "Please login or signup to view quizzes.")
+        return redirect("login")
+
     category_id = request.GET.get("category")
     taken = request.GET.get("taken")
     # Base queryset for quizzes
