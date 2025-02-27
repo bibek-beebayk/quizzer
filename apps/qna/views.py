@@ -1,22 +1,25 @@
+import datetime
 import json
 import random
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core import signing
+from django.core.mail import send_mail
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import IntegrityError, transaction
 from django.db.models import Count, Exists, FloatField, OuterRef, Subquery, Sum
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from apps.analytics.models import PageVisit
 from apps.blog.models import Blog
 from apps.qna.models import Category, Question, Quiz, QuizResult
-from django.urls import reverse
-from django.core.mail import send_mail
-from django.conf import settings
 
 User = get_user_model()
 
@@ -141,45 +144,29 @@ def quiz_view(request):
     return render(request, "quiz.html", context)
 
 
-import smtplib
-import dns.resolver
+def verify_registration(request):
+    signed_data = request.GET.get("data")
 
-def verify_email_exists(email):
-    domain = email.split('@')[1]
+    if not signed_data:
+        return HttpResponse("Invalid request. Please try again.")
+
     try:
-        # Get mail server
-        records = dns.resolver.resolve(domain, 'MX')
-        mx_record = str(records[0].exchange)
-        
-        # SMTP conversation
-        server = smtplib.SMTP(mx_record)
-        server.set_debuglevel(0)
-        server.ehlo()
-        server.mail('verify@yourdomain.com')  # Your email here
-        code, message = server.rcpt(email)
-        server.quit()
-        
-        # 250 means success
-        return code == 250
-    except Exception as e:
-        print(e)
-        return False
+        data = signing.loads(signed_data)
+        email = data.get("email")
+        password = data.get("password")
+        interests = data.get("interests")
+        exp_timestamp = data.get("exp")
+        exp_time = datetime.datetime.fromtimestamp(
+            exp_timestamp, tz=datetime.timezone.utc
+        )
 
+        if timezone.now() > exp_time:
+            return HttpResponse("Link expired. Please try again.")
+    except signing.BadSignature:
+        return HttpResponse("Invalid link. Please try again.")
 
-@transaction.atomic
-def register_view(request):
-    context = {}
-    context["interests"] = Category.objects.order_by("name")
-    if request.method == "POST":
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        interests = request.POST.getlist("interests")
-
-        # if not verify_email_exists(email):
-        #     messages.error(request, "Email does not seem to be valid. Please enter a valid email address.")
-            # return render(request, "auth/register.html", context)
-
-        try:
+    try:
+        with transaction.atomic():
             user = User.objects.create_user(email=email, password=password)
             user.interests.set([int(interest) for interest in interests])
             send_mail(
@@ -191,8 +178,47 @@ def register_view(request):
             )
             login(request, user)
             return redirect("index")
-        except IntegrityError as e:
+    except IntegrityError as e:
+        messages.error(request, "Email already exists.")
+        return redirect("register")
+
+
+def register_view(request):
+    context = {}
+    context["interests"] = Category.objects.order_by("name")
+    if request.method == "POST":
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        interests = request.POST.getlist("interests")
+
+        if User.objects.filter(email=email).exists():
             messages.error(request, "Email already exists.")
+        else:
+
+            exp_time = timezone.now() + timezone.timedelta(minutes=10)
+            exp_timestamp = exp_time.timestamp()
+
+            data = {
+                "email": email,
+                "password": password,
+                "interests": interests,
+                "exp": exp_timestamp,
+            }
+            signed_data = signing.dumps(data)
+            regn_link = (
+                request.build_absolute_uri(reverse("verify_registration"))
+                + f"?data={signed_data}"
+            )
+            send_mail(
+                "Verify Registration",
+                f"Follow this link to verify your registration. The link will expire in 10 minutes. {regn_link}",
+                settings.EMAIL_HOST_USER,
+                [email],
+                fail_silently=False,
+            )
+            return HttpResponse(
+                "Verification link sent to your email. Click on the link to verify your registration. The link will expire in 10 minutes. You can close this page now."
+            )
     PageVisit.create_object(request)
     return render(request, "auth/register.html", context)
 
