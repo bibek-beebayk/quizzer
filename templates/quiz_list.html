@@ -3,48 +3,7 @@
 
 {% block meta %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/quiz_list.css' %}">
-
-<meta name="title" content="quizNfacts | Quizzes">
-<meta name="description" content="Take hand picked quizzes on different topics and test your knowledge. What a good way to improve your brain.">
-<meta name="keywords" content="quiz, general knowledge quiz, general quiz, history quiz, geography quiz, movies quiz">
-
-<meta property="og:title" content="quizNfacts | Quizzes">
-<meta property="og:description"
-    content="Take hand picked quizzes on different topics and test your knowledge. What a good way to improve your brain.">
-<meta property="og:image" content="">
-<meta property="og:url" content="https://quiznfacts.com/quiz-list/">
-
-<meta name="twitter:title" content="quizNfacts | Quizzes">
-<meta name="twitter:description"
-    content="Take hand picked quizzes on different topics and test your knowledge. What a good way to improve your brain.">
-<meta name="twitter:url" content="">
-<meta name="twitter:card"
-    content="Take hand picked quizzes on different topics and test your knowledge. What a good way to improve your brain.">
-
-<style>
-    .alert {
-        padding: 5px;
-        margin-bottom: 10px;
-        margin-top: -20px;
-        border: 1px solid transparent;
-        border-radius: 5px;
-        text-align: center;
-        width: 100%;
-        font-size: 0.8rem;
-    }
-
-    .alert.error {
-        color: #a94442;
-        background-color: #f2dede;
-        border-color: #ebccd1;
-    }
-
-    .alert.success {
-        color: #3c763d;
-        background-color: #dff0d8;
-        border-color: #d6e9c6;
-    }
-</style>
+<title>quizNfacts | Quizzes</title>
 {% endblock %}
 
 {% block content %}
@@ -58,22 +17,24 @@
         {% endfor %}
     </div>
     {% endif %}
+
+    <div class="section-header">
+        <h2>Available Quizzes</h2>
+    </div>
+
     <form method="get" class="category-filters">
-        <select name="category" onchange="this.form.submit()"
-            style="padding: 0.5rem; border: 1px solid #3498db; border-radius: 4px;">
-            <option value="">All Quizzes ({{total_quiz_count}})</option>
+        <select name="category" onchange="this.form.submit()">
+            <option value="">All Categories ({{total_quiz_count}})</option>
             {% for category in categories %}
-            <option value="{{ category.id }}" 
-                {% if request.GET.category|stringformat:'s' == category.id|stringformat:'s' %}selected{% endif %}>
+            <option value="{{ category.id }}" {% if request.GET.category|stringformat:'s' == category.id|stringformat:'s' %}selected{% endif %}>
                 {{ category.name }} ({{ category.quizzes.count }})
             </option>
             {% endfor %}
         </select>
 
-        <select name="taken" onchange="this.form.submit()"
-            style="padding: 0.5rem; border: 1px solid #3498db; border-radius: 4px;">
-            <option value="">All</option>
-            <option value="taken" {% if request.GET.taken == "taken" %}selected{% endif %}>Taken</option>
+        <select name="taken" onchange="this.form.submit()">
+            <option value="">Status: All</option>
+            <option value="taken" {% if request.GET.taken == "taken" %}selected{% endif %}>Already Taken</option>
             <option value="not-taken" {% if request.GET.taken == "not-taken" %}selected{% endif %}>Not Taken</option>
         </select>
     </form>
@@ -84,42 +45,53 @@
             <div class="quiz-details">
                 <h3>{{ quiz.name }}</h3>
                 <p>
-                    {{ quiz.questions.count }}
+                    <i class="fas fa-question-circle"></i> {{ quiz.questions.count }}
                     {% if quiz.questions.count == 1 %}Question{% else %}Questions{% endif %}
                 </p>
+                {% if quiz.category %}
+                <p><i class="fas fa-tag"></i> {{ quiz.category.name }}</p>
+                {% endif %}
             </div>
             <div class="quiz-meta">
                 {% if quiz.is_taken %}
-                <p>Already taken ({{quiz.user_score_percentage}}%)</p>
+                <div class="alert success" style="margin: 0; padding: 5px;">
+                    Score: {{quiz.user_score_percentage}}%
+                </div>
                 {% else %}
-                <a href="/quiz?quiz={{quiz.id}}" class="take-quiz-btn">Take Quiz</a>
+                <a href="/quiz?quiz={{quiz.id}}" class="take-quiz-btn">Start Quiz</a>
                 {% endif %}
-                <p>Added: {{ quiz.publish_at|date:"M d, Y" }}</p>
+                <p><i class="far fa-calendar-alt"></i> Added: {{ quiz.publish_at|date:"M d, Y" }}</p>
             </div>
         </div>
-        
+
         {% empty %}
-        <p style="text-align: center;">No quizzes available.</p>
+        <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--color-text-secondary);">
+            <h3>No quizzes found.</h3>
+            <p>Try changing the filters.</p>
+        </div>
         {% endfor %}
     </div>
 
-   <!-- Pagination Controls -->
-   {% if quizzes.has_other_pages %}
-   <div class="pagination">
-       {% if quizzes.has_previous %}
-           <a href="?page=1{% if category_id %}&category={{ category_id }}{% endif %}">&laquo; First</a>
-           <a href="?page={{ quizzes.previous_page_number }}{% if category_id %}&category={{ category_id }}{% endif %}">Previous</a>
-       {% endif %}
+    <!-- Pagination Controls -->
+    {% if quizzes.has_other_pages %}
+    <div class="pagination">
+        {% if quizzes.has_previous %}
+        <a href="?page=1{% if category_id %}&category={{ category_id }}{% endif %}">&laquo; First</a>
+        <a
+            href="?page={{ quizzes.previous_page_number }}{% if category_id %}&category={{ category_id }}{% endif %}">Previous</a>
+        {% endif %}
 
-       <span class="current-page">
-           Page {{ quizzes.number }} of {{ quizzes.paginator.num_pages }}
-       </span>
+        <span class="current-page">
+            Page {{ quizzes.number }} of {{ quizzes.paginator.num_pages }}
+        </span>
 
-       {% if quizzes.has_next %}
-           <a href="?page={{ quizzes.next_page_number }}{% if category_id %}&category={{ category_id }}{% endif %}">Next</a>
-           <a href="?page={{ quizzes.paginator.num_pages }}{% if category_id %}&category={{ category_id }}{% endif %}">Last &raquo;</a>
-       {% endif %}
-   </div>
-   {% endif %}
+        {% if quizzes.has_next %}
+        <a
+            href="?page={{ quizzes.next_page_number }}{% if category_id %}&category={{ category_id }}{% endif %}">Next</a>
+        <a href="?page={{ quizzes.paginator.num_pages }}{% if category_id %}&category={{ category_id }}{% endif %}">Last
+            &raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

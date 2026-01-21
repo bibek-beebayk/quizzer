@@ -5,7 +5,8 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/blog/list.css' %}">
 
 <meta name="title" content="quizNfacts | Blog">
-<meta name="description" content="Interesting facts and information to fuel your curiosity. Read and improve your knowledge.">
+<meta name="description"
+    content="Interesting facts and information to fuel your curiosity. Read and improve your knowledge.">
 <meta name="keywords" content="interesting facts, fascinating facts, movie facts, general facts">
 
 <meta property="og:title" content="quizNfacts | Blog">
@@ -25,7 +26,7 @@
 {% block content %}
 
 
-<div class="quiz-container">
+<div class="blog-container">
     <!-- <form method="get" class="category-filters">
         <select name="category" onchange="this.form.submit()"
             style="padding: 0.5rem; border: 1px solid #3498db; border-radius: 4px;">
@@ -46,20 +47,36 @@
         </select>
     </form> -->
 
-    <div class="quiz-list">
+    <div class="section-header" style="margin-bottom: 2rem;">
+        <h2>Latest Articles</h2>
+    </div>
+
+    <div class="blog-grid">
         {% for blog in blogs %}
-        <div class="quiz-card">
-            <div class="quiz-details">
-                <h3>{{ blog.title }}</h3>
-                <p>Published: {{ blog.publish_at|date:"M d, Y" }}</p>
-            </div>
-            <div class="quiz-meta">
-                <a href="/blogs/{{blog.slug}}" class="take-quiz-btn">Read</a>
+        <div class="blog-card">
+            {% if blog.cover_image %}
+            <img src="{{ blog.cover_image.url }}" alt="{{ blog.title }}" class="blog-image">
+            {% endif %}
+            <div class="blog-content">
+                <a href="/blogs/{{blog.slug}}" style="text-decoration: none;">
+                    <h3 class="blog-title">{{ blog.title }}</h3>
+                </a>
+                <div class="blog-meta">
+                    <i class="far fa-calendar-alt"></i> {{ blog.publish_at|date:"M d, Y" }}
+                    {% if blog.category %}
+                    <span>&bull;</span> {{ blog.category.name }}
+                    {% endif %}
+                </div>
+                <div class="blog-actions">
+                    <a href="/blogs/{{blog.slug}}" class="read-btn">Read Article</a>
+                </div>
             </div>
         </div>
 
         {% empty %}
-        <p>No posts right now.</p>
+        <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--color-text-secondary);">
+            <p>No posts available at the moment.</p>
+        </div>
         {% endfor %}
     </div>
 

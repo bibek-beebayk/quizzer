@@ -7,8 +7,21 @@
     {% progressive_web_app_meta %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    
+    <!-- Design System -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/variables.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}">
+    
+    <!-- Legacy Styles (To be refactored/removed) -->
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}"> -->
+
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7039769360692466"
         crossorigin="anonymous"></script>
     {% block meta %}
@@ -29,58 +42,31 @@
     <div id="loading-overlay" class="loading-overlay">
         <div class="loading-spinner"></div>
     </div>
+    
     {% include "navbar.html" %}
-    {% block content %}
-    {% endblock %}
+    
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <div class="container" style="text-align: center; color: var(--color-text-secondary);">
+            <p>&copy; 2024 quizNfacts. All Rights Reserved.</p>
+        </div>
+    </footer>
 </body>
 
-<footer>
-    All Rights Reserved | quizNfacts 2024
-</footer>
-
 <style>
-    .contact {
-        color: rgb(228, 228, 228);
-        min-width: 300px;
-    }
-
-    .links {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        min-width: 300px;
-
-        a {
-            color: rgb(228, 228, 228);
-            text-decoration: none;
-        }
-    }
-
-    body {
-        margin: 0;
-        padding: 0;
-        background-color: #e4e4e4;
-        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    }
-
-    footer {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        justify-content: space-around;
-        padding: 20px 0;
-        background-color: rgb(31, 30, 30);
-        color: rgb(165, 165, 165);
-    }
-
+    /* Loading Overlay Styles (Kept inline or moved to global.css) */
     .loading-overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(255, 255, 255, 0.7);
+        background: rgba(18, 18, 18, 0.8);
+        backdrop-filter: blur(5px);
         display: none;
         justify-content: center;
         align-items: center;
@@ -88,47 +74,40 @@
     }
 
     .loading-spinner {
-        border: 5px solid #f3f3f3;
-        border-top: 5px solid #3498db;
+        border: 4px solid rgba(255, 255, 255, 0.1);
+        border-top: 4px solid var(--color-secondary);
         border-radius: 50%;
         width: 50px;
         height: 50px;
         animation: spin 1s linear infinite;
+        box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
     }
 
     @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    footer {
+        padding: var(--spacing-xl) 0;
+        background-color: var(--color-background-card);
+        margin-top: auto;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
 </style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const loadingOverlay = document.getElementById('loading-overlay');
-        const forms = document.querySelectorAll('form');
-
-        // Handle form submissions
-        // forms.forEach(form => {
-        //     form.addEventListener('submit', function (e) {
-        //         if (form.checkValidity()) {
-        //             loadingOverlay.style.display = 'flex';
-        //         } else {
-        //             e.preventDefault();
-        //             form.reportValidity();
-        //         }
-        //     });
-        // });
-
+        
         // Handle page navigation
         document.addEventListener('click', function (e) {
             const target = e.target.closest('a');
-            if (target && target.getAttribute('href')) {
-                // Optional: Add conditions to exclude certain links if needed
+            // Only show loader for internal links that are not hash links or javascript:void
+            if (target && target.getAttribute('href') && 
+                !target.getAttribute('href').startsWith('#') &&
+                !target.getAttribute('href').startsWith('javascript') &&
+                target.target !== '_blank') {
                 loadingOverlay.style.display = 'flex';
             }
         });

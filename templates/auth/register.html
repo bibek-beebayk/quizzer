@@ -1,181 +1,84 @@
-{% extends "auth/base.html" %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/auth.css' %}">
 
-<style>
-    .registration-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        margin-top: 40px;
-        color: rgb(36, 36, 36);
-    }
-
-    .registration-form {
-        width: 50%;
-        background-color: rgb(218, 218, 218);
-        padding: 30px;
-        border-radius: 10px;
-        margin-bottom: 40px;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 8px;
-        color: rgb(63, 63, 63);
-        font-size: 16px;
-    }
-
-    .form-group input {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid rgb(173, 173, 173);
-        border-radius: 5px;
-        font-size: 16px;
-    }
-
-    .interests-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 10px;
-        margin-top: 10px;
-        height: 150px;
-        overflow: auto;
-    }
-
-    .interest-option {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px;
-        border: 1px solid rgb(173, 173, 173);
-        border-radius: 5px;
-        cursor: pointer;
-        background-color: white;
-    }
-
-    .interest-option:hover {
-        background-color: rgb(252, 169, 169);
-    }
-
-    .interest-option input[type="checkbox"] {
-        width: auto;
-    }
-
-    .interest-option.selected {
-        background-color: rgb(252, 169, 169);
-    }
-
-    .submit-btn {
-        width: 100%;
-        padding: 12px;
-        background-color: rgb(148, 223, 178);
-        border: none;
-        border-radius: 5px;
-        color: rgb(63, 63, 63);
-        font-size: 16px;
-        cursor: pointer;
-        margin-top: 20px;
-    }
-
-    .submit-btn:hover {
-        box-shadow: 0px 0px 5px 0px rgba(122, 122, 122, 1);
-    }
-
-    .error-message {
-        color: rgb(220, 53, 69);
-        font-size: 14px;
-        margin-top: 5px;
-    }
-
-    @media screen and (max-width: 768px) {
-        .registration-form {
-            width: 90%;
-            padding: 20px;
-        }
-
-        .form-group input {
-            width: 95%;
-        }
-
-        .interests-grid {
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        }
-    }
-</style>
-
-<div class="registration-container">
-    <h2 style="margin-bottom: 30px;">Create New Account</h2>
-
-    <form class="registration-form" style="margin-bottom: 0;" method="POST" action="{% url 'register' %}"
-        id="registrationForm">
-        {% csrf_token %}
-
-        {% if form.errors %}
-        <div class="error-message">
-            Please correct the errors below.
-        </div>
-        {% endif %}
-
-        {% if messages %}
-        <div class="error-message">
-
-            {% for message in messages %}
-            <div class="alert {{ message.tags }}">
-                {{ message }}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
-            {% if form.email.errors %}
-            <div class="error-message">{{ form.email.errors }}</div>
-            {% endif %}
+<div class="auth-container">
+    <div class="auth-card wide">
+        <div class="auth-header">
+            <h2>Join quizNfacts</h2>
+            <p>Create an account to start exploring</p>
         </div>
 
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
-            {% if form.password.errors %}
-            <div class="error-message">{{ form.password.errors }}</div>
-            {% endif %}
-        </div>
+        <form method="POST" action="{% url 'register' %}" id="registrationForm">
+            {% csrf_token %}
 
-        <div class="form-group">
-            <label for="password2">Confirm Password</label>
-            <input type="password" id="password2" name="password2" required>
-            {% if form.password2.errors %}
-            <div class="error-message">{{ form.password2.errors }}</div>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-            <label>Choose Your Interests (select at least 3)</label>
-            <div class="interests-grid">
-                {% for interest in interests %}
-                <div class="interest-option">
-                    <input type="checkbox" name="interests" value="{{ interest.id }}" id="interest_{{ interest.id }}">
-                    <label for="interest_{{ interest.id }}">{{ interest.name }}</label>
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert {{ message.tags }}">
+                    {{ message }}
                 </div>
                 {% endfor %}
             </div>
-            <div id="interestsError" class="error-message" style="display: none;">
-                Please select at least 3 interests.
-            </div>
-        </div>
+            {% endif %}
 
-        <button type="submit" class="submit-btn">Create Account</button>
-    </form>
-    <a href="/login" style="margin: 10px 0;">Already Registered? Click to Login.</a>
+            {% if form.errors %}
+            <div class="alert error">
+                Please correct the errors below.
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+                {% if form.email.errors %}
+                <div class="error-message">{{ form.email.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+                {% if form.password.errors %}
+                <div class="error-message">{{ form.password.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="password2">Confirm Password</label>
+                <input type="password" id="password2" name="password2" class="form-control" required>
+                <div id="passwordMatchError" class="error-message" style="display: none;">Passwords do not match</div>
+                {% if form.password2.errors %}
+                <div class="error-message">{{ form.password2.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label>Choose Your Interests (select at least 3)</label>
+                <div class="interests-grid">
+                    {% for interest in interests %}
+                    <label class="interest-option">
+                        <input type="checkbox" name="interests" value="{{ interest.id }}"
+                            id="interest_{{ interest.id }}">
+                        <span>{{ interest.name }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+                <div id="interestsError" class="error-message" style="display: none;">
+                    Please select at least 3 interests.
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100"
+                style="width: 100%; padding: 12px; margin-top: 10px;">Create Account</button>
+        </form>
+
+        <div class="auth-footer">
+            Already have an account? <a href="{% url 'login' %}">Sign In</a>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -184,21 +87,11 @@
         const interestsError = document.getElementById('interestsError');
         const password = document.getElementById('password').value;
         const password2 = document.getElementById('password2').value;
-        const passwordError = document.getElementById('passwordError');
-
-        // Add a password match error message div in the HTML
-        let passwordMatchError = document.getElementById('passwordMatchError');
-        if (!passwordMatchError) {
-            passwordMatchError = document.createElement('div');
-            passwordMatchError.id = 'passwordMatchError';
-            passwordMatchError.className = 'error-message';
-            document.querySelector('input[name="password2"]').parentNode.appendChild(passwordMatchError);
-        }
+        const passwordMatchError = document.getElementById('passwordMatchError');
 
         // Validate password match
         if (password !== password2) {
             e.preventDefault();
-            passwordMatchError.textContent = 'Passwords do not match';
             passwordMatchError.style.display = 'block';
             return false;
         } else {
@@ -212,7 +105,6 @@
         }
 
         interestsError.style.display = 'none';
-        console.log('Form submitted', checkedInterests);
         return true;
     });
 
@@ -220,6 +112,10 @@
     const interestOptions = document.querySelectorAll('.interest-option');
     interestOptions.forEach(option => {
         const checkbox = option.querySelector('input[type="checkbox"]');
+
+        // Initial check
+        if (checkbox.checked) option.classList.add('selected');
+
         checkbox.addEventListener('change', function () {
             if (this.checked) {
                 option.classList.add('selected');

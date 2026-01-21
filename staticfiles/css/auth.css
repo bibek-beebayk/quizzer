@@ -1,0 +1,137 @@
+/* Authentication Page Styles */
+.auth-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 70px - 100px);
+    /* Adjust based on nav/footer height */
+    padding: var(--spacing-xl) var(--spacing-md);
+    background: radial-gradient(circle at center, rgba(98, 0, 234, 0.1), transparent 70%);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 400px;
+    background: var(--color-background-card);
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-lg), var(--shadow-neon);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.auth-header h2 {
+    font-size: var(--font-size-2xl);
+    background: var(--gradient-accent);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: var(--spacing-sm);
+}
+
+.auth-header p {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+.form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+
+.form-actions {
+    margin-top: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.auth-links {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-md);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: var(--spacing-lg);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+/* Specific for Registration (Wider Card) */
+.auth-card.wide {
+    max-width: 600px;
+}
+
+.interests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--spacing-sm);
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: var(--spacing-sm);
+    padding-right: var(--spacing-xs);
+}
+
+.interest-option {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.interest-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-secondary);
+}
+
+.interest-option.selected {
+    background: rgba(0, 229, 255, 0.15);
+    border-color: var(--color-secondary);
+    color: var(--color-secondary);
+}
+
+.error-message {
+    color: var(--color-error);
+    font-size: var(--font-size-xs);
+    margin-top: var(--spacing-xs);
+}
+
+.alert {
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--spacing-md);
+    text-align: center;
+    font-size: var(--font-size-sm);
+}
+
+.alert.error {
+    background: rgba(213, 0, 0, 0.1);
+    border: 1px solid var(--color-error);
+    color: var(--color-error);
+}
+
+.alert.success {
+    background: rgba(0, 200, 83, 0.1);
+    border: 1px solid var(--color-success);
+    color: var(--color-success);
+}

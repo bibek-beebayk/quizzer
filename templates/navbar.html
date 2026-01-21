@@ -1,311 +1,224 @@
 {% load static %}
-
 <style>
+    /* Inline Navbar Styles for critical rendering path or move to navbar.css */
+    .navbar {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        width: 100%;
+        padding: var(--spacing-md) 0;
+        transition: padding var(--transition-base), background var(--transition-base);
+    }
+
+    .navbar.scrolled {
+        padding: var(--spacing-sm) 0;
+    }
+
     .nav-container {
-        height: 60px;
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 var(--spacing-md);
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        padding: 0 20px;
-        background-color: lightgray;
-        position: relative;
+        align-items: center;
+    }
+
+    /* Glass Panel for Namespace */
+    .nav-glass {
+        background: rgba(24, 24, 27, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: var(--border-radius-full);
+        padding: 10px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
 
     .logo {
-        color: black;
-        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-        font-weight: 600;
-        letter-spacing: 1px;
-        font-size: 24px;
-        cursor: pointer;
-        text-decoration: none;
-        transition: opacity 0.2s ease;
-    }
-
-    .logo:hover {
-        opacity: 0.8;
-    }
-
-    .desktop-menu {
+        font-family: var(--font-family-heading);
+        font-weight: 900;
+        font-size: 1.5rem;
+        color: var(--color-text-primary);
+        letter-spacing: -0.5px;
         display: flex;
-        gap: 25px;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .logo span {
+        color: var(--color-primary);
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 32px;
         align-items: center;
     }
 
-    .desktop-menu a {
-        text-decoration: none;
-        color: black;
-        font-size: 15px;
-        transition: all 0.2s ease;
-        padding: 5px 10px;
-        border-radius: 4px;
+    .nav-link {
+        color: var(--color-text-secondary);
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: color var(--transition-fast);
     }
 
-    .desktop-menu a:hover {
-        background-color: rgba(0, 0, 0, 0.05);
+    .nav-link:hover,
+    .nav-link.active {
+        color: var(--color-text-primary);
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     }
 
-    .desktop-menu a.active,
-    .mobile-menu a.active {
-        background-color: rgb(36, 20, 114);
+    /* Profile Dropdown */
+    .profile-menu {
+        position: relative;
+        cursor: pointer;
+    }
+
+    .profile-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--gradient-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
         color: white;
+        font-weight: 600;
+        font-size: 0.9rem;
+        box-shadow: var(--shadow-neon-primary);
     }
 
-    .mobile-menu-button {
-        display: none;
-        color: black;
-        font-size: 24px;
-        cursor: pointer;
-    }
-
-    .mobile-menu {
-        display: none;
+    .dropdown {
         position: absolute;
-        top: 100%;
-        right: 20px;
-        background-color: #d3d3d3;
-        z-index: 49;
-        border-radius: 8px;
-        flex-direction: column;
+        top: 120%;
+        right: 0;
         width: 200px;
-        padding: 10px 0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        background: var(--color-background-card);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: var(--border-radius-md);
+        padding: 8px;
         opacity: 0;
         visibility: hidden;
-        transform: translateY(-10px);
-        transition: all 0.3s ease;
+        transform: translateY(10px);
+        transition: all var(--transition-fast);
+        box-shadow: var(--shadow-lg);
     }
 
-    .mobile-menu.active {
+    .profile-menu.active .dropdown {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
     }
 
-    .mobile-menu a {
-        text-decoration: none;
-        color: black;
-        padding: 12px 20px;
-        transition: background-color 0.2s ease;
-    }
-
-    .mobile-menu a:hover {
-        background-color: rgba(0, 0, 0, 0.05);
-    }
-
-    .notification-banner {
-        background-color: rgb(210, 145, 145);
-        padding: 8px 0;
-        text-align: center;
-        font-size: 13px;
-        font-weight: 300;
-        color: rgb(44, 44, 44);
-    }
-
-    .fa-user {
-        cursor: pointer;
-        font-size: 20px;
-        transition: opacity 0.2s ease;
-    }
-
-    .fa-user:hover {
-        opacity: 0.7;
-    }
-
-    #profile-menu {
-        position: absolute;
-        top: 100%;
-        right: 20px;
-        background-color: #d3d3d3;
-        z-index: 50; /* Higher than mobile menu */
-        border-radius: 8px;
-        width: 200px;
-        padding: 10px 0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-10px);
-        transition: all 0.3s ease;
-    }
-
-    #profile-menu.active {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-    }
-
-    #profile-menu a {
-        text-decoration: none;
-        color: black;
-        padding: 12px 20px;
+    .dropdown-item {
         display: block;
-        transition: background-color 0.2s ease;
+        padding: 10px 16px;
+        border-radius: var(--border-radius-sm);
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+        transition: background 0.2s;
     }
 
-    #profile-menu a:hover {
-        background-color: rgba(0, 0, 0, 0.05);
+    .dropdown-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--color-text-primary);
     }
 
-    @media screen and (max-width: 768px) {
-        .nav-container {
-            justify-content: center;
-            padding: 0 15px;
-        }
+    /* Mobile Toggle */
+    .mobile-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--color-text-primary);
+        font-size: 1.25rem;
+    }
 
-        .desktop-menu {
+    @media (max-width: 768px) {
+        .nav-links {
             display: none;
         }
 
-        .mobile-menu-button {
+        .mobile-toggle {
             display: block;
-            position: absolute;
-            right: 20px;
         }
 
-        .mobile-menu {
-            display: flex;
-            right: 15px;
-            width: calc(100% - 30px);
-        }
-
-        #profile-icon {
-            display: none; /* Hide profile icon on mobile */
-        }
-    }
-
-    @media screen and (max-width: 480px) {
-        .nav-container {
-            height: 50px;
-        }
-
-        .logo {
-            font-size: 20px;
-        }
-
-        .notification-banner {
-            padding: 6px 10px;
-            font-size: 12px;
-        }
-
-        #profile-icon {
-            display: none; /* Hide profile icon on mobile */
+        .nav-glass {
+            padding: 12px 20px;
+            border-radius: var(--border-radius-lg);
         }
     }
 </style>
 
+<header class="navbar">
+    <div class="nav-container">
+        <div class="nav-glass">
+            <a href="/" class="logo">quiz<span>N</span>facts</a>
 
+            <div class="nav-links">
+                <!-- <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">Home</a> -->
+                <a href="/blogs" class="nav-link {% if '/blogs' in request.path %}active{% endif %}">Blog</a>
 
-<div class="nav-container">
-    <a href="/" class="logo">quizNfacts</a>
+                {% if user.is_authenticated %}
+                <a href="/quiz-list" class="nav-link {% if '/quiz-list' in request.path %}active{% endif %}">Quizzes</a>
 
-    <div class="desktop-menu">
-        <!-- <a href="/" {% if request.path == '/' %}class="active"{% endif %}>Home</a> -->
-        <a href="/blogs" {% if '/blogs' in request.path %}class="active" {% endif %}>Blog</a>
-        {% if user.is_authenticated %}
-        <a href="/quiz-list" {% if '/quiz-list' in request.path %}class="active" {% endif %}>Quizzes</a>
-        {% endif %}
-        <i class="fa fa-user" id="profile-icon"></i>
+                <div class="profile-menu" id="profile-trigger">
+                    <div class="profile-avatar">
+                        {{ user.email|first|upper }}
+                    </div>
+                    <div class="dropdown">
+                        <a href="/profile" class="dropdown-item"><i class="fas fa-user mr-2"></i> Profile</a>
+                        {% if user.is_superuser %}
+                        <a href="/analytics" class="dropdown-item"><i class="fas fa-chart-line mr-2"></i> Analytics</a>
+                        {% endif %}
+                        <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 4px 0;"></div>
+                        <a href="{% url 'logout' %}" class="dropdown-item" style="color: var(--color-error);"><i
+                                class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+                    </div>
+                </div>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn btn-secondary"
+                    style="padding: 8px 16px; font-size: 0.85rem;">Login</a>
+                <a href="{% url 'register' %}" class="btn btn-primary"
+                    style="padding: 8px 16px; font-size: 0.85rem;">Register</a>
+                {% endif %}
+            </div>
+
+            <button class="mobile-toggle" id="mobile-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
     </div>
+</header>
 
-
-    <div id="profile-menu">
-        {% if user.is_authenticated %}
-        <a href="/profile" {% if '/profile' in request.path %}class="active"{% endif %}>Profile</a>
-        <a href="{% url 'logout' %}" {% if '/logout' in request.path %}class="active"{% endif %}>Logout</a>
-        {% if user.is_superuser %}
-        <a href="/analytics" {% if '/analytics' in request.path %}class="active"{% endif %}>Analytics</a>
-        {% endif %}
-        {% else %}
-        <a href="{% url 'login' %}" {% if '/login' in request.path %}class="active"{% endif %}>Login</a>
-        <a href="{% url 'register' %}" {% if '/register' in request.path %}class="active"{% endif %}>Register</a>
-        {% endif %}
-    </div>
-
-    <span class="mobile-menu-button" id="mobile-btn">☰</span>
-
-    <div class="mobile-menu">
-        <a href="/blogs" {% if '/blogs' in request.path %}class="active" {% endif %}>Blog</a>
-        {% if user.is_authenticated %}
-        <a href="/quiz-list" {% if '/quiz-list' in request.path %}class="active" {% endif %}>Quizzes</a>
-        <a href="/profile" {% if '/profile' in request.path %}class="active" {% endif %}>Profile</a>
-        <a href="{% url 'logout' %}" {% if '/logout' in request.path %}class="active" {% endif %}>Logout</a>
-        {% else %}
-        <a href="{% url 'login' %}" {% if '/login' in request.path %}class="active" {% endif %}>Login</a>
-        {% endif %}
-        {% if user.is_superuser %}
-        <a href="/analytics" {% if '/analytics' in request.path %}class="active" {% endif %}>Analytics</a>
-        {% endif %}
-    </div>
+<!-- Mobile Menu Overlay -->
+<div class="mobile-menu-overlay" id="mobile-menu">
+    <!-- Implementation handled by JS sharing similar logic -->
 </div>
-
-{% if not user.is_authenticated %}
-<div class="notification-banner">
-    <i>Sign up to track your progress and get personalized content.</i>
-</div>
-{% endif %}
 
 <script>
-    const mobileButton = document.getElementById('mobile-btn');
-    const mobileMenu = document.querySelector('.mobile-menu');
-    const profileButton = document.getElementById('profile-icon');
-    const profileMenu = document.getElementById('profile-menu');
-    
-    let menuOpen = false;
-    let profileMenuOpen = false;
-
-    const toggleMenu = (shouldOpen) => {
-        menuOpen = shouldOpen;
-        mobileMenu.classList.toggle('active', shouldOpen);
-        if (shouldOpen && profileMenuOpen) {
-            toggleProfileMenu(false);
-        }
-    };
-
-    const toggleProfileMenu = (shouldOpen) => {
-        profileMenuOpen = shouldOpen;
-        profileMenu.classList.toggle('active', shouldOpen);
-        if (shouldOpen && menuOpen) {
-            toggleMenu(false);
-        }
-    };
-
-    mobileButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleMenu(!menuOpen);
-    });
-
-    profileButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleProfileMenu(!profileMenuOpen);
-    });
-
-    document.addEventListener('click', (event) => {
-        if (!event.target.closest('#profile-menu') && !event.target.closest('#profile-icon')) {
-            toggleProfileMenu(false);
-        }
-        if (!event.target.closest('.mobile-menu') && !event.target.closest('#mobile-btn')) {
-            toggleMenu(false);
-        }
-    });
-
-    // Close menus on escape key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            toggleMenu(false);
-            toggleProfileMenu(false);
-        }
-    });
-
-    // Close menus when clicking a link
-    mobileMenu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            toggleMenu(false);
+    // Simple Toggle Logic
+    const profileTrigger = document.getElementById('profile-trigger');
+    if (profileTrigger) {
+        profileTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileTrigger.classList.toggle('active');
         });
-    });
-
-    profileMenu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            toggleProfileMenu(false);
+        document.addEventListener('click', () => {
+            profileTrigger.classList.remove('active');
         });
+    }
+
+    // Scroll Effect
+    window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 20) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
     });
 </script>

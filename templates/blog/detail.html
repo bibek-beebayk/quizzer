@@ -11,159 +11,6 @@
 
 {% block content %}
 
-<style>
-    .blog-body img {
-        width: 100%;
-        height: auto;
-    }
-
-    .comments-section {
-        width: 50%;
-        margin-top: 40px;
-        margin-bottom: 40px;
-        background-color: rgb(210, 210, 210);
-    }
-
-    .comment-form {
-        background-color: #f5f5f5;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 30px;
-    }
-
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-    .form-group input,
-    .form-group textarea {
-        width: 90%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 14px;
-    }
-
-    .form-group textarea {
-        height: 120px;
-        resize: vertical;
-    }
-
-    .submit-comment {
-        background-color: rgb(63, 63, 63);
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 14px;
-    }
-
-    .submit-comment:hover {
-        background-color: rgb(89, 56, 56);
-    }
-
-    .comments-list {
-        margin-top: 30px;
-    }
-
-    .comment {
-        border-bottom: 1px solid #ddd;
-        padding: 15px 0;
-    }
-
-    .comment:last-child {
-        border-bottom: none;
-    }
-
-    .comment-header {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
-
-    .commenter-name {
-        font-weight: bold;
-        color: rgb(89, 56, 56);
-    }
-
-    .comment-date {
-        color: #666;
-        font-size: 12px;
-    }
-
-    .comment-content {
-        color: rgb(36, 36, 36);
-        line-height: 1.5;
-    }
-
-    .no-comments {
-        text-align: start;
-        color: #666;
-        font-style: italic;
-    }
-
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto;
-        padding: 20px;
-        border-radius: 10px;
-        width: 80%;
-        max-width: 500px;
-    }
-
-    .ck-content {
-        font-family: "Verdana", Geneva, sans-serif !important;
-    }
-
-    .section-image {
-        width: 70%;
-        border-radius: 3px;
-    }
-
-    .change-btn {
-        border: none;
-        background: transparent;
-        padding: 0;
-        cursor: pointer;
-    }
-
-    .change-btn:hover {
-        text-decoration: underline;
-    }
-
-    @media screen and (max-width: 768px) {
-        .comments-section {
-            width: 95%;
-        }
-
-        .comment-form {
-            padding: 15px;
-        }
-
-        .section-image {
-            width: 80%;
-        }
-    }
-
-    @media screen and (max-width: 480px) {
-        .section-image {
-            width: 100%;
-        }
-    }
-</style>
 
 <div id="editCommentModal" class="modal">
     <div class="modal-content">
@@ -178,8 +25,9 @@
                 </div>
             </div>
             <div class="modal-actions">
-                <button type="button" id="cancelEdit">Cancel</button>
-                <button type="submit">Submit</button>
+                <button type="button" id="cancelEdit" class="btn btn-secondary"
+                    style="background: transparent;">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
             </div>
             <p style="display: none;" id="passwordChangeError"></p>
         </form>
@@ -187,103 +35,109 @@
 
 </div>
 
-<div class="blog-container">
-    <div class="blog-content">
-        <h1 class="blog-title">{{ blog.title }}</h1>
-        <hr>
-        <div class="blog-meta">
-            <span><i class="fa fa-calendar"></i> {{ blog.publish_at|date:"F d, Y" }}</span>
-            {% if blog.author %}
-            <span><i class="fa fa-person"></i> {{ blog.author.name }}</span>
-            {% endif %}
-            <span><i class="fa fa-folder"></i> {{blog.category_str|safe}}</span>
-        </div>
-        <hr>
+<div class="blog-detail-container">
+    <article class="blog-content">
+        <header class="article-header">
+            <h1 class="article-title">{{ blog.title }}</h1>
+            <div class="article-meta">
+                <span><i class="far fa-calendar-alt"></i> {{ blog.publish_at|date:"F d, Y" }}</span>
+                {% if blog.author %}
+                <span><i class="far fa-user"></i> {{ blog.author.name }}</span>
+                {% endif %}
+                <span><i class="far fa-folder"></i> {{blog.category_str|safe}}</span>
+            </div>
+        </header>
+
         {% if blog.cover_image %}
-        <img src="{{blog.cover_image.url}}" alt="cover_image" style="width: 100%; border-radius: 5px;">
+        <img src="{{blog.cover_image.url}}" alt="{{ blog.title }}" class="article-cover">
         {% endif %}
 
-        {% for section in blog.sections.all|dictsort:"order" %}
-        <div class="blog-body">
+        <div class="article-body">
+            {% for section in blog.sections.all|dictsort:"order" %}
             {% if section.title %}
-            <h2 style="font-size: large;">{{section.title}}</h2>
+            <h2>{{section.title}}</h2>
             {% endif %}
-            {% if section.image %}
-            <div
-                style="width: 100%; display: flex; justify-content: center; flex-direction: column; align-items: center;">
 
+            {% if section.image %}
+            <figure style="text-align: center; margin: 2rem 0;">
                 <img src="{{section.image.url}}"
                     alt="{% if section.image_alt %}{{section.image_alt}}{% else %}{{section.title}}{% endif %}"
                     class="section-image">
                 {% if section.image_label %}
-                <i style="font-size: 12px;">{{section.image_label}}</i>
+                <figcaption style="font-size: 0.9rem; color: var(--color-text-secondary); margin-top: 0.5rem;">
+                    {{section.image_label}}
+                </figcaption>
                 {% endif %}
-            </div>
+            </figure>
             {% endif %}
+
             {{ section.content|safe }}
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
+    </article>
 
-    <div class="related-posts">
-        <h3>Comments</h3>
-        {% if not user.is_authenticated %}
-        <p class="no-comments">Login to view and post comments.</p>
-        {% else %}
+    <div class="comments-section">
+        <h3><i class="far fa-comments"></i> Comments</h3>
 
-        {% if has_commented %}
-        <p class="no-comments">You have already commented in this blog.</p>
-        {% else %}
+        {% if user.is_authenticated %}
+        {% if not has_commented %}
         <div class="comment-form">
-            <h4>Leave a Comment</h4>
             <form method="post">
                 {% csrf_token %}
-                <div class="form-group">
-                    <textarea name="comment" placeholder="Your Comment" required></textarea>
-                </div>
-                <button type="submit" class="submit-comment">Post Comment</button>
+                <textarea name="comment" placeholder="What are your thoughts?" required></textarea>
+                <button type="submit" class="btn btn-primary">Post Comment</button>
             </form>
         </div>
-        {%endif%}
+        {% else %}
+        <div class="alert success">You have shared your thoughts on this post.</div>
+        {% endif %}
+        {% else %}
+        <div class="alert" style="background: rgba(255, 255, 255, 0.05); text-align: center;">
+            Please <a href="/login">login</a> to leave a comment.
+        </div>
+        {% endif %}
 
         <div class="comments-list">
             {% for comment in blog.comments.all %}
-            <div class="comment">
+            <div class="comment-item">
                 <div class="comment-header">
-                    <span class="commenter-name">{{ comment.user.email }}</span>
-                    <span class="comment-date">{{ comment.created_at|date:"F d, Y" }}</span>
+                    <span class="comment-author">{{ comment.user.email }}</span>
+                    <span class="comment-date">{{ comment.created_at|date:"M d, Y" }}</span>
                 </div>
                 <div class="comment-content">
                     {{ comment.text }}
                 </div>
                 {% if comment.user == user %}
-                <div style="margin-top: 10px; display: flex; gap: 10px;">
-                    <button class="change-btn" id="edit_comment"
-                        onClick="handleEditComment('{{comment.id}}', '{{comment.text}}')"
-                        style="color:orange">Edit</button>
-                    <button class="change-btn" id="delete_comment" onclick="handleDeleteComment('{{comment.id}}')"
-                        style="color: red">Delete</button>
+                <div class="comment-actions">
+                    <button class="action-btn edit" onClick="handleEditComment('{{comment.id}}', '{{comment.text}}')">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="action-btn delete" onclick="handleDeleteComment('{{comment.id}}')">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
                 </div>
                 {% endif %}
             </div>
             {% empty %}
-            <p class="no-comments">No comments yet. Be the first to comment!</p>
+            <p style="text-align: center; color: var(--color-text-secondary); margin-top: 2rem;">
+                No comments yet. Be the first to join the discussion!
+            </p>
             {% endfor %}
         </div>
     </div>
-    {% endif %}
 
     <div class="related-posts">
-        <h3>Related Posts</h3>
-        {% for post in related_posts %}
-        <a href="/blogs/{{post.slug}}" class="related-post-link">
-            {{ post.title }}
-            <br>
-            <small>{{ post.category.name }}</small>
-        </a>
-        {% empty %}
-        <p>No related posts found.</p>
-        {% endfor %}
+        <h3>You might also like</h3>
+        <div class="related-grid">
+            {% for post in related_posts %}
+            <a href="/blogs/{{post.slug}}" class="blog-card" style="text-decoration: none; padding: 1rem;">
+                <h4 style="margin-bottom: 0.5rem; color: var(--color-text-primary);">{{ post.title }}</h4>
+                <small style="color: var(--color-secondary);">{{ post.category.name }}</small>
+            </a>
+            {% empty %}
+            <p style="color: var(--color-text-secondary);">No related posts found.</p>
+            {% endfor %}
+        </div>
     </div>
 </div>
 
@@ -294,8 +148,10 @@
             {% csrf_token %}
             <input type="hidden" name="comment_id" id="deleteCommentId">
             <div class="modal-actions">
-                <button type="button" id="cancelDelete">Cancel</button>
-                <button type="submit">Submit</button>
+                <button type="button" id="cancelDelete" class="btn btn-secondary"
+                    style="background: transparent;">Cancel</button>
+                <button type="submit" class="btn btn-primary"
+                    style="background: var(--color-error); border-color: var(--color-error);">Delete</button>
             </div>
             <p style="display: none;" id="passwordChangeError"></p>
         </form>
@@ -307,13 +163,13 @@
     const cancelEdit = document.getElementById("cancelEdit");
     const cancelDelete = document.getElementById("cancelDelete");
     const editCommentModal = document.getElementById("editCommentModal");
-    
+
     const handleDeleteComment = (commentId) => {
         deleteCommentModal.style.display = "block";
         const deleteCommentId = document.getElementById("deleteCommentId");
         deleteCommentId.value = commentId;
     };
-    
+
     const handleEditComment = (commentId, commentText) => {
         const commentTextArea = document.querySelector("textarea[name='comment']");
         console.log("Comment: ", commentText)

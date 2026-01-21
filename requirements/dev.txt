@@ -5,3 +5,4 @@ django-debug-toolbar
 django-extensions
 black
 django-browser-reload
+Faker
